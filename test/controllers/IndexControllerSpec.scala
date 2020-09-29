@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
-package navigation
+package controllers
 
-import models.ReadableUserAnswers
-import pages._
-import play.api.mvc.Call
+import base.SpecBase
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 
-class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {
-  override def nextPage(page: Page, fakeDraftId: String, userAnswers: ReadableUserAnswers): Call = desiredRoute
+class IndexControllerSpec extends SpecBase {
+
+  "Index Controller" must {
+
+    "return OK and the correct view for a GET" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad("DRAFTID").url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      application.stop()
+    }
+  }
 }
