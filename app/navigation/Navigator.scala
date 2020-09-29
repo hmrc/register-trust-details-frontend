@@ -16,28 +16,18 @@
 
 package navigation
 
-import javax.inject.{Inject, Singleton}
-
-import play.api.mvc.Call
-import controllers.routes
+import models.ReadableUserAnswers
 import pages._
-import models._
+import play.api.mvc.Call
 
-@Singleton
-class Navigator @Inject()() {
+trait Navigator {
 
-  private val normalRoutes: Page => UserAnswers => Call = {
-    case _ => _ => routes.IndexController.onPageLoad()
+  def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call
+
+  def yesNoNav(ua: ReadableUserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
-  private val checkRouteMap: Page => UserAnswers => Call = {
-    case _ => _ => routes.CheckYourAnswersController.onPageLoad()
-  }
-
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {
-    case NormalMode =>
-      normalRoutes(page)(userAnswers)
-    case CheckMode =>
-      checkRouteMap(page)(userAnswers)
-  }
 }
