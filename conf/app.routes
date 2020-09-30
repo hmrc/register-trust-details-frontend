@@ -16,3 +16,48 @@ GET        /feature-not-available                       controllers.FeatureNotAv
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /:draftId/settlors-based-in-the-uk                                                       controllers.register.trust_details.SettlorsBasedInTheUKController.onPageLoad(draftId: String)
+POST       /:draftId/settlors-based-in-the-uk                                                       controllers.register.trust_details.SettlorsBasedInTheUKController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-name                                                                     controllers.register.trust_details.TrustNameController.onPageLoad(draftId: String)
+POST       /:draftId/trust-name                                                                     controllers.register.trust_details.TrustNameController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-governed                                                                 controllers.register.trust_details.GovernedInsideTheUKController.onPageLoad(draftId: String)
+POST       /:draftId/trust-governed                                                                 controllers.register.trust_details.GovernedInsideTheUKController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-governed-country                                                         controllers.register.trust_details.CountryGoverningTrustController.onPageLoad(draftId: String)
+POST       /:draftId/trust-governed-country                                                         controllers.register.trust_details.CountryGoverningTrustController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-administration                                                           controllers.register.trust_details.AdministrationInsideUKController.onPageLoad(draftId: String)
+POST       /:draftId/trust-administration                                                           controllers.register.trust_details.AdministrationInsideUKController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-administration-country                                                   controllers.register.trust_details.CountryAdministeringTrustController.onPageLoad(draftId: String)
+POST       /:draftId/trust-administration-country                                                   controllers.register.trust_details.CountryAdministeringTrustController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-scots-law                                                                controllers.register.trust_details.EstablishedUnderScotsLawController.onPageLoad(draftId: String)
+POST       /:draftId/trust-scots-law                                                                controllers.register.trust_details.EstablishedUnderScotsLawController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-act-1992                                                                 controllers.register.trust_details.RegisteringTrustFor5AController.onPageLoad(draftId: String)
+POST       /:draftId/trust-act-1992                                                                 controllers.register.trust_details.RegisteringTrustFor5AController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-offshore                                                                 controllers.register.trust_details.TrustResidentOffshoreController.onPageLoad(draftId: String)
+POST       /:draftId/trust-offshore                                                                 controllers.register.trust_details.TrustResidentOffshoreController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-offshore-country                                                         controllers.register.trust_details.TrustPreviouslyResidentController.onPageLoad(draftId: String)
+POST       /:draftId/trust-offshore-country                                                         controllers.register.trust_details.TrustPreviouslyResidentController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-non-resident-type                                                        controllers.register.trust_details.NonResidentTypeController.onPageLoad(draftId: String)
+POST       /:draftId/trust-non-resident-type                                                        controllers.register.trust_details.NonResidentTypeController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-inheritance-tax-act                                                      controllers.register.trust_details.InheritanceTaxActController.onPageLoad(draftId: String)
+POST       /:draftId/trust-inheritance-tax-act                                                      controllers.register.trust_details.InheritanceTaxActController.onSubmit(draftId: String)
+
+GET        /:draftId/trustees-based-in-the-uk                                                       controllers.register.trust_details.TrusteesBasedInTheUKController.onPageLoad(draftId: String)
+POST       /:draftId/trustees-based-in-the-uk                                                       controllers.register.trust_details.TrusteesBasedInTheUKController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-barrister                                                                controllers.register.trust_details.AgentOtherThanBarristerController.onPageLoad(draftId: String)
+POST       /:draftId/trust-barrister                                                                controllers.register.trust_details.AgentOtherThanBarristerController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-created                                                                  controllers.register.trust_details.WhenTrustSetupController.onPageLoad(draftId: String)
+POST       /:draftId/trust-created                                                                  controllers.register.trust_details.WhenTrustSetupController.onSubmit(draftId: String)
