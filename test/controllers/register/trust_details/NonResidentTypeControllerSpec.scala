@@ -19,7 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.NonResidentTypeFormProvider
 import models.NonResidentType
-import pages.trust_details.NonResidentTypePage
+import pages.register.trust_details.NonResidentTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.NonResidentTypeView

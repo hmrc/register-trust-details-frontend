@@ -18,7 +18,7 @@ package controllers.register.trust_details
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import pages.trust_details.SettlorsBasedInTheUKPage
+import pages.register.trust_details.SettlorsBasedInTheUKPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.SettlorsBasedInTheUKView

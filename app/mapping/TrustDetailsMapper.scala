@@ -19,7 +19,7 @@ package mapping
 import models.TrusteesBasedInTheUK._
 import models.{NonResidentType, NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
 import play.api.Logger
-import pages.trust_details._
+import pages.register.trust_details._
 
 class TrustDetailsMapper extends Mapping[TrustDetailsType] {
 

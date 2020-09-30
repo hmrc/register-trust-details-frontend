@@ -21,7 +21,7 @@ import forms.TrustNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
 import pages.register.TrustHaveAUTRPage
-import pages.trust_details.TrustNamePage
+import pages.register.trust_details.TrustNamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

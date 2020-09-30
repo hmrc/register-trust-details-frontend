@@ -26,7 +26,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
-import pages.trust_details.TrustNamePage
+import pages.register.trust_details.TrustNamePage
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

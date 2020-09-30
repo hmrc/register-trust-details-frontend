@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.register.settlors.deceased_settlor.SettlorDateOfDeathPage
-import pages.trust_details.WhenTrustSetupPage
+import pages.register.trust_details.WhenTrustSetupPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

@@ -18,7 +18,7 @@ package controllers.register.trust_details
 
 import base.SpecBase
 import forms.TrustPreviouslyResidentFormProvider
-import pages.trust_details.TrustPreviouslyResidentPage
+import pages.register.trust_details.TrustPreviouslyResidentPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.InputOption

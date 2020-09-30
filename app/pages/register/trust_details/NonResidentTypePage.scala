@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package pages.trust_details
+package pages.register.trust_details
 
-import models.UserAnswers
-import pages.{QuestionPage, TrustDetailsStatus}
+import models.NonResidentType
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
-import scala.util.Try
-
-case object InheritanceTaxActPage extends QuestionPage[Boolean] {
+case object NonResidentTypePage extends QuestionPage[NonResidentType] {
 
   override def path: JsPath = JsPath \ TrustDetails \ toString
 
-  override def toString: String = "inheritanceTaxAct"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(false) =>
-        userAnswers.remove(AgentOtherThanBarristerPage)
-          .flatMap(_.remove(TrustDetailsStatus))
-      case _ =>
-        super.cleanup(value, userAnswers)
-    }
-  }
+  override def toString: String = "nonResidentType"
 }

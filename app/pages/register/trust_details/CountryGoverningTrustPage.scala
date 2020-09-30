@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package pages.trust_details
+package pages.register.trust_details
 
-import models.NonResidentType
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
-case object NonResidentTypePage extends QuestionPage[NonResidentType] {
+case object CountryGoverningTrustPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ TrustDetails \ toString
 
-  override def toString: String = "nonResidentType"
+  override def toString: String = "countryGoverningTrust"
 }

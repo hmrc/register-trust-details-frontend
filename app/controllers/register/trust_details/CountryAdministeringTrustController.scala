@@ -20,7 +20,7 @@ import controllers.actions.register.{DraftIdRetrievalActionProvider, Registratio
 import forms.CountryAdministeringTrustFormProvider
 import javax.inject.Inject
 import navigation.Navigator
-import pages.trust_details.CountryAdministeringTrustPage
+import pages.register.trust_details.CountryAdministeringTrustPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

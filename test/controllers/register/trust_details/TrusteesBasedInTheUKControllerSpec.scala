@@ -19,7 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.TrusteesBasedInTheUKFormProvider
 import models.TrusteesBasedInTheUK
-import pages.trust_details.TrusteesBasedInTheUKPage
+import pages.register.trust_details.TrusteesBasedInTheUKPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.TrusteesBasedInTheUKView

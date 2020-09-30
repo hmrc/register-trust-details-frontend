@@ -18,7 +18,7 @@ package controllers.register.trust_details
 
 import base.SpecBase
 import forms.CountryAdministeringTrustFormProvider
-import pages.trust_details.CountryAdministeringTrustPage
+import pages.register.trust_details.CountryAdministeringTrustPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.InputOption

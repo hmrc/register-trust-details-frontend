@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package pages.trust_details
+package pages.register.trust_details
+
+import java.time.LocalDate
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
-case object TrustNamePage extends QuestionPage[String] {
+case object WhenTrustSetupPage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = JsPath \ TrustDetails \ toString
 
-  override def toString: String = "trustName"
+  override def toString: String = "whenTrustSetup"
 }

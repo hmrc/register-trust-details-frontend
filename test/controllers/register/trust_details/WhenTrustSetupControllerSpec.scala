@@ -25,7 +25,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.register.settlors.deceased_settlor.SettlorDateOfDeathPage
-import pages.trust_details.WhenTrustSetupPage
+import pages.register.trust_details.WhenTrustSetupPage
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
