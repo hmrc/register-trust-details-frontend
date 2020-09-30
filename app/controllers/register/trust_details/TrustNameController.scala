@@ -81,7 +81,7 @@ class TrustNameController @Inject()(
 
   private def showHintText(draftId: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     registrationsRepository.getMainAnswers(draftId) map {
-      _.forall {
+      _.exists {
         _.get(TrustHaveAUTRPage).contains(true)
       }
     }
