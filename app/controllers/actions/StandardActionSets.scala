@@ -25,6 +25,8 @@ class StandardActionSets @Inject()(identify: RegistrationIdentifierAction,
                                    getData: DraftIdRetrievalActionProvider,
                                    requireData: RegistrationDataRequiredAction
                                   ){
+
   def identifiedUserWithData(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
+
 }
