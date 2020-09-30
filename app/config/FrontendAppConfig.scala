@@ -72,7 +72,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
 
-  val repositoryKey: String = "trust-details"
+  val repositoryKey: String = "trustDetails"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
