@@ -16,6 +16,7 @@
 
 package controllers.register.trust_details
 
+import controllers.actions.StandardActionSets
 import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.TrusteesBasedInTheUKFormProvider
 import javax.inject.Inject
@@ -39,13 +40,16 @@ class TrusteesBasedInTheUKController @Inject()(
                                                 getData: DraftIdRetrievalActionProvider,
                                                 requireData: RegistrationDataRequiredAction,
                                                 formProvider: TrusteesBasedInTheUKFormProvider,
+                                                standardActions: StandardActionSets,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: TrusteesBasedInTheUKView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider()
 
-  def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
+  private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
+
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(TrusteesBasedInTheUKPage) match {
@@ -56,7 +60,7 @@ class TrusteesBasedInTheUKController @Inject()(
       Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData).async {
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(

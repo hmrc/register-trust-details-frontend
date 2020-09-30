@@ -19,6 +19,7 @@ package controllers.register.trust_details
 import java.time.LocalDate
 
 import config.FrontendAppConfig
+import controllers.actions.StandardActionSets
 import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.WhenTrustSetupFormProvider
 import javax.inject.Inject
@@ -40,17 +41,15 @@ class WhenTrustSetupController @Inject()(
                                           override val messagesApi: MessagesApi,
                                           registrationsRepository: RegistrationsRepository,
                                           navigator: Navigator,
-                                          identify: RegistrationIdentifierAction,
-                                          getData: DraftIdRetrievalActionProvider,
-                                          requireData: RegistrationDataRequiredAction,
                                           formProvider: WhenTrustSetupFormProvider,
+                                          standardActions: StandardActionSets,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: WhenTrustSetupView,
                                           appConfig: FrontendAppConfig
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
- private def actions(draftId: String) = identify andThen getData(draftId) andThen requireData
+ private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   private def form(draftId: String)(implicit hc: HeaderCarrier): Future[Form[LocalDate]] =
     minDate(draftId) map { config =>

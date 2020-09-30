@@ -16,6 +16,7 @@
 
 package controllers.register.trust_details
 
+import controllers.actions.StandardActionSets
 import controllers.actions.register._
 import forms.TrustNameFormProvider
 import javax.inject.Inject
@@ -36,15 +37,13 @@ class TrustNameController @Inject()(
                                      override val messagesApi: MessagesApi,
                                      registrationsRepository: RegistrationsRepository,
                                      navigator: Navigator,
-                                     identify: RegistrationIdentifierAction,
-                                     getData: DraftIdRetrievalActionProvider,
-                                     requireData: RegistrationDataRequiredAction,
                                      formProvider: TrustNameFormProvider,
+                                     standardActions: StandardActionSets,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: TrustNameView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(draftId: String) = identify andThen getData(draftId) andThen requireData
+  private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   val form = formProvider()
 
