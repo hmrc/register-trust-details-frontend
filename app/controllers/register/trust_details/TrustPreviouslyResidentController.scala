@@ -16,6 +16,7 @@
 
 package controllers.register.trust_details
 
+import controllers.actions.StandardActionSets
 import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.TrustPreviouslyResidentFormProvider
 import javax.inject.Inject
@@ -35,16 +36,14 @@ class TrustPreviouslyResidentController @Inject()(
                                                    override val messagesApi: MessagesApi,
                                                    registrationsRepository: RegistrationsRepository,
                                                    navigator: Navigator,
-                                                   identify: RegistrationIdentifierAction,
-                                                   getData: DraftIdRetrievalActionProvider,
-                                                   requireData: RegistrationDataRequiredAction,
                                                    formProvider: TrustPreviouslyResidentFormProvider,
+                                                   standardActions: StandardActionSets,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: TrustPreviouslyResidentView,
                                                    val countryOptions: CountryOptionsNonUK
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(draftId: String) = identify andThen getData(draftId) andThen requireData
+  private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   val form = formProvider()
 
