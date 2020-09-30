@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package pages.register.settlors.deceased_settlor
 
-import play.api.mvc.JavascriptLiteral
+import java.time.LocalDate
 
-sealed trait Mode
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case object CheckMode extends Mode
-case object NormalMode extends Mode
+case object SettlorDateOfDeathPage extends QuestionPage[LocalDate] {
 
-object Mode {
+  override def path: JsPath = JsPath \ "settlors" \ "deceased" \ toString
 
-  implicit val jsLiteral: JavascriptLiteral[Mode] = new JavascriptLiteral[Mode] {
-    override def to(value: Mode): String = value match {
-      case NormalMode => "NormalMode"
-      case CheckMode => "CheckMode"
-    }
-  }
+  override def toString: String = "dateOfDeath"
 }

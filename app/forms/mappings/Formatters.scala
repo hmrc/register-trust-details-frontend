@@ -16,13 +16,32 @@
 
 package forms.mappings
 
+import forms.Validation
+import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
 
 trait Formatters {
+
+  private[mappings] def postcodeFormatter(requiredKey: String, invalidKey : String): Formatter[String] = new Formatter[String] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
+      data.get(key) match {
+        case None | Some("") => Left(Seq(FormError(key, requiredKey)))
+        case Some(s) =>
+          val trimmed = s.trim.toUpperCase
+          if(trimmed.matches(Validation.postcodeRegex)) {
+            Right(trimmed)
+          } else {
+            Left(Seq(FormError(key, invalidKey)))
+          }
+      }
+
+    override def unbind(key: String, value: String): Map[String, String] =
+      Map(key -> value)
+  }
 
   private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
 

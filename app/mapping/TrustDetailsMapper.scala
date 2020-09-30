@@ -17,7 +17,7 @@
 package mapping
 
 import models.TrusteesBasedInTheUK._
-import models.{NonResidentType, UserAnswers}
+import models.{NonResidentType, NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
 import play.api.Logger
 import pages.trust_details._
 
@@ -30,7 +30,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
       administrationCountryOption <- administrationCountry(userAnswers)
       residentialStatusOption <- residentialStatus(userAnswers)
     } yield {
-      TrustDetailsType(
+      models.TrustDetailsType(
         startDate = startDateOption,
         lawCountry = lawCountry,
         administrationCountry = Some(administrationCountryOption),
@@ -98,7 +98,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
 
     nonUKConstruct match {
       case x if x.isDefined =>
-        Some(ResidentialStatusType(None, x)
+        Some(models.ResidentialStatusType(None, x)
         )
       case _ =>
         Logger.info(s"[TrustDetailsMapper][build] unable to create residential status")

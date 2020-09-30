@@ -18,7 +18,8 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions.register._
-import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
+import navigation._
+import repositories._
 
 class Module extends AbstractModule {
     override def configure(): Unit = {
@@ -26,5 +27,7 @@ class Module extends AbstractModule {
       bind(classOf[RegistrationDataRequiredAction]).to(classOf[RegistrationDataRequiredActionImpl]).asEagerSingleton()
       bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
-  }
+      bind(classOf[Navigator]).to(classOf[TrustDetailsNavigator]).asEagerSingleton()
+
+    }
 }
