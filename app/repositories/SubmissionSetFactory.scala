@@ -29,11 +29,13 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
 
+    val status = registrationProgress.trustDetailsStatus(userAnswers)
+
     RegistrationSubmission.DataSet(
       Json.toJson(userAnswers),
-      None,
-      mappedDataIfCompleted(userAnswers, None),
-      answerSectionsIfCompleted(userAnswers, None)
+      status,
+      mappedDataIfCompleted(userAnswers, status),
+      answerSectionsIfCompleted(userAnswers, status)
     )
   }
 

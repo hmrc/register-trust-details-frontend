@@ -16,26 +16,21 @@
 
 package utils
 
+import models.Status.{Completed, InProgress}
 import models.{ReadableUserAnswers, Status}
-import pages.QuestionPage
-import play.api.libs.json.Reads
-import viewmodels.TrustDetailsViewModel
+import pages.TrustDetailsStatus
+import pages.register.trust_details.WhenTrustSetupPage
 
 class RegistrationProgress  {
 
-  sealed trait IsComplete {
-    def apply(userAnswers: ReadableUserAnswers): Boolean
-  }
-
-  sealed class ListIsComplete[T <: TrustDetailsViewModel](section: QuestionPage[List[T]])
-                                                      (implicit reads: Reads[T]) extends IsComplete {
-
-    override def apply(userAnswers: ReadableUserAnswers): Boolean = {
-      userAnswers.get(section) match {
-        case Some(protectors) => !protectors.exists(_.status == Status.InProgress)
-        case _ => true
+  def trustDetailsStatus(userAnswers: ReadableUserAnswers): Option[Status] =
+  userAnswers.get(WhenTrustSetupPage) match {
+    case None => None
+    case Some(_) =>
+      if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
+        Some(Completed)
+      } else {
+        Some(InProgress)
       }
-    }
   }
-
 }
