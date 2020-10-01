@@ -17,7 +17,6 @@
 package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
-import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.NonResidentTypeFormProvider
 import javax.inject.Inject
 import models.Enumerable

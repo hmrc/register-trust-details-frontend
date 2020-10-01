@@ -17,28 +17,8 @@
 package viewmodels
 
 import models.Status
-import play.api.libs.json.Reads
-import scala.language.implicitConversions
 
 trait TrustDetailsViewModel {
   val status: Status
   def displayName: Option[String]
-}
-
-object ProtectorViewModel {
-
-  implicit val reads : Reads[TrustDetailsViewModel] = {
-
-    implicit class ReadsWithContravariantOr[A](a: Reads[A]) {
-
-      def or[B >: A](b: Reads[B]): Reads[B] = {
-        a.map[B](identity).orElse(b)
-      }
-    }
-
-    implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
-      a.map(identity)
-
-    ???
-  }
 }

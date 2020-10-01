@@ -19,8 +19,8 @@ package utils.answers
 import java.time.format.DateTimeFormatter
 
 import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers}
-import play.api.i18n.Messages
 import pages.NamePage
+import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.countryOptions.CountryOptions
 
@@ -28,7 +28,7 @@ object CheckAnswersFormatters {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-  def utr(answer: String)(implicit messages: Messages): Html = {
+  def utr(answer: String): Html = {
     HtmlFormat.escape(answer)
   }
 

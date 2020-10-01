@@ -114,7 +114,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
         )
 
         val mockSubmissionSetFactory = mock[SubmissionSetFactory]
-        when(mockSubmissionSetFactory.createFrom(any())(any())).thenReturn(submissionSet)
+        when(mockSubmissionSetFactory.createFrom(any())).thenReturn(submissionSet)
 
         val repository = createRepository(mockConnector, mockSubmissionSetFactory)
 
