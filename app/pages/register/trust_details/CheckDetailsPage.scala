@@ -14,25 +14,8 @@
  * limitations under the License.
  */
 
-package utils
+package pages.register.trust_details
 
-import java.time.format.DateTimeFormatter
+import pages.Page
 
-import models.UserAnswers
-import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
-
-class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
-
-  private def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
-    if (answer) {
-      HtmlFormat.escape(messages("site.yes"))
-    } else {
-      HtmlFormat.escape(messages("site.no"))
-    }
-}
-
-object CheckYourAnswersHelper {
-
-  private val dateFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-}
+case object CheckDetailsPage extends Page

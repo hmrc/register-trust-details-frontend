@@ -140,7 +140,6 @@ whenTrustSetup.checkYourAnswersLabel = When was the trust created?
 whenTrustSetup.error.required.all = Enter the date the trust was created
 whenTrustSetup.error.required.two = The date the trust was created must include a {0} and a {1}
 whenTrustSetup.error.required = The date the trust was created must include a {0}
-
 whenTrustSetup.error.invalid = Enter a real date the trust was created
 whenTrustSetup.error.future = The date the trust was created must be today or in the past
 whenTrustSetup.error.past = The date the trust was created must be after 31 December 1499
