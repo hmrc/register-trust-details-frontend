@@ -16,25 +16,107 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
+import models.Status.Completed
+import models.registration.Matched.Success
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import pages.TrustDetailsStatus
+import pages.register.ExistingTrustMatched
+import pages.register.trust_details.{TrustNamePage, WhenTrustSetupPage}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
   "Index Controller" must {
+    "go to TrustName page" when {
+      "no answers exist yet for the draft id" in {
 
-    "return OK and the correct view for a GET" in {
+        when(registrationsRepository.get(any())(any()))
+          .thenReturn(Future.successful(None))
 
-      val application = applicationBuilder(userAnswers = None).build()
+        val application = applicationBuilder().build()
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad("DRAFTID").url)
+        val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
-      val result = route(application, request).value
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result) mustBe
+          Some(controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url)
 
-      application.stop()
+      }
+    }
+
+    "trust details has been answered" must {
+
+      "go to Check Trust Answers Page" in {
+        val answers = emptyUserAnswers
+          .set(TrustNamePage, "Trust of John").success.value
+          .set(WhenTrustSetupPage, LocalDate.of(2010, 10, 10)).success.value
+          .set(TrustDetailsStatus, Completed).success.value
+
+        when(registrationsRepository.get(any())(any()))
+          .thenReturn(Future.successful(Some(answers)))
+
+        val application = applicationBuilder().build()
+
+        val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        //          redirectLocation(result)  mustBe Some(controllers.register.trust_details.routes.TrustDetailsAnswerPageController.onPageLoad(fakeDraftId).url)
+
+        application.stop()
+      }
+
+    }
+
+    "trust details has not been answered" when {
+
+      "trust has been matched" must {
+        "go to WhenTrustSetup Page" in {
+          val answers = emptyUserAnswers
+            .set(ExistingTrustMatched, Success).success.value
+
+          when(registrationsRepository.get(any())(any()))
+            .thenReturn(Future.successful(Some(answers)))
+
+          val application = applicationBuilder().build()
+
+          val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe
+            Some(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url)
+        }
+      }
+
+      "trust has not been matched" must {
+        "go to TrustName page" in {
+          when(registrationsRepository.get(any())(any()))
+            .thenReturn(Future.successful(Some(emptyUserAnswers)))
+
+          val application = applicationBuilder().build()
+
+          val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe
+            Some(controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url)
+        }
+      }
+
     }
   }
 }
