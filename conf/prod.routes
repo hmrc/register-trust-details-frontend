@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /register-trust-details-frontend                    app.Routes
+->         /trusts-registration/trust-details             app.Routes
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 

@@ -149,7 +149,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           val answers = userAnswers.set(InheritanceTaxActPage, value = false).success.value
 
           navigator.nextPage(InheritanceTaxActPage, fakeDraftId, answers)
-            .mustBe(???)
+            .mustBe(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
       }
     }
 
@@ -171,7 +171,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           val answers = userAnswers.set(AgentOtherThanBarristerPage, value = true).success.value
 
           navigator.nextPage(AgentOtherThanBarristerPage, fakeDraftId, answers)
-            .mustBe(???)
+            .mustBe(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
       }
     }
 
@@ -182,7 +182,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           val answers = userAnswers.set(NonResidentTypePage, value = NonResidentType.Domiciled).success.value
 
           navigator.nextPage(NonResidentTypePage, fakeDraftId, answers)
-            .mustBe(???)
+            .mustBe(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
       }
     }
 
@@ -237,7 +237,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           val answers = userAnswers.set(TrustResidentOffshorePage, value = false).success.value
 
           navigator.nextPage(TrustResidentOffshorePage, fakeDraftId, answers)
-            .mustBe(???)
+            .mustBe(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
       }
     }
 
@@ -248,7 +248,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           val answers = userAnswers.set(TrustPreviouslyResidentPage, value = "France").success.value
 
           navigator.nextPage(TrustPreviouslyResidentPage, fakeDraftId, answers)
-            .mustBe(???)
+            .mustBe(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
       }
     }
 

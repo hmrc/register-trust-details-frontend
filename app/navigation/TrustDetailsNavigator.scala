@@ -43,6 +43,10 @@ class TrustDetailsNavigator @Inject() extends Navigator {
     case TrustResidentOffshorePage => wasTrustPreviouslyResidentOffshoreRoute(draftId)
     case RegisteringTrustFor5APage => registeringForPurposeOfSchedule5ARoute(draftId)
     case InheritanceTaxActPage => inheritanceTaxRoute(draftId)
+
+    case NonResidentTypePage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
+    case TrustPreviouslyResidentPage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
+    case AgentOtherThanBarristerPage => _ =>  controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
   }
 
   private def trustNameRoute(draftId: String)(answers: ReadableUserAnswers) = {
@@ -82,6 +86,7 @@ class TrustDetailsNavigator @Inject() extends Navigator {
 
   private def wasTrustPreviouslyResidentOffshoreRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(TrustResidentOffshorePage) match {
     case Some(true)   => controllers.register.trust_details.routes.TrustPreviouslyResidentController.onPageLoad(draftId)
+    case Some(false)  => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case None        => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
@@ -93,6 +98,7 @@ class TrustDetailsNavigator @Inject() extends Navigator {
 
   private def inheritanceTaxRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(InheritanceTaxActPage) match {
     case Some(true)   => controllers.register.trust_details.routes.AgentOtherThanBarristerController.onPageLoad(draftId)
+    case Some(false)  => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case None        => controllers.routes.SessionExpiredController.onPageLoad()
   }
 

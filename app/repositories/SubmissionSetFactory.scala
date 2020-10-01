@@ -19,21 +19,21 @@ package repositories
 import javax.inject.Inject
 import mapping.TrustDetailsMapper
 import models._
-import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
 import utils.RegistrationProgress
-import viewmodels.{AnswerRow, AnswerSection}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                     trustDetailsMapper: TrustDetailsMapper) {
 
-  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
+  def createFrom(userAnswers: UserAnswers): RegistrationSubmission.DataSet = {
+
+    val status = registrationProgress.trustDetailsStatus(userAnswers)
 
     RegistrationSubmission.DataSet(
       Json.toJson(userAnswers),
-      None,
-      mappedDataIfCompleted(userAnswers, None),
-      answerSectionsIfCompleted(userAnswers, None)
+      status,
+      mappedDataIfCompleted(userAnswers, status),
+      List.empty
     )
   }
 
@@ -49,32 +49,5 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     } else {
       mappedPieces(JsNull)
     }
-  }
-
-  def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
-                               (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
-
-    if (status.contains(Status.Completed)) {
-
-      val updatedFirstSection = AnswerSection(
-        None,
-        Seq.empty
-      )
-
-      val updatedSections = updatedFirstSection
-
-      List.empty
-
-    } else {
-      List.empty
-    }
-  }
-
-  private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {
-    RegistrationSubmission.AnswerRow(row.label, row.answer.toString, row.labelArg)
-  }
-
-  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
-    RegistrationSubmission.AnswerSection(section.headingKey, section.rows.map(convertForSubmission), None)
   }
 }

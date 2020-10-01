@@ -16,8 +16,8 @@
 
 package base
 
-import controllers.actions.{FakeDraftIdRetrievalActionProvider, FakeIdentifyForRegistration}
 import controllers.actions.register._
+import controllers.actions.{FakeDraftIdRetrievalActionProvider, FakeIdentifyForRegistration}
 import models.{Status, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.TryValues

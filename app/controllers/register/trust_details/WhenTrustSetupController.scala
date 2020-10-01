@@ -20,10 +20,8 @@ import java.time.LocalDate
 
 import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
-import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.WhenTrustSetupFormProvider
 import javax.inject.Inject
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.register.settlors.deceased_settlor.SettlorDateOfDeathPage
 import pages.register.trust_details.WhenTrustSetupPage
