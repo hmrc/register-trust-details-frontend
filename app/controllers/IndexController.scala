@@ -18,10 +18,14 @@ package controllers
 
 import controllers.actions.register.RegistrationIdentifierAction
 import javax.inject.Inject
+import models.Status.Completed
 import models.UserAnswers
+import models.registration.Matched.Success
+import pages.TrustDetailsStatus
+import pages.register.ExistingTrustMatched
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
@@ -49,7 +53,19 @@ class IndexController @Inject()(
     }
   }
 
-  private def redirect(userAnswers: UserAnswers, draftId: String) = {
-    Ok
+  private def redirect(userAnswers: UserAnswers, draftId: String): Result = {
+    val completed = userAnswers.get(TrustDetailsStatus).contains(Completed)
+    val successfullyMatched = userAnswers.get(ExistingTrustMatched).contains(Success)
+
+    if (completed) {
+      Redirect(controllers.routes.FeatureNotAvailableController.onPageLoad())
+//      Redirect(controllers.register.trust_details.routes.TrustDetailsAnswerPageController.onPageLoad(draftId))
+    } else {
+      if (successfullyMatched) {
+        Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+      } else {
+        Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+      }
+    }
   }
 }
