@@ -19,8 +19,6 @@ package pages.register
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-import scala.util.Try
-
 case object TrustHaveAUTRPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString

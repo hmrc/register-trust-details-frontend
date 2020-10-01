@@ -17,13 +17,8 @@
 package repositories
 
 import base.SpecBase
-import models.RegistrationSubmission.{AnswerRow, AnswerSection}
-import models.Status.Completed
-import models.{RegistrationSubmission, Status, UserAnswers}
-import pages.NamePage
+import models.RegistrationSubmission
 import play.api.libs.json.{JsNull, Json}
-
-import scala.collection.immutable.Nil
 
 class SubmissionSetFactorySpec extends SpecBase {
 

@@ -16,7 +16,6 @@
 
 package pages
 
-import models.FullName
 import play.api.libs.json.JsPath
 
 case object NamePage extends QuestionPage[String] {

@@ -35,15 +35,15 @@ package connectors
 import java.time.LocalDateTime
 
 import base.SpecBase
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.Status.InProgress
 import models.{RegistrationSubmission, SubmissionDraftResponse}
-import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
-import play.api.test.Helpers._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -67,7 +67,6 @@ class SubmissionDraftConnectorSpec extends SpecBase
   private val submissionsUrl = s"/trusts/register/submission-drafts"
   private val submissionUrl = s"$submissionsUrl/$testDraftId/$testSection"
   private val setSubmissionUrl = s"$submissionsUrl/$testDraftId/set/$testSection"
-  private val mainUrl = s"$submissionsUrl/$testDraftId/main"
 
   "SubmissionDraftConnector" when {
 

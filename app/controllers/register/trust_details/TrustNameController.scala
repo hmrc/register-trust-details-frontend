@@ -17,7 +17,6 @@
 package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
-import controllers.actions.register._
 import forms.TrustNameFormProvider
 import javax.inject.Inject
 import navigation.Navigator
