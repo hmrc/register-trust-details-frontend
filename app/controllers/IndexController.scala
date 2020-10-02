@@ -58,8 +58,7 @@ class IndexController @Inject()(
     val successfullyMatched = userAnswers.get(ExistingTrustMatched).contains(Success)
 
     if (completed) {
-      Redirect(controllers.routes.FeatureNotAvailableController.onPageLoad())
-//      Redirect(controllers.register.trust_details.routes.TrustDetailsAnswerPageController.onPageLoad(draftId))
+      Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
     } else {
       if (successfullyMatched) {
         Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
