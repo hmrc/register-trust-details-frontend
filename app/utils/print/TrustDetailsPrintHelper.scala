@@ -31,7 +31,7 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
 
   def printSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      Some(Messages("answerPage.section.trustDetails.subheading")),
+      Some(messages("answerPage.section.trustDetails.subheading")),
       answers(userAnswers, draftId)
     )
   }
