@@ -86,6 +86,9 @@ class IndexControllerSpec extends SpecBase {
             .set(ExistingTrustMatched, Success).success.value
 
           when(registrationsRepository.get(any())(any()))
+            .thenReturn(Future.successful(Some(emptyUserAnswers)))
+
+          when(registrationsRepository.getMainAnswers(any())(any()))
             .thenReturn(Future.successful(Some(answers)))
 
           val application = applicationBuilder().build()
@@ -103,6 +106,9 @@ class IndexControllerSpec extends SpecBase {
       "trust has not been matched" must {
         "go to TrustName page" in {
           when(registrationsRepository.get(any())(any()))
+            .thenReturn(Future.successful(Some(emptyUserAnswers)))
+
+          when(registrationsRepository.getMainAnswers(any())(any()))
             .thenReturn(Future.successful(Some(emptyUserAnswers)))
 
           val application = applicationBuilder().build()
