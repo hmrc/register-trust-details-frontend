@@ -17,7 +17,6 @@
 package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
-import controllers.actions.register.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.YesNoFormProvider
 import javax.inject.Inject
 import models.Enumerable
@@ -36,9 +35,6 @@ class SettlorsBasedInTheUKController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 registrationsRepository: RegistrationsRepository,
                                                 navigator: Navigator,
-                                                identify: RegistrationIdentifierAction,
-                                                getData: DraftIdRetrievalActionProvider,
-                                                requireData: RegistrationDataRequiredAction,
                                                 formProvider: YesNoFormProvider,
                                                 standardActions: StandardActionSets,
                                                 val controllerComponents: MessagesControllerComponents,

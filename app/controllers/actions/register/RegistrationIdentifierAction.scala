@@ -18,10 +18,18 @@ package controllers.actions.register
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.actions.{AffinityGroupIdentifierAction, TrustsAuthorisedFunctions}
+import controllers.actions.TrustsAuthorisedFunctions
 import models.requests.IdentifierRequest
 import org.slf4j.LoggerFactory
+import play.api.Logger
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, _}
+import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,19 +38,95 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
                                              trustsAuth: TrustsAuthorisedFunctions,
                                              config: FrontendAppConfig)
                                             (override implicit val executionContext: ExecutionContext) extends ActionBuilder[IdentifierRequest, AnyContent] {
+
   private val logger = LoggerFactory.getLogger(s"application" + classOf[RegistrationIdentifierAction].getCanonicalName)
 
-  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+  private def authoriseAgent[A](request : Request[A],
+                             enrolments : Enrolments,
+                             internalId : String,
+                              block: IdentifierRequest[A] => Future[Result]
+                            ) = {
 
-    request match {
-      case req: IdentifierRequest[A] =>
-        logger.debug("Request is already an IdentifierRequest")
-        block(req)
-      case _ =>
-        logger.debug("Redirect to Login")
-        Future.successful(trustsAuth.redirectToLogin)
+    def redirectToCreateAgentServicesAccount(reason: String): Future[Result] = {
+      Logger.info(s"[AuthenticatedIdentifierAction][authoriseAgent]: Agent services account required - $reason")
+      Future.successful(Redirect(config.createAgentServicesAccountUrl))
+    }
+
+    val hmrcAgentEnrolmentKey = "HMRC-AS-AGENT"
+    val arnIdentifier = "AgentReferenceNumber"
+
+    enrolments.getEnrolment(hmrcAgentEnrolmentKey).fold(
+      redirectToCreateAgentServicesAccount("missing HMRC-AS-AGENT enrolment group")
+    ){
+      agentEnrolment =>
+        agentEnrolment.getIdentifier(arnIdentifier).fold(
+          redirectToCreateAgentServicesAccount("missing agent reference number")
+        ){
+          enrolmentIdentifier =>
+            val arn = enrolmentIdentifier.value
+
+            if(arn.isEmpty) {
+              redirectToCreateAgentServicesAccount("agent reference number is empty")
+            } else {
+              block(IdentifierRequest(request, internalId, AffinityGroup.Agent, enrolments, Some(arn)))
+            }
+        }
     }
   }
 
-  override def composeAction[A](action: Action[A]): Action[A] = new AffinityGroupIdentifierAction(action, trustsAuth, config)
+  private def authoriseOrg[A](request : Request[A],
+                           enrolments : Enrolments,
+                           internalId : String,
+                            block: IdentifierRequest[A] => Future[Result]
+                          ): Future[Result] = {
+
+    val enrolmentKey = "HMRC-TERS-ORG"
+    val identifier = "SAUTR"
+
+    val continueWithoutEnrolment =
+      block(IdentifierRequest(request, internalId, AffinityGroup.Organisation, enrolments))
+
+    enrolments.getEnrolment(enrolmentKey).fold(continueWithoutEnrolment){
+      enrolment =>
+        enrolment.getIdentifier(identifier).fold{
+          logger.info("[AffinityGroupIdentifier] user is not enrolled, continuing to registered online")
+          continueWithoutEnrolment
+        }{
+          enrolmentIdentifier =>
+            val utr = enrolmentIdentifier.value
+
+            if(utr.isEmpty) {
+              logger.info("[AffinityGroupIdentifier] no utr for enrolment value")
+              continueWithoutEnrolment
+            } else {
+              logger.info("[AffinityGroupIdentifier] user is already enrolled, redirecting to maintain")
+              Future.successful(Redirect(config.maintainATrustFrontendUrl))
+            }
+        }
+    }
+  }
+
+  override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
+
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
+    val retrievals = Retrievals.internalId and
+      Retrievals.affinityGroup and
+      Retrievals.allEnrolments
+
+    trustsAuth.authorised().retrieve(retrievals) {
+      case Some(internalId) ~ Some(Agent) ~ enrolments =>
+        logger.info("successfully identified as an Agent")
+        authoriseAgent(request, enrolments, internalId, block)
+      case Some(internalId) ~ Some(Organisation) ~ enrolments =>
+        logger.info("successfully identified as Organisation")
+        authoriseOrg(request, enrolments, internalId, block)
+      case Some(_) ~ _ ~ _ =>
+        logger.info("Unauthorised due to affinityGroup being Individual")
+        Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+      case _ =>
+        logger.warn("Unable to retrieve internal id")
+        throw new UnauthorizedException("Unable to retrieve internal Id")
+    } recover trustsAuth.recoverFromAuthorisation
+  }
 }
