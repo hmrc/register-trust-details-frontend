@@ -22,7 +22,7 @@ import base.SpecBase
 import controllers.register.trust_details.routes
 import generators.Generators
 import models.TrusteesBasedInTheUK._
-import models.{NonResidentType, UserAnswers}
+import models.{NonResidentType, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
@@ -30,7 +30,7 @@ import pages.register.trust_details.{AgentOtherThanBarristerPage, _}
 
 class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators  {
 
-  def trustDetailsRoutes()(implicit navigator : Navigator) = {
+  lazy val navigator = injector.instanceOf[TrustDetailsNavigator]
 
     "go to TrustSetup from TrustName when user does not have a UTR" in {
       forAll(arbitrary[UserAnswers]) {
@@ -252,7 +252,16 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
+    "go to RegistrationProgress from Check Trust Details Answers Page" in {
 
-  }
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+
+          val route = navigator.nextPage(CheckDetailsPage, fakeDraftId, userAnswers)
+
+          route.url mustBe "http://localhost:9781/trusts-registration/draftId/registration-progress"
+      }
+
+    }
 
 }

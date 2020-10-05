@@ -21,16 +21,16 @@ import javax.inject.Inject
 import models.ReadableUserAnswers
 import models.TrusteesBasedInTheUK._
 import pages.Page
-import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details._
 import play.api.mvc.Call
 
-class TrustDetailsNavigator @Inject() extends Navigator {
+class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = route(draftId)(page)(userAnswers)
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
+    route(draftId)(page)(userAnswers)
 
   private def route(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case TrustNamePage => trustNameRoute(draftId)
+    case TrustNamePage => _ => controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId)
     case WhenTrustSetupPage => _ => controllers.register.trust_details.routes.GovernedInsideTheUKController.onPageLoad(draftId)
     case GovernedInsideTheUKPage => isTrustGovernedInsideUKRoute(draftId)
     case CountryGoverningTrustPage => _ => controllers.register.trust_details.routes.AdministrationInsideUKController.onPageLoad(draftId)
@@ -47,16 +47,7 @@ class TrustDetailsNavigator @Inject() extends Navigator {
     case NonResidentTypePage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case TrustPreviouslyResidentPage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case AgentOtherThanBarristerPage => _ =>  controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-  }
-
-  private def trustNameRoute(draftId: String)(answers: ReadableUserAnswers) = {
-    val hasUTR = answers.get(TrustHaveAUTRPage).contains(true)
-
-    if (hasUTR) {
-      ???
-    } else {
-      controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId)
-    }
+    case CheckDetailsPage => _ => completedRoute(draftId, config)
   }
 
   private def isTrustGovernedInsideUKRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(GovernedInsideTheUKPage) match {
