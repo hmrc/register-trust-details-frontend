@@ -19,7 +19,7 @@ package repositories
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
 import javax.inject.Inject
-import models.{ReadOnlyUserAnswers, UserAnswers}
+import models.{ReadOnlyUserAnswers, ReadableUserAnswers, UserAnswers}
 import play.api.http
 import play.api.i18n.Messages
 import play.api.libs.json._
@@ -55,7 +55,7 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
     }
   }
 
-  override def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadOnlyUserAnswers]] = {
+  override def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]] = {
     submissionDraftConnector.getDraftSection(draftId, mainAnswersSection).map {
       response =>
         response.data.validate[ReadOnlyUserAnswers] match {
@@ -72,5 +72,5 @@ trait RegistrationsRepository {
 
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 
-  def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadOnlyUserAnswers]]
+  def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]]
 }
