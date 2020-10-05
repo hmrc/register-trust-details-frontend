@@ -22,7 +22,7 @@ import base.SpecBase
 import controllers.register.trust_details.routes
 import generators.Generators
 import models.TrusteesBasedInTheUK._
-import models.{NonResidentType, NormalMode, UserAnswers}
+import models.{NonResidentType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
