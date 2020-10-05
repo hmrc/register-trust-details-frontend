@@ -19,10 +19,9 @@ package controllers.actions
 import base.SpecBase
 import config.FrontendAppConfig
 import controllers.actions.register.RegistrationIdentifierAction
-import models.requests.IdentifierRequest
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
-import play.api.mvc.{Action, AnyContent, Results}
+import play.api.mvc.{Action, AnyContent, DefaultActionBuilder, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
@@ -35,52 +34,259 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
   val appConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+
+  val utr = "0987654321"
+
   lazy override val trustsAuth = new TrustsAuthorisedFunctions(mockAuthConnector, appConfig)
 
-  private def authRetrievals(affinityGroup: AffinityGroup, enrolment: Enrolments) =
+  private val noEnrollment = Enrolments(Set())
+
+  private def authRetrievals(affinityGroup: AffinityGroup, enrolment: Enrolments): Future[Some[String] ~ Some[AffinityGroup] ~ Enrolments] =
     Future.successful(new ~(new ~(Some("id"), Some(affinityGroup)), enrolment))
 
   private val agentEnrolment = Enrolments(Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)))
+  private val trustsEnrolment = Enrolments(Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)))
 
 
-  "invoking the IdentifyForRegistrations action builder" when {
-    "passing a non authenticated request" must {
-      "redirect to the login page" in {
+  "invoking an AuthenticatedIdentifier" when {
+    "an Agent user" when {
+      "hasn't enrolled an Agent Services Account" must {
+        "redirect the user to the create agent services page" in {
 
-        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+          val application = applicationBuilder(userAnswers = None).build()
+
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            .thenReturn(authRetrievals(AffinityGroup.Agent, noEnrollment))
+
+          val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+          def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+          val result = fakeAction.apply(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(appConfig.createAgentServicesAccountUrl)
+          application.stop()
+        }
+      }
+
+      "has correct enrolled in Agent Services Account" must {
+        "allow user to continue" in {
+
+          val application = applicationBuilder(userAnswers = None).build()
+
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            .thenReturn(authRetrievals(AffinityGroup.Agent, agentEnrolment))
+
+          val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+          def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+          val result = fakeAction.apply(fakeRequest)
+
+          status(result) mustBe OK
+          application.stop()
+        }
+      }
+    }
+
+    "an Org user" when {
+      "with no enrolments" must {
+        "allow user to continue" in {
+
+          val application = applicationBuilder(userAnswers = None).build()
+
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            .thenReturn(authRetrievals(AffinityGroup.Organisation, agentEnrolment))
+
+          val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+          def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+          val result = fakeAction.apply(fakeRequest)
+
+          status(result) mustBe OK
+          application.stop()
+        }
+      }
+      "with trusts enrolments" must {
+        "redirect to maintain-a-trust" in {
+
+          val application = applicationBuilder(userAnswers = None).build()
+
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            .thenReturn(authRetrievals(AffinityGroup.Organisation, trustsEnrolment))
+
+          val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+          def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+          val result = fakeAction.apply(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe s"${appConfig.maintainATrustFrontendUrl}"
+          application.stop()
+        }
+      }
+    }
+
+    "and Individual user" must {
+      "redirect the user to the unauthorised page" in {
+
         val application = applicationBuilder(userAnswers = None).build()
 
-        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
-
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
-          .thenReturn(Future failed BearerTokenExpired())
+          .thenReturn(authRetrievals(AffinityGroup.Individual, noEnrollment))
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
 
         val result = fakeAction.apply(fakeRequest)
 
         status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
 
         application.stop()
       }
     }
 
-    "passing an identifier request" must {
-      "execute the body of the action" in {
-
-        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
-
-        val fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+    "the user hasn't logged in" must {
+      "redirect the user to log in " in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val idRequest = IdentifierRequest(fakeRequest, "id", AffinityGroup.Agent, Enrolments(Set.empty[Enrolment]))
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed MissingBearerToken())
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
-          .thenReturn(authRetrievals(AffinityGroup.Agent, agentEnrolment))
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
 
-        val result = fakeAction.apply(idRequest)
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
 
-        status(result) mustBe OK
+        val result = fakeAction.apply(fakeRequest)
 
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        application.stop()
+      }
+    }
+
+    "the user's session has expired" must {
+      "redirect the user to log in " in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed BearerTokenExpired())
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+        val result = fakeAction.apply(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        application.stop()
+      }
+    }
+
+    "the user doesn't have sufficient enrolments" must {
+      "redirect the user to the unauthorised page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed InsufficientEnrolments())
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+        val result = fakeAction.apply(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        application.stop()
+      }
+    }
+
+    "the user doesn't have sufficient confidence level" must {
+      "redirect the user to the unauthorised page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed InsufficientConfidenceLevel())
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+        val result = fakeAction.apply(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        application.stop()
+      }
+    }
+
+    "the user used an unaccepted auth provider" must {
+      "redirect the user to the unauthorised page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedAuthProvider())
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+        val result = fakeAction.apply(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        application.stop()
+      }
+    }
+
+    "the user has an unsupported affinity group" must {
+      "redirect the user to the unauthorised page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedAffinityGroup())
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+        val result = fakeAction.apply(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        application.stop()
+      }
+    }
+
+    "the user has an unsupported credential role" must {
+      "redirect the user to the unauthorised page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedCredentialRole())
+
+        val identify: RegistrationIdentifierAction = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
+
+        def fakeAction: Action[AnyContent] = identify { _ => Results.Ok }
+
+        val result = fakeAction.apply(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
         application.stop()
       }
     }
