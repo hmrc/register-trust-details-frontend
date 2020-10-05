@@ -21,6 +21,7 @@ import javax.inject.Inject
 import models.Status.Completed
 import models.UserAnswers
 import models.registration.Matched.Success
+import models.requests.IdentifierRequest
 import pages.TrustDetailsStatus
 import pages.register.ExistingTrustMatched
 import play.api.i18n.I18nSupport
@@ -40,31 +41,41 @@ class IndexController @Inject()(
   implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request: IdentifierRequest[AnyContent] =>
 
     repository.get(draftId) flatMap {
       case Some(userAnswers) =>
-        Future.successful(redirect(userAnswers, draftId))
+        redirect(userAnswers, draftId)
       case _ =>
         val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
-        repository.set(userAnswers) map {
+        repository.set(userAnswers) flatMap {
           _ => redirect(userAnswers, draftId)
         }
     }
   }
 
-  private def redirect(userAnswers: UserAnswers, draftId: String): Result = {
+  private def redirect(userAnswers: UserAnswers, draftId: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
     val completed = userAnswers.get(TrustDetailsStatus).contains(Completed)
-    val successfullyMatched = userAnswers.get(ExistingTrustMatched).contains(Success)
 
     if (completed) {
-      Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
+      Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
     } else {
-      if (successfullyMatched) {
-        Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
-      } else {
-        Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+      successfullyMatched(draftId) map {
+        matched =>
+          if (matched) {
+            Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+          } else {
+            Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+          }
       }
+    }
+  }
+
+  private def successfullyMatched(draftId: String)(implicit request: IdentifierRequest[AnyContent]): Future[Boolean] = {
+    repository.getMainAnswers(draftId) map {
+        _.exists {
+          _.get(ExistingTrustMatched).contains(Success)
+        }
     }
   }
 }
