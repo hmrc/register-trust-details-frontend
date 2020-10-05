@@ -19,13 +19,19 @@ package repositories
 import javax.inject.Inject
 import mapping.TrustDetailsMapper
 import models._
+import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
 import utils.RegistrationProgress
+import utils.countryOptions.CountryOptions
+import utils.print.{AnswerRowConverter, TrustDetailsPrintHelper}
+import viewmodels.{AnswerRow, AnswerSection}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
-                                    trustDetailsMapper: TrustDetailsMapper) {
+                                     trustDetailsMapper: TrustDetailsMapper,
+                                     countryOptions: CountryOptions,
+                                     answerRowConverter: AnswerRowConverter) {
 
-  def createFrom(userAnswers: UserAnswers): RegistrationSubmission.DataSet = {
+  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
 
     val status = registrationProgress.trustDetailsStatus(userAnswers)
 
@@ -33,21 +39,41 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
       Json.toJson(userAnswers),
       status,
       mappedDataIfCompleted(userAnswers, status),
-      List.empty
+      answerSectionsIfCompleted(userAnswers, status)
     )
   }
 
-  private def mappedPieces(protectorsJson: JsValue) =
-    List(RegistrationSubmission.MappedPiece("trust/entities/trust-details", protectorsJson))
+  private def mappedPieces(trustDetailsJson: JsValue) =
+    List(RegistrationSubmission.MappedPiece("trust/entities/trust-details", trustDetailsJson))
 
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
     if (status.contains(Status.Completed)) {
       trustDetailsMapper.build(userAnswers) match {
-        case Some(assets) => mappedPieces(Json.toJson(assets))
+        case Some(trustDetails) => mappedPieces(Json.toJson(trustDetails))
         case _ => mappedPieces(JsNull)
       }
     } else {
       mappedPieces(JsNull)
     }
+  }
+
+  def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
+                               (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
+
+    if (status.contains(Status.Completed)) {
+      val helper = new TrustDetailsPrintHelper(answerRowConverter, countryOptions)
+      val answerSection = helper.printSection(userAnswers, userAnswers.draftId)
+      List(answerSection).map(convertForSubmission)
+    } else {
+      List.empty
+    }
+  }
+
+  private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {
+    RegistrationSubmission.AnswerRow(row.label, row.answer.toString, row.labelArg)
+  }
+
+  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
+    RegistrationSubmission.AnswerSection(section.headingKey, section.rows.map(convertForSubmission), section.sectionKey)
   }
 }

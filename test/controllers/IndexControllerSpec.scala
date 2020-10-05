@@ -71,7 +71,7 @@ class IndexControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        //          redirectLocation(result)  mustBe Some(controllers.register.trust_details.routes.TrustDetailsAnswerPageController.onPageLoad(fakeDraftId).url)
+        redirectLocation(result)  mustBe Some(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(fakeDraftId).url)
 
         application.stop()
       }

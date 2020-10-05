@@ -19,7 +19,7 @@ package utils.print
 import java.time.LocalDate
 
 import com.google.inject.Inject
-import models.{Address, FullName, PassportOrIdCardDetails, UserAnswers}
+import models.{Address, FullName, PassportOrIdCardDetails, ReadOnlyUserAnswers, ReadableUserAnswers, UserAnswers}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
@@ -30,22 +30,10 @@ import utils.answers.CheckAnswersFormatters._
 
 class AnswerRowConverter @Inject()() {
 
-  def bind(userAnswers: UserAnswers, name: String, countryOptions: CountryOptions)
-          (implicit messages: Messages): Bound = new Bound(userAnswers, name, countryOptions)
+  def bind(userAnswers: ReadableUserAnswers)
+          (implicit messages: Messages): Bound = new Bound(userAnswers)
 
-  class Bound(userAnswers: UserAnswers, name: String, countryOptions: CountryOptions)(implicit messages: Messages) {
-
-    def nameQuestion(query: Gettable[FullName],
-                     labelKey: String,
-                     changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
-        AnswerRow(
-          s"$labelKey.checkYourAnswersLabel",
-          HtmlFormat.escape(x.toString),
-          Some(changeUrl)
-        )
-      }
-    }
+  class Bound(userAnswers: ReadableUserAnswers)(implicit messages: Messages) {
 
     def stringQuestion(query: Gettable[String],
                        labelKey: String,
@@ -54,8 +42,7 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
           HtmlFormat.escape(x),
-          Some(changeUrl),
-          name
+          Some(changeUrl)
         )
       }
     }
@@ -67,8 +54,7 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
           yesOrNo(x),
-          Some(changeUrl),
-          name
+          Some(changeUrl)
         )
       }
     }
@@ -80,37 +66,9 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
           HtmlFormat.escape(x.format(dateFormatter)),
-          Some(changeUrl),
-          name
+          Some(changeUrl)
         )
       }
     }
-    def addressQuestion[T <: Address](query: Gettable[T],
-                                      labelKey: String,
-                                      changeUrl: String)
-                                     (implicit reads: Reads[T]): Option[AnswerRow] = {
-      userAnswers.get(query) map { x =>
-        AnswerRow(
-          s"$labelKey.checkYourAnswersLabel",
-          addressFormatter(x, countryOptions),
-          Some(changeUrl),
-          name
-        )
-      }
-    }
-
-    def passportDetailsQuestion(query: Gettable[PassportOrIdCardDetails],
-                                labelKey: String,
-                                changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
-        AnswerRow(
-          s"$labelKey.checkYourAnswersLabel",
-          passportOrIDCard(x, countryOptions),
-          Some(changeUrl),
-          name
-        )
-      }
-    }
-
   }
 }
