@@ -25,14 +25,14 @@
 @(answerSection: AnswerSection, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("otherIndividual.checkDetails.title")
+    title = messages("trustDetailsAnswerPage.title")
     ) {
 
     @formHelper(action = CheckDetailsController.onSubmit(draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.heading("otherIndividual.checkDetails.heading")
+        @components.heading("trustDetailsAnswerPage.heading")
 
         @components.answer_section(answerSection)
 
