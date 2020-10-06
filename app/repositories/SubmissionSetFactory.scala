@@ -43,7 +43,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   }
 
   private def mappedPieces(trustDetailsJson: JsValue) =
-    List(RegistrationSubmission.MappedPiece("trust/entities/trust-details", trustDetailsJson))
+    List(RegistrationSubmission.MappedPiece("trust/entities/details", trustDetailsJson))
 
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
     if (status.contains(Status.Completed)) {

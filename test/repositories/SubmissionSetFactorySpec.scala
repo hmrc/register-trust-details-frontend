@@ -31,7 +31,7 @@ class SubmissionSetFactorySpec extends SpecBase {
       factory.createFrom(emptyUserAnswers) mustBe RegistrationSubmission.DataSet(
         Json.toJson(emptyUserAnswers),
         None,
-        List(RegistrationSubmission.MappedPiece("trust/entities/trust-details", JsNull)),
+        List(RegistrationSubmission.MappedPiece("trust/entities/details", JsNull)),
         List.empty
       )
     }
