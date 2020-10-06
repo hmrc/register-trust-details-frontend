@@ -19,14 +19,12 @@ package utils.print
 import java.time.LocalDate
 
 import com.google.inject.Inject
-import models.{Address, FullName, PassportOrIdCardDetails, ReadOnlyUserAnswers, ReadableUserAnswers, UserAnswers}
+import models.ReadableUserAnswers
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
 import queries.Gettable
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerRow
 import utils.answers.CheckAnswersFormatters._
+import viewmodels.AnswerRow
 
 class AnswerRowConverter @Inject()() {
 
@@ -62,7 +60,7 @@ class AnswerRowConverter @Inject()() {
     def dateQuestion(query: Gettable[LocalDate],
                      labelKey: String,
                      changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
+      userAnswers.get(query) map { x =>
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
           HtmlFormat.escape(x.format(dateFormatter)),
