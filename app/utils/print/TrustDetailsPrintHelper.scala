@@ -17,13 +17,14 @@
 package utils.print
 
 import com.google.inject.Inject
+import controllers.register.trust_details.routes
 import models.ReadableUserAnswers
+import pages.register.trust_details._
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import utils.answers.CheckAnswersFormatters
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
-import pages.register.trust_details._
-import controllers.register.trust_details.routes
-import utils.answers.CheckAnswersFormatters
 
 class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
                                         countryOptions: CountryOptions
@@ -52,9 +53,9 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
       bound.stringQuestion(TrustNamePage, "trustName", routes.TrustNameController.onPageLoad(draftId).url),
       bound.dateQuestion(WhenTrustSetupPage, "whenTrustSetup", routes.WhenTrustSetupController.onPageLoad(draftId).url),
       bound.yesNoQuestion(GovernedInsideTheUKPage, "governedInsideTheUK", routes.GovernedInsideTheUKController.onPageLoad(draftId).url),
-      bound.stringQuestion(CountryGoverningTrustPage, "countryGoverningTrust", routes.CountryGoverningTrustController.onPageLoad(draftId).url),
+      countryGoverningTrust(draftId, userAnswers),
       bound.yesNoQuestion(AdministrationInsideUKPage, "administrationInsideUK", routes.AdministrationInsideUKController.onPageLoad(draftId).url),
-      bound.stringQuestion(CountryAdministeringTrustPage, "countryAdministeringTrust", routes.CountryAdministeringTrustController.onPageLoad(draftId).url),
+      countryAdministeringTrust(draftId, userAnswers),
       trusteesBasedInUK(draftId, userAnswers),
       bound.yesNoQuestion(SettlorsBasedInTheUKPage, "settlorsBasedInTheUK", routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url),
       bound.yesNoQuestion(EstablishedUnderScotsLawPage, "establishedUnderScotsLaw", routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url),
@@ -80,19 +81,32 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
   private def nonResidentType(draftId: String, userAnswers: ReadableUserAnswers)
                              (implicit messages: Messages): Option[AnswerRow] = userAnswers.get(NonResidentTypePage) map {
     x => AnswerRow(
-      "nonResidentType.checkYourAnswersLabel",
-      CheckAnswersFormatters.answer("nonResidentType", x),
+      "nonresidentType.checkYourAnswersLabel",
+      CheckAnswersFormatters.answer("nonresidentType", x),
       Some(routes.NonResidentTypeController.onPageLoad(draftId).url)
     )
   }
 
-  private def trustPreviouslyResident(draftId: String, userAnswers: ReadableUserAnswers)
-                                     (implicit messages: Messages): Option[AnswerRow] = userAnswers.get(TrustPreviouslyResidentPage) map {
+  private def countryGoverningTrust(draftId: String, userAnswers: ReadableUserAnswers): Option[AnswerRow] = userAnswers.get(CountryGoverningTrustPage) map {
+    x => AnswerRow(
+      "countryGoverningTrust.checkYourAnswersLabel",
+      HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
+      Some(controllers.register.trust_details.routes.CountryGoverningTrustController.onPageLoad(draftId).url))
+  }
+
+  private def countryAdministeringTrust(draftId: String, userAnswers: ReadableUserAnswers): Option[AnswerRow] = userAnswers.get(CountryAdministeringTrustPage) map {
+    x => AnswerRow(
+      "countryAdministeringTrust.checkYourAnswersLabel",
+      HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
+      Some(controllers.register.trust_details.routes.CountryAdministeringTrustController.onPageLoad(draftId).url))
+  }
+
+  private def trustPreviouslyResident(draftId: String, userAnswers: ReadableUserAnswers): Option[AnswerRow] = userAnswers.get(TrustPreviouslyResidentPage) map {
     x => AnswerRow(
       "trustPreviouslyResident.checkYourAnswersLabel",
-      CheckAnswersFormatters.answer("trustPreviouslyResident", x),
-      Some(routes.TrustPreviouslyResidentController.onPageLoad(draftId).url)
-    )
+      HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
+      Some(controllers.register.trust_details.routes.TrustPreviouslyResidentController.onPageLoad(draftId).url))
   }
+
 
 }

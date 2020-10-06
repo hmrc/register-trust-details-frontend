@@ -28,8 +28,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      trustDetailsMapper: TrustDetailsMapper,
-                                     countryOptions: CountryOptions,
-                                     answerRowConverter: AnswerRowConverter) {
+                                     trustDetailsPrintHelper: TrustDetailsPrintHelper) {
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
 
@@ -61,8 +60,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
     if (status.contains(Status.Completed)) {
-      val helper = new TrustDetailsPrintHelper(answerRowConverter, countryOptions)
-      val answerSection = helper.printSection(userAnswers, userAnswers.draftId)
+      val answerSection = trustDetailsPrintHelper.printSection(userAnswers, userAnswers.draftId)
       List(answerSection).map(convertForSubmission)
     } else {
       List.empty
