@@ -49,8 +49,8 @@ lazy val root = (project in file("."))
         group(Seq(
           "javascripts/show-hide-content.js",
           "javascripts/registertrustdetailsfrontend.js",
-          "javascripts/autocomplete/location-non-uk-autocomplete.min.js",
-          "javascripts/autocomplete/location-autocomplete.min.js"
+          "javascripts/autocomplete.js",
+          "javascripts/libraries/location-autocomplete.min.js"
         ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
