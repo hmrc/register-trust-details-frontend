@@ -17,6 +17,9 @@
 }
 
 .js-enabled {
+    select[data-all-countries] {
+        display: none;
+    }
     select[data-non-uk-countries] {
         display: none;
     }
