@@ -46,7 +46,6 @@
     <select class='form-control @selectClasses.mkString(" ")'
             id="@field.id"
             name="@field.name"
-            aria-labelledby="@{field.id}-label"
             @if(hint.nonEmpty || field.hasErrors) {
             aria-describedby="@if(hint.nonEmpty){form-hint}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-input}"
             }
@@ -60,8 +59,7 @@
                     value="@valueOption.value"
                     @if(field.value.contains(valueOption.value)){
                     selected
-                    }
-            >@messages(valueOption.label)</option>
+                    }>@messages(valueOption.label)</option>
         }
     </select>
 </div>
