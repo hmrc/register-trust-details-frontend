@@ -22,8 +22,7 @@ import models._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
 import utils.RegistrationProgress
-import utils.countryOptions.CountryOptions
-import utils.print.{AnswerRowConverter, TrustDetailsPrintHelper}
+import utils.print.TrustDetailsPrintHelper
 import viewmodels.{AnswerRow, AnswerSection}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
