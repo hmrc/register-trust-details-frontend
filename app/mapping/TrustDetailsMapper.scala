@@ -23,6 +23,8 @@ import pages.register.trust_details._
 
 class TrustDetailsMapper extends Mapping[TrustDetailsType] {
 
+  private val logger: Logger = Logger(getClass)
+
   override def build(userAnswers: UserAnswers): Option[TrustDetailsType] = {
     for {
       startDateOption <- userAnswers.get(WhenTrustSetupPage)
@@ -46,7 +48,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
       case Some(false) =>
         userAnswers.get(CountryAdministeringTrustPage)
       case None =>
-        Logger.info(s"[TrustDetailsMapper][build] unable to determine where trust is administered")
+        logger.info(s"[administrationCountry][build] unable to determine where trust is administered")
         None
     }
   }
@@ -64,11 +66,11 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
           case Some(false) =>
             nonUkResidentMap(userAnswers)
           case  _ =>
-            Logger.info("[TrustDetailsMapper][build] unable to determine if all settlors are based in the UK")
+            logger.info("[residentialStatus][build] unable to determine if all settlors are based in the UK")
             None
         }
       case _ =>
-        Logger.info(s"[TrustDetailsMapper][build] unable to determine where trust is resident")
+        logger.info(s"[residentialStatus][build] unable to determine where trust is resident")
         None
     }
   }
@@ -92,7 +94,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
         inheritanceTaxAndAgentBarristerMap(userAnswers)
 
       case (_, _) =>
-        Logger.info(s"[TrustDetailsMapper][build] unable to build non UK resident or inheritance")
+        logger.info(s"[nonUkResidentMap][build] unable to build non UK resident or inheritance")
         None
     }
 
@@ -101,7 +103,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
         Some(models.ResidentialStatusType(None, x)
         )
       case _ =>
-        Logger.info(s"[TrustDetailsMapper][build] unable to create residential status")
+        logger.info(s"[nonUkResidentMap][build] unable to create residential status")
         None
     }
   }
