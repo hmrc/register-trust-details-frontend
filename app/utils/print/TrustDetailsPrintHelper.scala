@@ -87,21 +87,21 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
     )
   }
 
-  private def countryGoverningTrust(draftId: String, userAnswers: ReadableUserAnswers): Option[AnswerRow] = userAnswers.get(CountryGoverningTrustPage) map {
+  private def countryGoverningTrust(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(CountryGoverningTrustPage) map {
     x => AnswerRow(
       "countryGoverningTrust.checkYourAnswersLabel",
       HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
       Some(controllers.register.trust_details.routes.CountryGoverningTrustController.onPageLoad(draftId).url))
   }
 
-  private def countryAdministeringTrust(draftId: String, userAnswers: ReadableUserAnswers): Option[AnswerRow] = userAnswers.get(CountryAdministeringTrustPage) map {
+  private def countryAdministeringTrust(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(CountryAdministeringTrustPage) map {
     x => AnswerRow(
       "countryAdministeringTrust.checkYourAnswersLabel",
       HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
       Some(controllers.register.trust_details.routes.CountryAdministeringTrustController.onPageLoad(draftId).url))
   }
 
-  private def trustPreviouslyResident(draftId: String, userAnswers: ReadableUserAnswers): Option[AnswerRow] = userAnswers.get(TrustPreviouslyResidentPage) map {
+  private def trustPreviouslyResident(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(TrustPreviouslyResidentPage) map {
     x => AnswerRow(
       "trustPreviouslyResident.checkYourAnswersLabel",
       HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
