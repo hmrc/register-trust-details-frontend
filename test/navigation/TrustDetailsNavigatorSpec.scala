@@ -186,14 +186,14 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "go to What Is Non Resident Type from Registering for Purpose of Schedule 5A when user answers Yes" in {
+    "go to Check Details from Registering for Purpose of Schedule 5A when user answers Yes" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
           val answers = userAnswers.set(RegisteringTrustFor5APage, value = true).success.value
 
           navigator.nextPage(RegisteringTrustFor5APage, fakeDraftId, answers)
-            .mustBe(routes.NonResidentTypeController.onPageLoad(fakeDraftId))
+            .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
       }
     }
 

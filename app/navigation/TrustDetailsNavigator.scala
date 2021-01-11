@@ -82,7 +82,7 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
   }
 
   private def registeringForPurposeOfSchedule5ARoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(RegisteringTrustFor5APage) match {
-    case Some(true)   => controllers.register.trust_details.routes.NonResidentTypeController.onPageLoad(draftId)
+    case Some(true)   => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case Some(false)  => controllers.register.trust_details.routes.InheritanceTaxActController.onPageLoad(draftId)
     case None        => controllers.routes.SessionExpiredController.onPageLoad()
   }

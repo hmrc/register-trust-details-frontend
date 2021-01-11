@@ -117,11 +117,6 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.RegisteringTrustFor5AController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "nonresidentType.checkYourAnswersLabel",
-            HtmlFormat.escape("Settlor non-domiciled becomes domiciled then resident"),
-            Some(routes.NonResidentTypeController.onPageLoad(draftId).url)
-          ),
-          AnswerRow(
             "inheritanceTaxAct.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
             Some(routes.InheritanceTaxActController.onPageLoad(draftId).url)
