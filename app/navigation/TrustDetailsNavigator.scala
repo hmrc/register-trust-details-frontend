@@ -44,7 +44,6 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     case RegisteringTrustFor5APage => registeringForPurposeOfSchedule5ARoute(draftId)
     case InheritanceTaxActPage => inheritanceTaxRoute(draftId)
 
-    case NonResidentTypePage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case TrustPreviouslyResidentPage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case AgentOtherThanBarristerPage => _ =>  controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
     case CheckDetailsPage => _ => completedRoute(draftId, config)

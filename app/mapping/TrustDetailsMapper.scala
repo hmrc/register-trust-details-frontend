@@ -17,7 +17,7 @@
 package mapping
 
 import models.TrusteesBasedInTheUK._
-import models.{NonResidentType, NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
+import models.{NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
 import play.api.Logger
 import pages.register.trust_details._
 
@@ -77,23 +77,21 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] {
 
   private def nonUkResidentMap(userAnswers: UserAnswers) = {
     val registeringTrustFor5A = userAnswers.get(RegisteringTrustFor5APage)
-    val nonResidentTypePage = userAnswers.get(NonResidentTypePage)
-    val nonResTypeDES = nonResidentTypePage.map(NonResidentType.toDES)
 
-    val nonUKConstruct: Option[NonUKType] = (registeringTrustFor5A, nonResTypeDES) match {
-      case (Some(true), r@Some(_)) =>
+    val nonUKConstruct: Option[NonUKType] = registeringTrustFor5A match {
+      case Some(true) =>
         Some(
           NonUKType(
             sch5atcgga92 = true,
             s218ihta84 = None,
             agentS218IHTA84 = None,
-            trusteeStatus = r)
+            trusteeStatus = None)
         )
 
-      case (Some(false), None) =>
+      case Some(false) =>
         inheritanceTaxAndAgentBarristerMap(userAnswers)
 
-      case (_, _) =>
+      case _ =>
         logger.info(s"[nonUkResidentMap][build] unable to build non UK resident or inheritance")
         None
     }
