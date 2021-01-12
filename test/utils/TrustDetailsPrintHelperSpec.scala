@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.register.trust_details.routes
-import models.NonResidentType.NonDomiciled
 import models.TrusteesBasedInTheUK.UKBasedTrustees
 import pages.register.trust_details._
 import play.twirl.api.HtmlFormat
@@ -52,7 +51,6 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           .set(TrustResidentOffshorePage, false).success.value
           .set(TrustPreviouslyResidentPage, "CA").success.value
           .set(RegisteringTrustFor5APage, true).success.value
-          .set(NonResidentTypePage, NonDomiciled).success.value
           .set(InheritanceTaxActPage, false).success.value
           .set(AgentOtherThanBarristerPage, true).success.value
         printHelper.answers(answers, "draftId") mustBe Seq(
@@ -115,11 +113,6 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             "registeringTrustFor5A.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.RegisteringTrustFor5AController.onPageLoad(draftId).url)
-          ),
-          AnswerRow(
-            "nonresidentType.checkYourAnswersLabel",
-            HtmlFormat.escape("Settlor non-domiciled becomes domiciled then resident"),
-            Some(routes.NonResidentTypeController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "inheritanceTaxAct.checkYourAnswersLabel",

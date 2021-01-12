@@ -47,9 +47,6 @@ POST       /:draftId/trust-offshore                                             
 GET        /:draftId/trust-offshore-country                                                         controllers.register.trust_details.TrustPreviouslyResidentController.onPageLoad(draftId: String)
 POST       /:draftId/trust-offshore-country                                                         controllers.register.trust_details.TrustPreviouslyResidentController.onSubmit(draftId: String)
 
-GET        /:draftId/trust-non-resident-type                                                        controllers.register.trust_details.NonResidentTypeController.onPageLoad(draftId: String)
-POST       /:draftId/trust-non-resident-type                                                        controllers.register.trust_details.NonResidentTypeController.onSubmit(draftId: String)
-
 GET        /:draftId/trust-inheritance-tax-act                                                      controllers.register.trust_details.InheritanceTaxActController.onPageLoad(draftId: String)
 POST       /:draftId/trust-inheritance-tax-act                                                      controllers.register.trust_details.InheritanceTaxActController.onSubmit(draftId: String)
 

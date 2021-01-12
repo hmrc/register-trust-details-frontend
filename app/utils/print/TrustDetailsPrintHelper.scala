@@ -62,7 +62,6 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
       bound.yesNoQuestion(TrustResidentOffshorePage, "trustResidentOffshore", routes.TrustResidentOffshoreController.onPageLoad(draftId).url),
       trustPreviouslyResident(draftId, userAnswers),
       bound.yesNoQuestion(RegisteringTrustFor5APage, "registeringTrustFor5A", routes.RegisteringTrustFor5AController.onPageLoad(draftId).url),
-      nonResidentType(draftId, userAnswers),
       bound.yesNoQuestion(InheritanceTaxActPage, "inheritanceTaxAct", routes.InheritanceTaxActController.onPageLoad(draftId).url),
       bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarrister", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
     ).flatten
@@ -78,14 +77,6 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
     )
   }
 
-  private def nonResidentType(draftId: String, userAnswers: ReadableUserAnswers)
-                             (implicit messages: Messages): Option[AnswerRow] = userAnswers.get(NonResidentTypePage) map {
-    x => AnswerRow(
-      "nonresidentType.checkYourAnswersLabel",
-      CheckAnswersFormatters.answer("nonresidentType", x),
-      Some(routes.NonResidentTypeController.onPageLoad(draftId).url)
-    )
-  }
 
   private def countryGoverningTrust(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(CountryGoverningTrustPage) map {
     x => AnswerRow(

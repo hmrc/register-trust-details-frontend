@@ -41,7 +41,6 @@ case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] 
       case Some(UKBasedTrustees) =>
         userAnswers.remove(RegisteringTrustFor5APage)
           .flatMap(_.remove(InheritanceTaxActPage))
-          .flatMap(_.remove(NonResidentTypePage))
           .flatMap(_.remove(AgentOtherThanBarristerPage))
           .flatMap(_.remove(TrustDetailsStatus))
           .flatMap(_.remove(SettlorsBasedInTheUKPage))

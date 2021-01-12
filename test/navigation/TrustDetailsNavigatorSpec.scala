@@ -22,7 +22,7 @@ import base.SpecBase
 import controllers.register.trust_details.routes
 import generators.Generators
 import models.TrusteesBasedInTheUK._
-import models.{NonResidentType, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
@@ -175,25 +175,14 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "go to Check Trust Details Answers from What is The Non Resident Type" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(NonResidentTypePage, value = NonResidentType.Domiciled).success.value
-
-          navigator.nextPage(NonResidentTypePage, fakeDraftId, answers)
-            .mustBe(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
-      }
-    }
-
-    "go to What Is Non Resident Type from Registering for Purpose of Schedule 5A when user answers Yes" in {
+    "go to Check Details from Registering for Purpose of Schedule 5A when user answers Yes" in {
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
           val answers = userAnswers.set(RegisteringTrustFor5APage, value = true).success.value
 
           navigator.nextPage(RegisteringTrustFor5APage, fakeDraftId, answers)
-            .mustBe(routes.NonResidentTypeController.onPageLoad(fakeDraftId))
+            .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
       }
     }
 
