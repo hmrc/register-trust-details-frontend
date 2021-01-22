@@ -18,12 +18,10 @@ package mapping
 
 import models.TrusteesBasedInTheUK._
 import models.{NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
-import play.api.Logger
+import play.api.Logging
 import pages.register.trust_details._
 
-class TrustDetailsMapper extends Mapping[TrustDetailsType] {
-
-  private val logger: Logger = Logger(getClass)
+class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
 
   override def build(userAnswers: UserAnswers): Option[TrustDetailsType] = {
     for {

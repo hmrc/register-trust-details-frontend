@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.TrustsAuthorisedFunctions
 import models.requests.IdentifierRequest
-import play.api.Logger
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result, _}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
@@ -37,9 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
                                              trustsAuth: TrustsAuthorisedFunctions,
                                              config: FrontendAppConfig)
-                                            (override implicit val executionContext: ExecutionContext) extends ActionBuilder[IdentifierRequest, AnyContent] {
-
-  private val logger: Logger = Logger(getClass)
+                                            (override implicit val executionContext: ExecutionContext)
+                                             extends ActionBuilder[IdentifierRequest, AnyContent] with Logging {
 
   private def authoriseAgent[A](request : Request[A],
                              enrolments : Enrolments,

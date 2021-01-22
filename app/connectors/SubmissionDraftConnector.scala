@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models.{RegistrationSubmission, SubmissionDraftResponse}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, HttpClient}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
