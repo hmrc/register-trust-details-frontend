@@ -56,6 +56,7 @@ site.service_name = Register and Maintain a Trust
 site.textarea.char_limit = (Limit is {0} characters)
 site.save.continue = Save and continue
 site.sign_out = Sign out
+site.sign_in = Sign in
 site.error = Error:
 
 # address lookup component
