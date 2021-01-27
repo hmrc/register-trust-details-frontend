@@ -17,7 +17,7 @@
 package generators
 
 import models.TrusteesBasedInTheUK
-import org.scalacheck.Arbitrary.arbitrary
+import models.registration.Matched
 import org.scalacheck.{Arbitrary, Gen}
 
 import java.time.LocalDate
@@ -47,6 +47,12 @@ trait ModelGenerators {
       } yield {
         LocalDate.of(year, month, day)
       }
+    }
+  }
+
+  implicit lazy val arbitraryMatches: Arbitrary[Matched] = {
+    Arbitrary {
+      Gen.oneOf(Matched.values.toList)
     }
   }
 }

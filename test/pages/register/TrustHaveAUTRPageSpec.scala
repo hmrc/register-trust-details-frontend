@@ -16,13 +16,12 @@
 
 package pages.register
 
-import pages.ReadOnlyPage
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object TrustHaveAUTRPage extends ReadOnlyPage[Boolean] {
+class TrustHaveAUTRPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "TrustHaveAUTRPage" must {
 
-  override def toString: String = "trustHaveAUTR"
-
+    beRetrievable[Boolean](TrustHaveAUTRPage)
+  }
 }

@@ -16,12 +16,12 @@
 
 package pages.register.settlors.deceased_settlor
 
-import java.time.LocalDate
-
-import pages.QuestionPage
+import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object SettlorDateOfDeathPage extends QuestionPage[LocalDate] {
+import java.time.LocalDate
+
+case object SettlorDateOfDeathPage extends ReadOnlyPage[LocalDate] {
 
   override def path: JsPath = JsPath \ "settlors" \ "deceased" \ toString
 

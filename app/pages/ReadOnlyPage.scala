@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package pages.register
+package pages
 
-import pages.ReadOnlyPage
-import play.api.libs.json.JsPath
+import queries.Gettable
 
-case object TrustHaveAUTRPage extends ReadOnlyPage[Boolean] {
-
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "trustHaveAUTR"
-
-}
+trait ReadOnlyPage[A] extends Page with Gettable[A]

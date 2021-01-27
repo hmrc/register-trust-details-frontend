@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.Status.Completed
 import models.registration.Matched.Success
@@ -26,9 +24,11 @@ import org.mockito.Mockito.when
 import pages.TrustDetailsStatus
 import pages.register.ExistingTrustMatched
 import pages.register.trust_details.{TrustNamePage, WhenTrustSetupPage}
+import play.api.libs.json.JsString
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
@@ -83,7 +83,7 @@ class IndexControllerSpec extends SpecBase {
       "trust has been matched" must {
         "go to WhenTrustSetup Page" in {
           val answers = emptyUserAnswers
-            .set(ExistingTrustMatched, Success).success.value
+            .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
 
           when(registrationsRepository.get(any())(any()))
             .thenReturn(Future.successful(Some(emptyUserAnswers)))
