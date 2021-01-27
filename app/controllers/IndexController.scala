@@ -52,27 +52,30 @@ class IndexController @Inject()(
         }
       }
 
-      if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
-        Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
-      } else {
-        successfullyMatched map {
-          matched =>
-            if (matched) {
-              Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
-            } else {
-              Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
-            }
+      repository.set(userAnswers) flatMap { _ =>
+        if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
+          Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
+        } else {
+          successfullyMatched map {
+            matched =>
+              if (matched) {
+                Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+              } else {
+                Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+              }
+          }
         }
       }
     }
 
-    repository.get(draftId) flatMap {
-      case Some(userAnswers) =>
-        redirect(userAnswers)
-      case _ =>
-        val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
-        repository.set(userAnswers) flatMap {
-          _ => redirect(userAnswers)
+    featureFlagService.is5mldEnabled() flatMap {
+      is5mldEnabled =>
+        repository.get(draftId) flatMap {
+          case Some(userAnswers) =>
+            redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
+          case _ =>
+            val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
+            redirect(userAnswers)
         }
     }
   }

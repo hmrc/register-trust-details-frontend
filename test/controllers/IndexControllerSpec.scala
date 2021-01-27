@@ -18,111 +18,255 @@ package controllers
 
 import base.SpecBase
 import models.Status.Completed
+import models.UserAnswers
 import models.registration.Matched.Success
+import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
 import pages.TrustDetailsStatus
 import pages.register.ExistingTrustMatched
-import pages.register.trust_details.{TrustNamePage, WhenTrustSetupPage}
+import play.api.inject.bind
 import play.api.libs.json.JsString
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.FeatureFlagService
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  "Index Controller" must {
-    "go to TrustName page" when {
-      "no answers exist yet for the draft id" in {
+  private val featureFlagService: FeatureFlagService = mock[FeatureFlagService]
 
-        when(registrationsRepository.get(any())(any()))
-          .thenReturn(Future.successful(None))
+  "Index Controller" when {
 
-        val application = applicationBuilder().build()
+    "pre-existing user answers" when {
+
+      "trust details completed" must {
+        "redirect to CheckDetailsController" in {
+
+          reset(registrationsRepository)
+
+          val answers = emptyUserAnswers
+            .set(TrustDetailsStatus, Completed).success.value
+
+          val application = applicationBuilder()
+            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .build()
+
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+          val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(fakeDraftId).url
+
+          application.stop()
+        }
+      }
+
+      "trust details in progress or not started" when {
+
+        "trust has been matched" must {
+          "redirect to WhenTrustSetupController" in {
+
+            reset(registrationsRepository)
+
+            val answers = emptyUserAnswers
+              .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
+
+            val application = applicationBuilder()
+              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
+
+            application.stop()
+          }
+        }
+
+        "trust has not been matched" must {
+          "redirect to TrustNameController" in {
+
+            reset(registrationsRepository)
+
+            val application = applicationBuilder()
+              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
+
+            application.stop()
+          }
+        }
+      }
+
+      "update value of is5mldEnabled in user answers" in {
+
+        reset(registrationsRepository)
+
+        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .build()
+
+        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+        when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
-        val result = route(application, request).value
+        route(application, request).value.map { _ =>
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe
-          Some(controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url)
+          uaCaptor.getValue.is5mldEnabled mustBe true
 
+          application.stop()
+        }
       }
     }
 
-    "trust details has been answered" must {
+    "no pre-existing user answers" must {
 
-      "go to Check Trust Answers Page" in {
-        val answers = emptyUserAnswers
-          .set(TrustNamePage, "Trust of John").success.value
-          .set(WhenTrustSetupPage, LocalDate.of(2010, 10, 10)).success.value
-          .set(TrustDetailsStatus, Completed).success.value
+      "redirect to WhenTrustSetupController" when {
+        "trust has been matched" in {
 
-        when(registrationsRepository.get(any())(any()))
-          .thenReturn(Future.successful(Some(answers)))
+          reset(registrationsRepository)
 
-        val application = applicationBuilder().build()
-
-        val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result)  mustBe Some(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(fakeDraftId).url)
-
-        application.stop()
-      }
-
-    }
-
-    "trust details has not been answered" when {
-
-      "trust has been matched" must {
-        "go to WhenTrustSetup Page" in {
           val answers = emptyUserAnswers
             .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
 
-          when(registrationsRepository.get(any())(any()))
-            .thenReturn(Future.successful(Some(emptyUserAnswers)))
+          val application = applicationBuilder()
+            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .build()
 
-          when(registrationsRepository.getMainAnswers(any())(any()))
-            .thenReturn(Future.successful(Some(answers)))
-
-          val application = applicationBuilder().build()
-
-          val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result) mustBe
-            Some(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url)
-        }
-      }
-
-      "trust has not been matched" must {
-        "go to TrustName page" in {
-          when(registrationsRepository.get(any())(any()))
-            .thenReturn(Future.successful(Some(emptyUserAnswers)))
-
-          when(registrationsRepository.getMainAnswers(any())(any()))
-            .thenReturn(Future.successful(Some(emptyUserAnswers)))
-
-          val application = applicationBuilder().build()
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result) mustBe
-            Some(controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url)
+          redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
+
+          application.stop()
         }
       }
 
+      "redirect to TrustNameController" when {
+        "trust has not been matched" in {
+
+          reset(registrationsRepository)
+
+          val application = applicationBuilder()
+            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .build()
+
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+
+          val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
+
+          application.stop()
+        }
+      }
+
+      "instantiate new set of user answers" when {
+
+        "5mld enabled" must {
+          "add is5mldEnabled = true to user answers" in {
+
+            reset(registrationsRepository)
+
+            val application = applicationBuilder(userAnswers = None)
+              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+            route(application, request).value.map { _ =>
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+
+              uaCaptor.getValue.is5mldEnabled mustBe true
+              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.internalAuthId mustBe "internalId"
+
+              application.stop()
+            }
+          }
+        }
+
+        "5mld not enabled" must {
+          "add is5mldEnabled = false to user answers" in {
+
+            reset(registrationsRepository)
+
+            val application = applicationBuilder(userAnswers = None)
+              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+            route(application, request).value.map { _ =>
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+
+              uaCaptor.getValue.is5mldEnabled mustBe false
+              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.internalAuthId mustBe "internalId"
+
+              application.stop()
+            }
+          }
+        }
+      }
     }
   }
 }
