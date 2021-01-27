@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions.register.RegistrationIdentifierAction
-import javax.inject.Inject
 import models.Status.Completed
 import models.UserAnswers
 import models.registration.Matched.Success
@@ -28,53 +27,55 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
+import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
-                                 identify: RegistrationIdentifierAction
-                               ) extends FrontendBaseController with I18nSupport {
-
-  implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+                                 identify: RegistrationIdentifierAction,
+                                 featureFlagService: FeatureFlagService
+                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request: IdentifierRequest[AnyContent] =>
 
-    repository.get(draftId) flatMap {
-      case Some(userAnswers) =>
-        redirect(userAnswers, draftId)
-      case _ =>
-        val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
-        repository.set(userAnswers) flatMap {
-          _ => redirect(userAnswers, draftId)
-        }
-    }
-  }
+    def redirect(userAnswers: UserAnswers): Future[Result] = {
 
-  private def redirect(userAnswers: UserAnswers, draftId: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] = {
-    val completed = userAnswers.get(TrustDetailsStatus).contains(Completed)
-
-    if (completed) {
-      Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
-    } else {
-      successfullyMatched(draftId) map {
-        matched =>
-          if (matched) {
-            Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
-          } else {
-            Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+      def successfullyMatched: Future[Boolean] = {
+        repository.getMainAnswers(draftId) map {
+          _.exists {
+            _.get(ExistingTrustMatched).contains(Success)
           }
+        }
+      }
+
+      repository.set(userAnswers) flatMap { _ =>
+        if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
+          Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
+        } else {
+          successfullyMatched map {
+            matched =>
+              if (matched) {
+                Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+              } else {
+                Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+              }
+          }
+        }
       }
     }
-  }
 
-  private def successfullyMatched(draftId: String)(implicit request: IdentifierRequest[AnyContent]): Future[Boolean] = {
-    repository.getMainAnswers(draftId) map {
-        _.exists {
-          _.get(ExistingTrustMatched).contains(Success)
+    featureFlagService.is5mldEnabled() flatMap {
+      is5mldEnabled =>
+        repository.get(draftId) flatMap {
+          case Some(userAnswers) =>
+            redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
+          case _ =>
+            val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
+            redirect(userAnswers)
         }
     }
   }
