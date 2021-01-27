@@ -59,5 +59,14 @@ POST       /:draftId/trust-barrister                                            
 GET        /:draftId/trust-created                                                                  controllers.register.trust_details.WhenTrustSetupController.onPageLoad(draftId: String)
 POST       /:draftId/trust-created                                                                  controllers.register.trust_details.WhenTrustSetupController.onSubmit(draftId: String)
 
-GET        /:draftId/check-details                                                           controllers.register.trust_details.CheckDetailsController.onPageLoad(draftId: String)
-POST       /:draftId/check-details                                                           controllers.register.trust_details.CheckDetailsController.onSubmit(draftId: String)
+GET        /:draftId/trust-has-business-relationship-in-uk                                          controllers.register.trust_details.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId: String)
+POST       /:draftId/trust-has-business-relationship-in-uk                                          controllers.register.trust_details.TrustHasBusinessRelationshipInUkController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-listed-on-eea-register                                                   controllers.register.trust_details.TrustListedOnEeaRegisterController.onPageLoad(draftId: String)
+POST       /:draftId/trust-listed-on-eea-register                                                   controllers.register.trust_details.TrustListedOnEeaRegisterController.onSubmit(draftId: String)
+
+GET        /:draftId/trust-owns-uk-property-or-land                                                 controllers.register.trust_details.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId: String)
+POST       /:draftId/trust-owns-uk-property-or-land                                                 controllers.register.trust_details.TrustOwnsUkPropertyOrLandController.onSubmit(draftId: String)
+
+GET        /:draftId/check-details                                                                  controllers.register.trust_details.CheckDetailsController.onPageLoad(draftId: String)
+POST       /:draftId/check-details                                                                  controllers.register.trust_details.CheckDetailsController.onSubmit(draftId: String)
