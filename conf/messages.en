@@ -106,14 +106,6 @@ inheritanceTaxAct.checkYourAnswersLabel = Are you registering the trust for Inhe
 inheritanceTaxAct.hint = This relates to Section 218 of the Inheritance Tax Act 1984.
 inheritanceTaxAct.error.required = Select yes if you are registering the trust for Inheritance Tax reasons
 
-nonresidentType.title = What is the non-resident type?
-nonresidentType.heading = What is the non-resident type?
-nonresidentType.non-resident-domiciled = Settlor domiciled trustees are non-resident
-nonresidentType.non-resident-non-domiciled = Settlor non-domiciled becomes domiciled then resident
-nonresidentType.non-resident-cease-resident = Trustees cease to be resident
-nonresidentType.checkYourAnswersLabel = What is the non-resident type?
-nonresidentType.error.required = Select the non-resident type
-
 registeringTrustFor5A.title = Are you registering the trust because the settlor benefits from the trust’s assets?
 registeringTrustFor5A.heading = Are you registering the trust because the settlor benefits from the trust’s assets?
 registeringTrustFor5A.checkYourAnswersLabel = Are you registering the trust because the settlor benefits from the trust’s assets?
