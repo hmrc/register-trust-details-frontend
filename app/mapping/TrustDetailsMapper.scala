@@ -20,6 +20,7 @@ import models.TrusteesBasedInTheUK._
 import models.{NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
 import play.api.Logging
 import pages.register.trust_details._
+import utils.Constants.GB
 
 class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
 
@@ -42,7 +43,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
   private def administrationCountry(userAnswers: UserAnswers): Option[String] = {
     userAnswers.get(AdministrationInsideUKPage) match {
       case Some(true) =>
-        Some("GB")
+        Some(GB)
       case Some(false) =>
         userAnswers.get(CountryAdministeringTrustPage)
       case None =>
@@ -96,8 +97,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
 
     nonUKConstruct match {
       case x if x.isDefined =>
-        Some(models.ResidentialStatusType(None, x)
-        )
+        Some(models.ResidentialStatusType(None, x))
       case _ =>
         logger.info(s"[nonUkResidentMap][build] unable to create residential status")
         None
@@ -134,9 +134,9 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
             sch5atcgga92 = false,
             s218ihta84 = s218ihta84,
             agentS218IHTA84 = agentS218IHTA84,
-            trusteeStatus = None)
+            trusteeStatus = None
+          )
         )
-
       case _ => None
     }
   }

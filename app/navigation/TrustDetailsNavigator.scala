@@ -37,7 +37,7 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
   private def route(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     simpleNavigation(draftId) orElse
       yesNavigation(draftId) orElse
-      conditionalNavigation(draftId)
+      otherNavigation(draftId)
   }
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
@@ -101,7 +101,7 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     )
   }
 
-  private def conditionalNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+  private def otherNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case TrusteesBasedInTheUKPage => ua => ua.get(TrusteesBasedInTheUKPage) match {
       case Some(UKBasedTrustees) => EstablishedUnderScotsLawController.onPageLoad(draftId)
       case Some(NonUkBasedTrustees) => RegisteringTrustFor5AController.onPageLoad(draftId)
