@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package pages
+package pages.register.trust_details
 
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object NamePage extends QuestionPage[String] {
+class TrustPreviouslyResidentPageSpec extends PageBehaviours {
 
-  override def toString: String = "name"
+  "TrustPreviouslyResidentPage" must {
 
-  override def path: JsPath = JsPath \ toString
+    beRetrievable[String](TrustPreviouslyResidentPage)
+
+    beSettable[String](TrustPreviouslyResidentPage)
+
+    beRemovable[String](TrustPreviouslyResidentPage)
+  }
 }

@@ -20,11 +20,9 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
-import java.time.LocalDate
-
-case object WhenTrustSetupPage extends QuestionPage[LocalDate] {
+case object TrustOwnsUkPropertyOrLandPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TrustDetails \ toString
 
-  override def toString: String = "whenTrustSetup"
+  override def toString: String = "ownsUkPropertyOrLand"
 }

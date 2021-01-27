@@ -16,15 +16,16 @@
 
 package pages.register.trust_details
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.TrustDetails
+import pages.behaviours.PageBehaviours
 
-import java.time.LocalDate
+class TrustListedOnEeaRegisterPageSpec extends PageBehaviours {
 
-case object WhenTrustSetupPage extends QuestionPage[LocalDate] {
+  "TrustListedOnEeaRegisterPage" must {
 
-  override def path: JsPath = JsPath \ TrustDetails \ toString
+    beRetrievable[Boolean](TrustListedOnEeaRegisterPage)
 
-  override def toString: String = "whenTrustSetup"
+    beSettable[Boolean](TrustListedOnEeaRegisterPage)
+
+    beRemovable[Boolean](TrustListedOnEeaRegisterPage)
+  }
 }

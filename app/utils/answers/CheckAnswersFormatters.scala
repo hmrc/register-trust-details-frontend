@@ -16,13 +16,12 @@
 
 package utils.answers
 
-import java.time.format.DateTimeFormatter
-
-import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress, UserAnswers}
-import pages.NamePage
+import models.{Address, InternationalAddress, PassportOrIdCardDetails, UkAddress}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import utils.countryOptions.CountryOptions
+
+import java.time.format.DateTimeFormatter
 
 object CheckAnswersFormatters {
 
@@ -47,10 +46,6 @@ object CheckAnswersFormatters {
     HtmlFormat.escape(messages(s"$key.$answer"))
 
   def escape(x: String): Html = HtmlFormat.escape(x)
-
-  def businessName(index: Int, userAnswers: UserAnswers): String = {
-    userAnswers.get(NamePage).getOrElse("")
-  }
 
   def ukAddress(address: UkAddress): Html = {
     val lines =

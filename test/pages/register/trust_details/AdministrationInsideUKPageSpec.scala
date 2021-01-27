@@ -17,25 +17,28 @@
 package pages.register.trust_details
 
 import models.UserAnswers
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.TrustDetails
+import pages.behaviours.PageBehaviours
 
-import scala.util.Try
+class AdministrationInsideUKPageSpec extends PageBehaviours {
 
-case object RegisteringTrustFor5APage extends QuestionPage[Boolean] {
+  "AdministrationInsideUKPage" must {
 
-  override def path: JsPath = JsPath \ TrustDetails \ toString
+    beRetrievable[Boolean](AdministrationInsideUKPage)
 
-  override def toString: String = "registeringTrustFor5A"
+    beSettable[Boolean](AdministrationInsideUKPage)
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(true) =>
-        userAnswers.remove(InheritanceTaxActPage)
-          .flatMap(_.remove(AgentOtherThanBarristerPage))
-      case _ =>
-        super.cleanup(value, userAnswers)
+    beRemovable[Boolean](AdministrationInsideUKPage)
+
+    "implement cleanup logic" when {
+
+      "yes selected" in {
+
+        val userAnswers: UserAnswers = emptyUserAnswers.set(CountryAdministeringTrustPage, "FR").success.value
+
+        val result = userAnswers.set(AdministrationInsideUKPage, true).success.value
+
+        result.get(CountryAdministeringTrustPage) mustNot be(defined)
+      }
     }
   }
 }
