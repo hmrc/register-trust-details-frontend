@@ -16,8 +16,9 @@
 
 package pages.register.trust_details
 
+import models.Status.InProgress
 import models.UserAnswers
-import pages.QuestionPage
+import pages.{QuestionPage, TrustDetailsStatus}
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
@@ -34,6 +35,8 @@ case object RegisteringTrustFor5APage extends QuestionPage[Boolean] {
       case Some(true) =>
         userAnswers.remove(InheritanceTaxActPage)
           .flatMap(_.remove(AgentOtherThanBarristerPage))
+      case Some(false) if userAnswers.get(InheritanceTaxActPage).isEmpty =>
+        userAnswers.set(TrustDetailsStatus, InProgress)
       case _ =>
         super.cleanup(value, userAnswers)
     }

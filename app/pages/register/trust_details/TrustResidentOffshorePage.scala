@@ -16,8 +16,9 @@
 
 package pages.register.trust_details
 
+import models.Status.InProgress
 import models.UserAnswers
-import pages.QuestionPage
+import pages.{QuestionPage, TrustDetailsStatus}
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
@@ -33,6 +34,8 @@ case object TrustResidentOffshorePage extends QuestionPage[Boolean] {
     value match {
       case Some(false) =>
         userAnswers.remove(TrustPreviouslyResidentPage)
+      case Some(true) if userAnswers.get(TrustPreviouslyResidentPage).isEmpty =>
+        userAnswers.set(TrustDetailsStatus, InProgress)
       case _ =>
         super.cleanup(value, userAnswers)
     }

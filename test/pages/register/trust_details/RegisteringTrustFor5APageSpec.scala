@@ -16,7 +16,9 @@
 
 package pages.register.trust_details
 
+import models.Status._
 import models.UserAnswers
+import pages.TrustDetailsStatus
 import pages.behaviours.PageBehaviours
 
 class RegisteringTrustFor5APageSpec extends PageBehaviours {
@@ -41,6 +43,34 @@ class RegisteringTrustFor5APageSpec extends PageBehaviours {
 
         result.get(InheritanceTaxActPage) mustNot be(defined)
         result.get(AgentOtherThanBarristerPage) mustNot be(defined)
+      }
+    }
+
+    "no selected" when {
+
+      "InheritanceTaxActPage is not answered" must {
+        "set TrustDetailsStatus to InProgress" in {
+
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(TrustDetailsStatus, Completed).success.value
+
+          val result = userAnswers.set(RegisteringTrustFor5APage, false).success.value
+
+          result.get(TrustDetailsStatus).get mustBe InProgress
+        }
+      }
+
+      "InheritanceTaxActPage is answered" must {
+        "not set TrustDetailsStatus to InProgress" in {
+
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(InheritanceTaxActPage, true).success.value
+            .set(TrustDetailsStatus, Completed).success.value
+
+          val result = userAnswers.set(RegisteringTrustFor5APage, false).success.value
+
+          result.get(TrustDetailsStatus).get mustBe Completed
+        }
       }
     }
   }

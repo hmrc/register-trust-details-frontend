@@ -16,7 +16,9 @@
 
 package pages.register.trust_details
 
+import models.Status._
 import models.UserAnswers
+import pages.TrustDetailsStatus
 import pages.behaviours.PageBehaviours
 
 class SettlorsBasedInTheUKPageSpec extends PageBehaviours {
@@ -31,34 +33,72 @@ class SettlorsBasedInTheUKPageSpec extends PageBehaviours {
 
     "implement cleanup logic" when {
 
-      "yes selected" in {
+      "yes selected" when {
 
-        val userAnswers: UserAnswers = emptyUserAnswers
-          .set(TrustHasBusinessRelationshipInUkPage, true).success.value
-          .set(RegisteringTrustFor5APage, false).success.value
-          .set(InheritanceTaxActPage, true).success.value
-          .set(AgentOtherThanBarristerPage, true).success.value
+        "EstablishedUnderScotsLawPage is not answered" must {
+          "do cleanup and set TrustDetailsStatus to InProgress" in {
 
-        val result = userAnswers.set(SettlorsBasedInTheUKPage, true).success.value
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(TrustHasBusinessRelationshipInUkPage, true).success.value
+              .set(RegisteringTrustFor5APage, false).success.value
+              .set(InheritanceTaxActPage, true).success.value
+              .set(AgentOtherThanBarristerPage, true).success.value
 
-        result.get(TrustHasBusinessRelationshipInUkPage) mustNot be(defined)
-        result.get(RegisteringTrustFor5APage) mustNot be(defined)
-        result.get(InheritanceTaxActPage) mustNot be(defined)
-        result.get(AgentOtherThanBarristerPage) mustNot be(defined)
+            val result = userAnswers.set(SettlorsBasedInTheUKPage, true).success.value
+
+            result.get(TrustHasBusinessRelationshipInUkPage) mustNot be(defined)
+            result.get(RegisteringTrustFor5APage) mustNot be(defined)
+            result.get(InheritanceTaxActPage) mustNot be(defined)
+            result.get(AgentOtherThanBarristerPage) mustNot be(defined)
+            result.get(TrustDetailsStatus).get mustBe InProgress
+          }
+        }
+
+        "EstablishedUnderScotsLawPage is answered" must {
+          "not set TrustDetailsStatus to InProgress" in {
+
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(EstablishedUnderScotsLawPage, true).success.value
+              .set(TrustDetailsStatus, Completed).success.value
+
+            val result = userAnswers.set(SettlorsBasedInTheUKPage, true).success.value
+
+            result.get(TrustDetailsStatus).get mustBe Completed
+          }
+        }
       }
 
-      "no selected" in {
+      "no selected" when {
 
-        val userAnswers: UserAnswers = emptyUserAnswers
-          .set(EstablishedUnderScotsLawPage, true).success.value
-          .set(TrustResidentOffshorePage, true).success.value
-          .set(TrustPreviouslyResidentPage, "FR").success.value
+        "TrustHasBusinessRelationshipInUkPage is not answered" must {
+          "do cleanup and set TrustDetailsStatus to InProgress" in {
 
-        val result = userAnswers.set(SettlorsBasedInTheUKPage, false).success.value
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(EstablishedUnderScotsLawPage, true).success.value
+              .set(TrustResidentOffshorePage, true).success.value
+              .set(TrustPreviouslyResidentPage, "FR").success.value
 
-        result.get(EstablishedUnderScotsLawPage) mustNot be(defined)
-        result.get(TrustResidentOffshorePage) mustNot be(defined)
-        result.get(TrustPreviouslyResidentPage) mustNot be(defined)
+            val result = userAnswers.set(SettlorsBasedInTheUKPage, false).success.value
+
+            result.get(EstablishedUnderScotsLawPage) mustNot be(defined)
+            result.get(TrustResidentOffshorePage) mustNot be(defined)
+            result.get(TrustPreviouslyResidentPage) mustNot be(defined)
+            result.get(TrustDetailsStatus).get mustBe InProgress
+          }
+        }
+
+        "TrustHasBusinessRelationshipInUkPage is answered" must {
+          "not set TrustDetailsStatus to InProgress" in {
+
+            val userAnswers: UserAnswers = emptyUserAnswers
+              .set(TrustHasBusinessRelationshipInUkPage, true).success.value
+              .set(TrustDetailsStatus, Completed).success.value
+
+            val result = userAnswers.set(SettlorsBasedInTheUKPage, false).success.value
+
+            result.get(TrustDetailsStatus).get mustBe Completed
+          }
+        }
       }
     }
   }

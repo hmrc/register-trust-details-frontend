@@ -16,7 +16,9 @@
 
 package pages.register.trust_details
 
+import models.Status._
 import models.UserAnswers
+import pages.TrustDetailsStatus
 import pages.behaviours.PageBehaviours
 
 class TrustResidentOffshorePageSpec extends PageBehaviours {
@@ -33,11 +35,40 @@ class TrustResidentOffshorePageSpec extends PageBehaviours {
 
       "no selected" in {
 
-        val userAnswers: UserAnswers = emptyUserAnswers.set(TrustPreviouslyResidentPage, "FR").success.value
+        val userAnswers: UserAnswers = emptyUserAnswers
+          .set(TrustPreviouslyResidentPage, "FR").success.value
 
         val result = userAnswers.set(TrustResidentOffshorePage, false).success.value
 
         result.get(TrustPreviouslyResidentPage) mustNot be(defined)
+      }
+    }
+
+    "yes selected" when {
+
+      "TrustPreviouslyResidentPage is not answered" must {
+        "set TrustDetailsStatus to InProgress" in {
+
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(TrustDetailsStatus, Completed).success.value
+
+          val result = userAnswers.set(TrustResidentOffshorePage, true).success.value
+
+          result.get(TrustDetailsStatus).get mustBe InProgress
+        }
+      }
+
+      "TrustPreviouslyResidentPage is answered" must {
+        "not set TrustDetailsStatus to InProgress" in {
+
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(TrustPreviouslyResidentPage, "FR").success.value
+            .set(TrustDetailsStatus, Completed).success.value
+
+          val result = userAnswers.set(TrustResidentOffshorePage, true).success.value
+
+          result.get(TrustDetailsStatus).get mustBe Completed
+        }
       }
     }
   }
