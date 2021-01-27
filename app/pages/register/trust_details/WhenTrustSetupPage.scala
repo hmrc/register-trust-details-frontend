@@ -16,11 +16,11 @@
 
 package pages.register.trust_details
 
-import java.time.LocalDate
-
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
+
+import java.time.LocalDate
 
 case object WhenTrustSetupPage extends QuestionPage[LocalDate] {
 

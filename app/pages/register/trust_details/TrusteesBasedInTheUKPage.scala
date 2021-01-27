@@ -16,13 +16,14 @@
 
 package pages.register.trust_details
 
-import models.{TrusteesBasedInTheUK, UserAnswers}
+import models.Status.InProgress
 import models.TrusteesBasedInTheUK._
+import models.{TrusteesBasedInTheUK, UserAnswers}
 import pages.{QuestionPage, TrustDetailsStatus}
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] {
 
@@ -33,17 +34,30 @@ case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] 
   override def cleanup(value: Option[TrusteesBasedInTheUK], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(NonUkBasedTrustees) =>
-        userAnswers.remove(EstablishedUnderScotsLawPage)
+        userAnswers.remove(SettlorsBasedInTheUKPage)
+          .flatMap(_.remove(EstablishedUnderScotsLawPage))
           .flatMap(_.remove(TrustResidentOffshorePage))
           .flatMap(_.remove(TrustPreviouslyResidentPage))
-          .flatMap(_.remove(TrustDetailsStatus))
-          .flatMap(_.remove(SettlorsBasedInTheUKPage))
+          .flatMap { ua =>
+            if (ua.get(TrustHasBusinessRelationshipInUkPage).isEmpty) {
+              ua.set(TrustDetailsStatus, InProgress)
+            } else {
+              Success(ua)
+            }
+          }
       case Some(UKBasedTrustees) =>
-        userAnswers.remove(RegisteringTrustFor5APage)
+        userAnswers.remove(SettlorsBasedInTheUKPage)
+          .flatMap(_.remove(TrustHasBusinessRelationshipInUkPage))
+          .flatMap(_.remove(RegisteringTrustFor5APage))
           .flatMap(_.remove(InheritanceTaxActPage))
           .flatMap(_.remove(AgentOtherThanBarristerPage))
-          .flatMap(_.remove(TrustDetailsStatus))
-          .flatMap(_.remove(SettlorsBasedInTheUKPage))
+          .flatMap { ua =>
+            if (ua.get(EstablishedUnderScotsLawPage).isEmpty) {
+              ua.set(TrustDetailsStatus, InProgress)
+            } else {
+              Success(ua)
+            }
+          }
       case _ =>
         super.cleanup(value, userAnswers)
     }

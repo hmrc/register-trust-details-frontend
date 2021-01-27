@@ -17,10 +17,10 @@
 package pages.register
 
 import models.registration.Matched
-import pages.QuestionPage
+import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-object ExistingTrustMatched extends QuestionPage[Matched] {
+object ExistingTrustMatched extends ReadOnlyPage[Matched] {
 
   override def path: JsPath = JsPath \ "existing" \ toString
 

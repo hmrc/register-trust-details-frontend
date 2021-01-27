@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package pages.register
+package pages.register.trust_details
 
-import pages.ReadOnlyPage
-import play.api.libs.json.JsPath
+import pages.behaviours.PageBehaviours
 
-case object TrustHaveAUTRPage extends ReadOnlyPage[Boolean] {
+class EstablishedUnderScotsLawPageSpec extends PageBehaviours {
 
-  override def path: JsPath = JsPath \ toString
+  "EstablishedUnderScotsLawPage" must {
 
-  override def toString: String = "trustHaveAUTR"
+    beRetrievable[Boolean](EstablishedUnderScotsLawPage)
 
+    beSettable[Boolean](EstablishedUnderScotsLawPage)
+
+    beRemovable[Boolean](EstablishedUnderScotsLawPage)
+  }
 }

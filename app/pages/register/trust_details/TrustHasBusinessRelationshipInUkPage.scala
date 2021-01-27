@@ -24,17 +24,19 @@ import sections.TrustDetails
 
 import scala.util.Try
 
-case object TrustResidentOffshorePage extends QuestionPage[Boolean] {
+case object TrustHasBusinessRelationshipInUkPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ TrustDetails \ toString
 
-  override def toString: String = "residentOffshore"
+  override def toString: String = "hasBusinessRelationshipInUk"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-      case Some(false) =>
-        userAnswers.remove(TrustPreviouslyResidentPage)
-      case Some(true) if userAnswers.get(TrustPreviouslyResidentPage).isEmpty =>
+      case Some(true) =>
+        userAnswers.remove(RegisteringTrustFor5APage)
+          .flatMap(_.remove(InheritanceTaxActPage))
+          .flatMap(_.remove(AgentOtherThanBarristerPage))
+      case Some(false) if userAnswers.get(RegisteringTrustFor5APage).isEmpty =>
         userAnswers.set(TrustDetailsStatus, InProgress)
       case _ =>
         super.cleanup(value, userAnswers)

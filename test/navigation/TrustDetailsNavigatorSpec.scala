@@ -17,7 +17,6 @@
 package navigation
 
 import java.time.LocalDate
-
 import base.SpecBase
 import controllers.register.trust_details.routes
 import generators.Generators
@@ -27,6 +26,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details.{AgentOtherThanBarristerPage, _}
+import play.api.libs.json.JsBoolean
 
 class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators  {
 
@@ -36,7 +36,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(TrustHaveAUTRPage, false).success.value
+          val answers = userAnswers.setAtPath(TrustHaveAUTRPage.path, JsBoolean(false)).success.value
 
           navigator.nextPage(TrustNamePage, fakeDraftId, answers)
             .mustBe(routes.WhenTrustSetupController.onPageLoad(fakeDraftId))

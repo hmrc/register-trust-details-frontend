@@ -16,19 +16,20 @@
 
 package pages.behaviours
 
+import base.SpecBase
 import generators.Generators
 import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import org.scalatest.{MustMatchers, OptionValues, TryValues, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues, TryValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.QuestionPage
+import pages.{QuestionPage, ReadOnlyPage}
 import play.api.libs.json._
 
-trait PageBehaviours extends WordSpec with MustMatchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
+trait PageBehaviours extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
 
   class BeRetrievable[A] {
-    def apply[P <: QuestionPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
+    def apply[P <: ReadOnlyPage[A]](genP: Gen[P])(implicit ev1: Arbitrary[A], ev2: Format[A]): Unit = {
 
       "return None" when {
 
@@ -39,7 +40,7 @@ trait PageBehaviours extends WordSpec with MustMatchers with ScalaCheckPropertyC
             val gen = for {
               page        <- genP
               userAnswers <- arbitrary[UserAnswers]
-            } yield (page, userAnswers.remove(page).success.value)
+            } yield (page, userAnswers.deleteAtPath(page.path).success.value)
 
             forAll(gen) {
               case (page, userAnswers) =>
@@ -60,7 +61,7 @@ trait PageBehaviours extends WordSpec with MustMatchers with ScalaCheckPropertyC
               page        <- genP
               savedValue  <- arbitrary[A]
               userAnswers <- arbitrary[UserAnswers]
-            } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
+            } yield (page, savedValue, userAnswers.setAtPath(page.path, Json.toJson(savedValue)).success.value)
 
             forAll(gen) {
               case (page, savedValue, userAnswers) =>
