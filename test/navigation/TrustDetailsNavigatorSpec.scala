@@ -30,7 +30,7 @@ import play.api.libs.json.JsBoolean
 
 class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators  {
 
-  lazy val navigator = injector.instanceOf[TrustDetailsNavigator]
+  private val navigator: TrustDetailsNavigator = injector.instanceOf[TrustDetailsNavigator]
 
     "go to TrustSetup from TrustName when user does not have a UTR" in {
       forAll(arbitrary[UserAnswers]) {
