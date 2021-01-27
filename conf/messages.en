@@ -168,5 +168,26 @@ whenTrustSetup.error.beforeDateOfDeath = The date the trust was created must be 
 whenTrustSetup.text = This is the date the trust deed was signed. For will trusts use the settlor’s date of death.
 whenTrustSetup.hint = For example, 31 3 2015
 
+trustHasBusinessRelationshipInUk.title = Does the trust have a business relationship in the UK?
+trustHasBusinessRelationshipInUk.heading = Does the trust have a business relationship in the UK?
+trustHasBusinessRelationshipInUk.checkYourAnswersLabel = Does the trust have a business relationship in the UK?
+trustHasBusinessRelationshipInUk.error.required = Select yes if the trust has a business relationship in the UK
+
+trustListedOnEeaRegister.title = Is the trust listed on a European Economic Area (EEA) register?
+trustListedOnEeaRegister.heading = Is the trust listed on a European Economic Area (EEA) register?
+trustListedOnEeaRegister.checkYourAnswersLabel = Is the trust listed on a European Economic Area (EEA) register?
+trustListedOnEeaRegister.error.required = Select yes if the trust is listed on a European Economic Area (EEA) register
+trustListedOnEeaRegister.text = The EEA includes:
+trustListedOnEeaRegister.text.bullet1 = All countries within the European Union (EU)
+trustListedOnEeaRegister.text.bullet2 = Iceland
+trustListedOnEeaRegister.text.bullet3 = Lichtenstein
+trustListedOnEeaRegister.text.bullet4 = Norway
+
+trustOwnsUkPropertyOrLand.title = Has the trust acquired land or property in the UK since 6 October 2020?
+trustOwnsUkPropertyOrLand.heading = Has the trust acquired land or property in the UK since 6 October 2020?
+trustOwnsUkPropertyOrLand.checkYourAnswersLabel = Has the trust acquired land or property in the UK since 6 October 2020?
+trustOwnsUkPropertyOrLand.error.required = Select yes if the trust has acquired land or property in the UK since 6 October 2020
+trustOwnsUkPropertyOrLand.text = The current rules for registering a new trust came into effect on 6 October 2020.
+
 trustDetailsAnswerPage.title = Check trust details
 trustDetailsAnswerPage.heading = Check trust details
