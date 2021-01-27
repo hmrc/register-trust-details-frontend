@@ -17,6 +17,8 @@
 package navigation
 
 import config.FrontendAppConfig
+import controllers.register.trust_details.routes._
+import controllers.routes._
 import models.ReadableUserAnswers
 import models.TrusteesBasedInTheUK._
 import pages.Page
@@ -39,13 +41,14 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
   }
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case TrustNamePage => _ => controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId)
-    case WhenTrustSetupPage => _ => controllers.register.trust_details.routes.GovernedInsideTheUKController.onPageLoad(draftId)
-    case CountryGoverningTrustPage => _ => controllers.register.trust_details.routes.AdministrationInsideUKController.onPageLoad(draftId)
-    case CountryAdministeringTrustPage => _ => controllers.register.trust_details.routes.TrusteesBasedInTheUKController.onPageLoad(draftId)
-    case EstablishedUnderScotsLawPage => _ => controllers.register.trust_details.routes.TrustResidentOffshoreController.onPageLoad(draftId)
-    case TrustPreviouslyResidentPage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-    case AgentOtherThanBarristerPage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
+    case TrustNamePage => _ => WhenTrustSetupController.onPageLoad(draftId)
+    case WhenTrustSetupPage => _ => GovernedInsideTheUKController.onPageLoad(draftId)
+    case CountryGoverningTrustPage => _ => AdministrationInsideUKController.onPageLoad(draftId)
+    case CountryAdministeringTrustPage => ua => navigateAwayFromCountryOfAdministrationQuestions(ua, draftId)
+    case TrustOwnsUkPropertyOrLandPage => _ => TrustListedOnEeaRegisterController.onPageLoad(draftId)
+    case TrustListedOnEeaRegisterPage => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
+    case EstablishedUnderScotsLawPage => _ => TrustResidentOffshoreController.onPageLoad(draftId)
+    case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => _ => CheckDetailsController.onPageLoad(draftId)
     case CheckDetailsPage => _ => Call(GET, config.registrationProgressUrl(draftId))
   }
 
@@ -53,47 +56,65 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     case GovernedInsideTheUKPage => ua => yesNoNav(
       ua = ua,
       fromPage = GovernedInsideTheUKPage,
-      yesCall = controllers.register.trust_details.routes.AdministrationInsideUKController.onPageLoad(draftId),
-      noCall = controllers.register.trust_details.routes.CountryGoverningTrustController.onPageLoad(draftId)
+      yesCall = AdministrationInsideUKController.onPageLoad(draftId),
+      noCall = CountryGoverningTrustController.onPageLoad(draftId)
     )
     case AdministrationInsideUKPage => ua => yesNoNav(
       ua = ua,
       fromPage = AdministrationInsideUKPage,
-      yesCall = controllers.register.trust_details.routes.TrusteesBasedInTheUKController.onPageLoad(draftId),
-      noCall = controllers.register.trust_details.routes.CountryAdministeringTrustController.onPageLoad(draftId)
+      yesCall = navigateAwayFromCountryOfAdministrationQuestions(ua, draftId),
+      noCall = CountryAdministeringTrustController.onPageLoad(draftId)
     )
     case SettlorsBasedInTheUKPage => ua => yesNoNav(
       ua = ua,
       fromPage = SettlorsBasedInTheUKPage,
-      yesCall = controllers.register.trust_details.routes.EstablishedUnderScotsLawController.onPageLoad(draftId),
-      noCall = controllers.register.trust_details.routes.RegisteringTrustFor5AController.onPageLoad(draftId)
+      yesCall = EstablishedUnderScotsLawController.onPageLoad(draftId),
+      noCall = if (ua.is5mldEnabled) {
+        TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+      } else {
+        RegisteringTrustFor5AController.onPageLoad(draftId)
+      }
     )
     case TrustResidentOffshorePage => ua => yesNoNav(
       ua = ua,
       fromPage = TrustResidentOffshorePage,
-      yesCall = controllers.register.trust_details.routes.TrustPreviouslyResidentController.onPageLoad(draftId),
-      noCall = controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
+      yesCall = TrustPreviouslyResidentController.onPageLoad(draftId),
+      noCall = CheckDetailsController.onPageLoad(draftId)
     )
     case RegisteringTrustFor5APage => ua => yesNoNav(
       ua = ua,
       fromPage = RegisteringTrustFor5APage,
-      yesCall = controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId),
-      noCall = controllers.register.trust_details.routes.InheritanceTaxActController.onPageLoad(draftId)
+      yesCall = CheckDetailsController.onPageLoad(draftId),
+      noCall = InheritanceTaxActController.onPageLoad(draftId)
     )
     case InheritanceTaxActPage => ua => yesNoNav(
       ua = ua,
       fromPage = InheritanceTaxActPage,
-      yesCall = controllers.register.trust_details.routes.AgentOtherThanBarristerController.onPageLoad(draftId),
-      noCall = controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
+      yesCall = AgentOtherThanBarristerController.onPageLoad(draftId),
+      noCall = CheckDetailsController.onPageLoad(draftId)
+    )
+    case TrustHasBusinessRelationshipInUkPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = TrustHasBusinessRelationshipInUkPage,
+      yesCall = CheckDetailsController.onPageLoad(draftId),
+      noCall = RegisteringTrustFor5AController.onPageLoad(draftId)
     )
   }
 
   private def conditionalNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case TrusteesBasedInTheUKPage => ua => ua.get(TrusteesBasedInTheUKPage) match {
-      case Some(UKBasedTrustees) => controllers.register.trust_details.routes.EstablishedUnderScotsLawController.onPageLoad(draftId)
-      case Some(NonUkBasedTrustees) => controllers.register.trust_details.routes.RegisteringTrustFor5AController.onPageLoad(draftId)
-      case Some(InternationalAndUKTrustees) => controllers.register.trust_details.routes.SettlorsBasedInTheUKController.onPageLoad(draftId)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case Some(UKBasedTrustees) => EstablishedUnderScotsLawController.onPageLoad(draftId)
+      case Some(NonUkBasedTrustees) => RegisteringTrustFor5AController.onPageLoad(draftId)
+      case Some(InternationalAndUKTrustees) => SettlorsBasedInTheUKController.onPageLoad(draftId)
+      case _ => SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromCountryOfAdministrationQuestions(ua: ReadableUserAnswers, draftId: String): Call = {
+    if (ua.is5mldEnabled) {
+      TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
+    } else {
+      TrusteesBasedInTheUKController.onPageLoad(draftId)
     }
   }
 
