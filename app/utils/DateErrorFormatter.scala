@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package utils.countryOptions
+package utils
 
-import com.google.inject.Inject
-import config.FrontendAppConfig
-
-import javax.inject.Singleton
-import play.api.Environment
 import play.api.i18n.Messages
-import utils.Constants.GB
-import utils.InputOption
 
-@Singleton
-class CountryOptionsNonUK @Inject()(
-                                        environment: Environment,
-                                        config: FrontendAppConfig
-                                      ) extends CountryOptions(environment, config) {
-  override def options()(implicit messages: Messages): Seq[InputOption] = {
-    CountryOptions.getCountries(environment, getFileName).filterNot(x => x.value == GB)
+object DateErrorFormatter {
+
+  def formatArgs(args: Seq[Any])(implicit messages: Messages): Seq[String] = {
+    args.map(arg => messages(s"date.$arg").toLowerCase)
   }
+
 }

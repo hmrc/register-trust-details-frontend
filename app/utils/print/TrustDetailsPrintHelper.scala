@@ -21,7 +21,6 @@ import controllers.register.trust_details.routes
 import models.ReadableUserAnswers
 import pages.register.trust_details._
 import play.api.i18n.Messages
-import utils.answers.CheckAnswersFormatters
 import viewmodels.{AnswerRow, AnswerSection}
 
 class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
@@ -54,7 +53,7 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
       bound.countryQuestion(CountryAdministeringTrustPage, "countryAdministeringTrust", routes.CountryAdministeringTrustController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustOwnsUkPropertyOrLandPage, "trustOwnsUkPropertyOrLand", routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustListedOnEeaRegisterPage, "trustListedOnEeaRegister", routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url),
-      trusteesBasedInUK(draftId, userAnswers),
+      bound.trusteesBasedInUK(draftId),
       bound.yesNoQuestion(SettlorsBasedInTheUKPage, "settlorsBasedInTheUK", routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url),
       bound.yesNoQuestion(EstablishedUnderScotsLawPage, "establishedUnderScotsLaw", routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustResidentOffshorePage, "trustResidentOffshore", routes.TrustResidentOffshoreController.onPageLoad(draftId).url),
@@ -65,15 +64,6 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
       bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarrister", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
     ).flatten
 
-  }
-
-  private def trusteesBasedInUK(draftId: String, userAnswers: ReadableUserAnswers)
-                               (implicit messages: Messages): Option[AnswerRow] = userAnswers.get(TrusteesBasedInTheUKPage) map {
-    x => AnswerRow(
-      "trusteesBasedInTheUK.checkYourAnswersLabel",
-      CheckAnswersFormatters.answer("trusteesBasedInTheUK", x),
-      Some(routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url)
-    )
   }
 
 }
