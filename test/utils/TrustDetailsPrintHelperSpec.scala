@@ -41,15 +41,18 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
         val answers = emptyUserAnswers
           .set(TrustNamePage, "Trust of John").success.value
           .set(WhenTrustSetupPage, LocalDate.of(2012, 6, 9)).success.value
-          .set(GovernedInsideTheUKPage, true).success.value
-          .set(CountryGoverningTrustPage, "GB").success.value
-          .set(AdministrationInsideUKPage, true).success.value
+          .set(GovernedInsideTheUKPage, false).success.value
+          .set(CountryGoverningTrustPage, "FR").success.value
+          .set(AdministrationInsideUKPage, false).success.value
           .set(CountryAdministeringTrustPage, "US").success.value
+          .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+          .set(TrustListedOnEeaRegisterPage, true).success.value
           .set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
           .set(SettlorsBasedInTheUKPage, true).success.value
           .set(EstablishedUnderScotsLawPage, false).success.value
           .set(TrustResidentOffshorePage, false).success.value
           .set(TrustPreviouslyResidentPage, "CA").success.value
+          .set(TrustHasBusinessRelationshipInUkPage, true).success.value
           .set(RegisteringTrustFor5APage, true).success.value
           .set(InheritanceTaxActPage, false).success.value
           .set(AgentOtherThanBarristerPage, true).success.value
@@ -66,23 +69,33 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           ),
           AnswerRow(
             "governedInsideTheUK.checkYourAnswersLabel",
-            HtmlFormat.escape("Yes"),
+            HtmlFormat.escape("No"),
             Some(routes.GovernedInsideTheUKController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "countryGoverningTrust.checkYourAnswersLabel",
-            HtmlFormat.escape("United Kingdom"),
+            HtmlFormat.escape("France"),
             Some(routes.CountryGoverningTrustController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "administrationInsideUK.checkYourAnswersLabel",
-            HtmlFormat.escape("Yes"),
+            HtmlFormat.escape("No"),
             Some(routes.AdministrationInsideUKController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "countryAdministeringTrust.checkYourAnswersLabel",
             HtmlFormat.escape("United States of America"),
             Some(routes.CountryAdministeringTrustController.onPageLoad(draftId).url)
+          ),
+          AnswerRow(
+            "trustOwnsUkPropertyOrLand.checkYourAnswersLabel",
+            HtmlFormat.escape("Yes"),
+            Some(routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url)
+          ),
+          AnswerRow(
+            "trustListedOnEeaRegister.checkYourAnswersLabel",
+            HtmlFormat.escape("Yes"),
+            Some(routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "trusteesBasedInTheUK.checkYourAnswersLabel",
@@ -108,6 +121,11 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             "trustPreviouslyResident.checkYourAnswersLabel",
             HtmlFormat.escape("Canada"),
             Some(routes.TrustPreviouslyResidentController.onPageLoad(draftId).url)
+          ),
+          AnswerRow(
+            "trustHasBusinessRelationshipInUk.checkYourAnswersLabel",
+            HtmlFormat.escape("Yes"),
+            Some(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "registeringTrustFor5A.checkYourAnswersLabel",

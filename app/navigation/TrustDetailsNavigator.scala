@@ -17,84 +17,108 @@
 package navigation
 
 import config.FrontendAppConfig
-import javax.inject.Inject
+import controllers.register.trust_details.routes._
+import controllers.routes._
 import models.ReadableUserAnswers
 import models.TrusteesBasedInTheUK._
 import pages.Page
 import pages.register.trust_details._
 import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpVerbs.GET
+
+import javax.inject.Inject
 
 class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
-  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call =
+  override def nextPage(page: Page, draftId: String, userAnswers: ReadableUserAnswers): Call = {
     route(draftId)(page)(userAnswers)
+  }
 
   private def route(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case TrustNamePage => _ => controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId)
-    case WhenTrustSetupPage => _ => controllers.register.trust_details.routes.GovernedInsideTheUKController.onPageLoad(draftId)
-    case GovernedInsideTheUKPage => isTrustGovernedInsideUKRoute(draftId)
-    case CountryGoverningTrustPage => _ => controllers.register.trust_details.routes.AdministrationInsideUKController.onPageLoad(draftId)
-    case AdministrationInsideUKPage => isTrustGeneralAdministrationRoute(draftId)
-    case CountryAdministeringTrustPage => _ => controllers.register.trust_details.routes.TrusteesBasedInTheUKController.onPageLoad(draftId)
-    case TrusteesBasedInTheUKPage => isTrusteesBasedInTheUKPage(draftId)
-
-    case SettlorsBasedInTheUKPage => isSettlorsBasedInTheUKPage(draftId)
-    case EstablishedUnderScotsLawPage => _ => controllers.register.trust_details.routes.TrustResidentOffshoreController.onPageLoad(draftId)
-    case TrustResidentOffshorePage => wasTrustPreviouslyResidentOffshoreRoute(draftId)
-    case RegisteringTrustFor5APage => registeringForPurposeOfSchedule5ARoute(draftId)
-    case InheritanceTaxActPage => inheritanceTaxRoute(draftId)
-
-    case TrustPreviouslyResidentPage => _ => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-    case AgentOtherThanBarristerPage => _ =>  controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-    case CheckDetailsPage => _ => completedRoute(draftId, config)
+    simpleNavigation(draftId) orElse
+      yesNavigation(draftId) orElse
+      otherNavigation(draftId)
   }
 
-  private def isTrustGovernedInsideUKRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(GovernedInsideTheUKPage) match {
-    case Some(true)  => controllers.register.trust_details.routes.AdministrationInsideUKController.onPageLoad(draftId)
-    case Some(false) => controllers.register.trust_details.routes.CountryGoverningTrustController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
+  private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case TrustNamePage => _ => WhenTrustSetupController.onPageLoad(draftId)
+    case WhenTrustSetupPage => _ => GovernedInsideTheUKController.onPageLoad(draftId)
+    case CountryGoverningTrustPage => _ => AdministrationInsideUKController.onPageLoad(draftId)
+    case CountryAdministeringTrustPage => ua => navigateAwayFromCountryOfAdministrationQuestions(ua, draftId)
+    case TrustOwnsUkPropertyOrLandPage => _ => TrustListedOnEeaRegisterController.onPageLoad(draftId)
+    case TrustListedOnEeaRegisterPage => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
+    case TrustHasBusinessRelationshipInUkPage => _ => RegisteringTrustFor5AController.onPageLoad(draftId)
+    case EstablishedUnderScotsLawPage => _ => TrustResidentOffshoreController.onPageLoad(draftId)
+    case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => _ => CheckDetailsController.onPageLoad(draftId)
+    case CheckDetailsPage => _ => Call(GET, config.registrationProgressUrl(draftId))
   }
 
-  private def isTrustGeneralAdministrationRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(AdministrationInsideUKPage) match {
-    case Some(true)  => controllers.register.trust_details.routes.TrusteesBasedInTheUKController.onPageLoad(draftId)
-    case Some(false) => controllers.register.trust_details.routes.CountryAdministeringTrustController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
+  private def yesNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case GovernedInsideTheUKPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = GovernedInsideTheUKPage,
+      yesCall = AdministrationInsideUKController.onPageLoad(draftId),
+      noCall = CountryGoverningTrustController.onPageLoad(draftId)
+    )
+    case AdministrationInsideUKPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = AdministrationInsideUKPage,
+      yesCall = navigateAwayFromCountryOfAdministrationQuestions(ua, draftId),
+      noCall = CountryAdministeringTrustController.onPageLoad(draftId)
+    )
+    case SettlorsBasedInTheUKPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = SettlorsBasedInTheUKPage,
+      yesCall = EstablishedUnderScotsLawController.onPageLoad(draftId),
+      noCall = if (ua.is5mldEnabled) {
+        TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+      } else {
+        RegisteringTrustFor5AController.onPageLoad(draftId)
+      }
+    )
+    case TrustResidentOffshorePage => ua => yesNoNav(
+      ua = ua,
+      fromPage = TrustResidentOffshorePage,
+      yesCall = TrustPreviouslyResidentController.onPageLoad(draftId),
+      noCall = CheckDetailsController.onPageLoad(draftId)
+    )
+    case RegisteringTrustFor5APage => ua => yesNoNav(
+      ua = ua,
+      fromPage = RegisteringTrustFor5APage,
+      yesCall = CheckDetailsController.onPageLoad(draftId),
+      noCall = InheritanceTaxActController.onPageLoad(draftId)
+    )
+    case InheritanceTaxActPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = InheritanceTaxActPage,
+      yesCall = AgentOtherThanBarristerController.onPageLoad(draftId),
+      noCall = CheckDetailsController.onPageLoad(draftId)
+    )
   }
 
-  private def isTrusteesBasedInTheUKPage(draftId: String)(answers: ReadableUserAnswers) = answers.get(TrusteesBasedInTheUKPage) match {
-    case Some(UKBasedTrustees)   => controllers.register.trust_details.routes.EstablishedUnderScotsLawController.onPageLoad(draftId)
-    case Some(NonUkBasedTrustees)  => controllers.register.trust_details.routes.RegisteringTrustFor5AController.onPageLoad(draftId)
-    case Some(InternationalAndUKTrustees)  => controllers.register.trust_details.routes.SettlorsBasedInTheUKController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
+  private def otherNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
+    case TrusteesBasedInTheUKPage => ua => ua.get(TrusteesBasedInTheUKPage) match {
+      case Some(UKBasedTrustees) =>
+        EstablishedUnderScotsLawController.onPageLoad(draftId)
+      case Some(NonUkBasedTrustees) =>
+        if (ua.is5mldEnabled) {
+          TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+        } else {
+          RegisteringTrustFor5AController.onPageLoad(draftId)
+        }
+      case Some(InternationalAndUKTrustees) =>
+        SettlorsBasedInTheUKController.onPageLoad(draftId)
+      case _ =>
+        SessionExpiredController.onPageLoad()
+    }
   }
 
-  private def isSettlorsBasedInTheUKPage(draftId: String)(answers: ReadableUserAnswers) = answers.get(SettlorsBasedInTheUKPage) match {
-    case Some(true)   => controllers.register.trust_details.routes.EstablishedUnderScotsLawController.onPageLoad(draftId)
-    case Some(false)  => controllers.register.trust_details.routes.RegisteringTrustFor5AController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
-  }
-
-  private def wasTrustPreviouslyResidentOffshoreRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(TrustResidentOffshorePage) match {
-    case Some(true)   => controllers.register.trust_details.routes.TrustPreviouslyResidentController.onPageLoad(draftId)
-    case Some(false)  => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
-  }
-
-  private def registeringForPurposeOfSchedule5ARoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(RegisteringTrustFor5APage) match {
-    case Some(true)   => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-    case Some(false)  => controllers.register.trust_details.routes.InheritanceTaxActController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
-  }
-
-  private def inheritanceTaxRoute(draftId: String)(answers: ReadableUserAnswers) = answers.get(InheritanceTaxActPage) match {
-    case Some(true)   => controllers.register.trust_details.routes.AgentOtherThanBarristerController.onPageLoad(draftId)
-    case Some(false)  => controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)
-    case None        => controllers.routes.SessionExpiredController.onPageLoad()
-  }
-
-  private def completedRoute(draftId: String, config: FrontendAppConfig): Call = {
-    Call("GET", config.registrationProgressUrl(draftId))
+  private def navigateAwayFromCountryOfAdministrationQuestions(ua: ReadableUserAnswers, draftId: String): Call = {
+    if (ua.is5mldEnabled) {
+      TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
+    } else {
+      TrusteesBasedInTheUKController.onPageLoad(draftId)
+    }
   }
 
 }
-

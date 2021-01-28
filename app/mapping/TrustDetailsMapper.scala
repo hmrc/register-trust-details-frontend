@@ -17,127 +17,86 @@
 package mapping
 
 import models.TrusteesBasedInTheUK._
-import models.{NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
-import play.api.Logging
+import models.{NonUKType, ResidentialStatusType, TrustDetailsType, TrusteesBasedInTheUK, UkType, UserAnswers}
 import pages.register.trust_details._
+import play.api.Logging
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsError, JsSuccess, Reads}
+import utils.Constants.GB
+
+import java.time.LocalDate
 
 class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
 
   override def build(userAnswers: UserAnswers): Option[TrustDetailsType] = {
-    for {
-      startDateOption <- userAnswers.get(WhenTrustSetupPage)
-      lawCountry = userAnswers.get(CountryGoverningTrustPage)
-      administrationCountryOption <- administrationCountry(userAnswers)
-      residentialStatusOption <- residentialStatus(userAnswers)
-    } yield {
-      models.TrustDetailsType(
-        startDate = startDateOption,
-        lawCountry = lawCountry,
-        administrationCountry = Some(administrationCountryOption),
-        residentialStatus = Some(residentialStatusOption)
-      )
-    }
-  }
 
-  private def administrationCountry(userAnswers: UserAnswers): Option[String] = {
-    userAnswers.get(AdministrationInsideUKPage) match {
-      case Some(true) =>
-        Some("GB")
-      case Some(false) =>
-        userAnswers.get(CountryAdministeringTrustPage)
-      case None =>
-        logger.info(s"[administrationCountry][build] unable to determine where trust is administered")
-        None
-    }
-  }
-  
-  private def residentialStatus(userAnswers: UserAnswers): Option[ResidentialStatusType] = {
-    userAnswers.get(TrusteesBasedInTheUKPage) match {
-      case Some(UKBasedTrustees) =>
-        ukResidentMap(userAnswers)
-      case Some(NonUkBasedTrustees) =>
-        nonUkResidentMap(userAnswers)
-      case Some(InternationalAndUKTrustees) =>
-        userAnswers.get(SettlorsBasedInTheUKPage) match {
-          case Some(true) =>
-            ukResidentMap(userAnswers)
-          case Some(false) =>
-            nonUkResidentMap(userAnswers)
-          case  _ =>
-            logger.info("[residentialStatus][build] unable to determine if all settlors are based in the UK")
-            None
+    def reads: Reads[TrustDetailsType] = (
+      WhenTrustSetupPage.path.read[LocalDate] and
+        CountryGoverningTrustPage.path.readNullable[String] and
+        CountryAdministeringTrustPage.path.read[String].map(Some(_)).orElse(Reads(_ => JsSuccess(Some(GB)))) and
+        residentialStatusReads.map(Some(_)) and
+        TrustOwnsUkPropertyOrLandPage.path.readNullable[Boolean] and
+        TrustListedOnEeaRegisterPage.path.readNullable[Boolean] and
+        TrustHasBusinessRelationshipInUkPage.path.readNullable[Boolean] and
+        trustUkResidentReads
+      )(TrustDetailsType.apply _)
+
+    def trustUkResidentReads: Reads[Option[Boolean]] = {
+      if (userAnswers.is5mldEnabled) {
+        residentialStatusReads.flatMap {
+          case ResidentialStatusType(Some(_), None) =>
+            Reads(_ => JsSuccess(Some(true)))
+          case ResidentialStatusType(None, Some(_)) =>
+            Reads(_ => JsSuccess(Some(false)))
+          case _ =>
+            logger.warn("residentialStatusReads returned an unexpected ResidentialStatusType")
+            Reads(_ => JsSuccess(None))
         }
-      case _ =>
-        logger.info(s"[residentialStatus][build] unable to determine where trust is resident")
+      } else {
+        Reads(_ => JsSuccess(None))
+      }
+    }
+
+    userAnswers.data.validate[TrustDetailsType](reads) match {
+      case JsSuccess(value, _) =>
+        Some(value)
+      case JsError(errors) =>
+        logger.error(s"Failed to rehydrate TrustDetailsType from UserAnswers due to $errors")
         None
     }
   }
 
-  private def nonUkResidentMap(userAnswers: UserAnswers) = {
-    val registeringTrustFor5A = userAnswers.get(RegisteringTrustFor5APage)
+  private def residentialStatusReads: Reads[ResidentialStatusType] = {
 
-    val nonUKConstruct: Option[NonUKType] = registeringTrustFor5A match {
-      case Some(true) =>
-        Some(
-          NonUKType(
-            sch5atcgga92 = true,
-            s218ihta84 = None,
-            agentS218IHTA84 = None,
-            trusteeStatus = None)
-        )
+    lazy val uk: Reads[ResidentialStatusType] = (
+      ukReads and Reads(_ => JsSuccess(None: Option[NonUKType]))
+      )(ResidentialStatusType.apply _)
 
-      case Some(false) =>
-        inheritanceTaxAndAgentBarristerMap(userAnswers)
+    lazy val nonUk: Reads[ResidentialStatusType] = (
+      Reads(_ => JsSuccess(None: Option[UkType])) and nonUkReads
+      )(ResidentialStatusType.apply _)
 
-      case _ =>
-        logger.info(s"[nonUkResidentMap][build] unable to build non UK resident or inheritance")
-        None
-    }
-
-    nonUKConstruct match {
-      case x if x.isDefined =>
-        Some(models.ResidentialStatusType(None, x)
-        )
-      case _ =>
-        logger.info(s"[nonUkResidentMap][build] unable to create residential status")
-        None
+    TrusteesBasedInTheUKPage.path.read[TrusteesBasedInTheUK].flatMap {
+      case UKBasedTrustees => uk
+      case NonUkBasedTrustees => nonUk
+      case InternationalAndUKTrustees =>
+        SettlorsBasedInTheUKPage.path.read[Boolean].flatMap {
+          case true => uk
+          case false => nonUk
+        }
     }
   }
 
-  private def ukResidentMap(userAnswers: UserAnswers) = {
-    val scotsLaw = userAnswers.get(EstablishedUnderScotsLawPage)
-    val trustOffShoreYesNo = userAnswers.get(TrustResidentOffshorePage)
-    val trustOffShoreCountry = userAnswers.get(TrustPreviouslyResidentPage)
-    scotsLaw.map {
-      scots =>
-        ResidentialStatusType(
-          uk = Some(UkType(
-            scottishLaw = scots,
-            preOffShore = trustOffShoreYesNo match {
-              case Some(true) => trustOffShoreCountry
-              case _ => None
-            }
-          )),
-          nonUK = None
-        )
-    }
-  }
+  private def ukReads: Reads[Option[UkType]] = (
+    EstablishedUnderScotsLawPage.path.read[Boolean] and
+      TrustPreviouslyResidentPage.path.readNullable[String]
+    )(UkType.apply _).map(Some(_))
 
-  private def inheritanceTaxAndAgentBarristerMap(userAnswers: UserAnswers): Option[NonUKType] = {
-    val s218ihta84 = userAnswers.get(InheritanceTaxActPage)
-    val agentS218IHTA84 = userAnswers.get(AgentOtherThanBarristerPage)
+  private def nonUkReads: Reads[Option[NonUKType]] = (
+    RegisteringTrustFor5APage.path.read[Boolean] and
+      InheritanceTaxActPage.path.readNullable[Boolean] and
+      AgentOtherThanBarristerPage.path.readNullable[Boolean] and
+      Reads(_ => JsSuccess(None))
+    )(NonUKType.apply _).map(Some(_))
 
-    s218ihta84 match {
-      case Some(_) =>
-        Some(
-          NonUKType(
-            sch5atcgga92 = false,
-            s218ihta84 = s218ihta84,
-            agentS218IHTA84 = agentS218IHTA84,
-            trusteeStatus = None)
-        )
-
-      case _ => None
-    }
-  }
 }

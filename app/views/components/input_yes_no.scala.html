@@ -39,11 +39,15 @@
         }
     >
 
-        <legend id="@{field.id}-legend">
-            @if(legendAsHeading){<h1 id="@{field.id}-id" class="legend-as-heading heading-large">}
-            @label
-            @if(legendAsHeading){</h1>}
-        </legend>
+        @if(legendAsHeading){
+            <legend id="@{field.id}-legend">
+                <h1 class="legend-as-heading @if(legendClass.nonEmpty){@legendClass}else{heading-large}">@label</h1>
+            </legend>
+        } else {
+            <legend id="@{field.id}-legend" @if(legendClass.nonEmpty){class="@legendClass" }>
+                @label
+            </legend>
+        }
         @form_hint(hint = hint, readerHint = readerHint, link = link)
         @field.errors.map { error =>
         <span class="error-message" id="error-message-@{field.id}-input">
