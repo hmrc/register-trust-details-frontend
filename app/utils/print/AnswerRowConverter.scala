@@ -17,16 +17,17 @@
 package utils.print
 
 import java.time.LocalDate
-
 import com.google.inject.Inject
 import models.ReadableUserAnswers
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import queries.Gettable
+import utils.answers.CheckAnswersFormatters
 import utils.answers.CheckAnswersFormatters._
+import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
 
-class AnswerRowConverter @Inject()() {
+class AnswerRowConverter @Inject()(countryOptions: CountryOptions) {
 
   def bind(userAnswers: ReadableUserAnswers)
           (implicit messages: Messages): Bound = new Bound(userAnswers)
@@ -64,6 +65,18 @@ class AnswerRowConverter @Inject()() {
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
           HtmlFormat.escape(x.format(dateFormatter)),
+          Some(changeUrl)
+        )
+      }
+    }
+
+    def countryQuestion(query: Gettable[String],
+                        labelKey: String,
+                        changeUrl: String): Option[AnswerRow] = {
+      userAnswers.get(query) map { x =>
+        AnswerRow(
+          s"$labelKey.checkYourAnswersLabel",
+          HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
           Some(changeUrl)
         )
       }

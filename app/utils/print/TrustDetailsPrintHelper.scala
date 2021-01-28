@@ -21,14 +21,10 @@ import controllers.register.trust_details.routes
 import models.ReadableUserAnswers
 import pages.register.trust_details._
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import utils.answers.CheckAnswersFormatters
-import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
 
-class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
-                                        countryOptions: CountryOptions
-                                       ) {
+class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
   def printSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
@@ -53,14 +49,17 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
       bound.stringQuestion(TrustNamePage, "trustName", routes.TrustNameController.onPageLoad(draftId).url),
       bound.dateQuestion(WhenTrustSetupPage, "whenTrustSetup", routes.WhenTrustSetupController.onPageLoad(draftId).url),
       bound.yesNoQuestion(GovernedInsideTheUKPage, "governedInsideTheUK", routes.GovernedInsideTheUKController.onPageLoad(draftId).url),
-      countryGoverningTrust(draftId, userAnswers),
+      bound.countryQuestion(CountryGoverningTrustPage, "countryGoverningTrust", routes.CountryGoverningTrustController.onPageLoad(draftId).url),
       bound.yesNoQuestion(AdministrationInsideUKPage, "administrationInsideUK", routes.AdministrationInsideUKController.onPageLoad(draftId).url),
-      countryAdministeringTrust(draftId, userAnswers),
+      bound.countryQuestion(CountryAdministeringTrustPage, "countryAdministeringTrust", routes.CountryAdministeringTrustController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(TrustOwnsUkPropertyOrLandPage, "trustOwnsUkPropertyOrLand", routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(TrustListedOnEeaRegisterPage, "trustListedOnEeaRegister", routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url),
       trusteesBasedInUK(draftId, userAnswers),
       bound.yesNoQuestion(SettlorsBasedInTheUKPage, "settlorsBasedInTheUK", routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url),
       bound.yesNoQuestion(EstablishedUnderScotsLawPage, "establishedUnderScotsLaw", routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustResidentOffshorePage, "trustResidentOffshore", routes.TrustResidentOffshoreController.onPageLoad(draftId).url),
-      trustPreviouslyResident(draftId, userAnswers),
+      bound.countryQuestion(TrustPreviouslyResidentPage, "trustPreviouslyResident", routes.TrustPreviouslyResidentController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(TrustHasBusinessRelationshipInUkPage, "trustHasBusinessRelationshipInUk", routes.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId).url),
       bound.yesNoQuestion(RegisteringTrustFor5APage, "registeringTrustFor5A", routes.RegisteringTrustFor5AController.onPageLoad(draftId).url),
       bound.yesNoQuestion(InheritanceTaxActPage, "inheritanceTaxAct", routes.InheritanceTaxActController.onPageLoad(draftId).url),
       bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarrister", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
@@ -76,28 +75,5 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter,
       Some(routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url)
     )
   }
-
-
-  private def countryGoverningTrust(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(CountryGoverningTrustPage) map {
-    x => AnswerRow(
-      "countryGoverningTrust.checkYourAnswersLabel",
-      HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
-      Some(controllers.register.trust_details.routes.CountryGoverningTrustController.onPageLoad(draftId).url))
-  }
-
-  private def countryAdministeringTrust(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(CountryAdministeringTrustPage) map {
-    x => AnswerRow(
-      "countryAdministeringTrust.checkYourAnswersLabel",
-      HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
-      Some(controllers.register.trust_details.routes.CountryAdministeringTrustController.onPageLoad(draftId).url))
-  }
-
-  private def trustPreviouslyResident(draftId: String, userAnswers: ReadableUserAnswers)(implicit messages: Messages): Option[AnswerRow] = userAnswers.get(TrustPreviouslyResidentPage) map {
-    x => AnswerRow(
-      "trustPreviouslyResident.checkYourAnswersLabel",
-      HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
-      Some(controllers.register.trust_details.routes.TrustPreviouslyResidentController.onPageLoad(draftId).url))
-  }
-
 
 }
