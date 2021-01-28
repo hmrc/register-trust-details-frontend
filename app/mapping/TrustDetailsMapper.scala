@@ -37,17 +37,9 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
         residentialStatusReads.map(Some(_)) and
         TrustOwnsUkPropertyOrLandPage.path.readNullable[Boolean] and
         TrustListedOnEeaRegisterPage.path.readNullable[Boolean] and
-        trustUKRelationReads and
+        TrustHasBusinessRelationshipInUkPage.path.readNullable[Boolean] and
         trustUkResidentReads
       )(TrustDetailsType.apply _)
-
-    def trustUKRelationReads: Reads[Option[Boolean]] = {
-      if (userAnswers.is5mldEnabled) {
-        TrustHasBusinessRelationshipInUkPage.path.read[Boolean].map(Some(_): Option[Boolean]).orElse(Reads(_ => JsSuccess(Some(true))))
-      } else {
-        Reads(_ => JsSuccess(None))
-      }
-    }
 
     def trustUkResidentReads: Reads[Option[Boolean]] = {
       if (userAnswers.is5mldEnabled) {

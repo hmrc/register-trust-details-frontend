@@ -215,7 +215,7 @@ class TrustDetailsMapperSpec extends SpecBase {
             )),
             trustUKProperty = Some(true),
             trustRecorded = Some(false),
-            trustUKRelation = Some(true),
+            trustUKRelation = None,
             trustUKResident = Some(true)
           )
         }
@@ -249,7 +249,7 @@ class TrustDetailsMapperSpec extends SpecBase {
             )),
             trustUKProperty = Some(true),
             trustRecorded = Some(false),
-            trustUKRelation = Some(true),
+            trustUKRelation = None,
             trustUKResident = Some(true)
           )
         }
