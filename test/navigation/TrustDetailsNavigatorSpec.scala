@@ -302,6 +302,11 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           .mustBe(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId))
       }
 
+      "TrustHasBusinessRelationshipInUk -> RegisteringTrustFor5A" in {
+        navigator.nextPage(TrustHasBusinessRelationshipInUkPage, fakeDraftId, baseAnswers)
+          .mustBe(routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId))
+      }
+
       "RegisteringTrustFor5A -> Yes -> CheckDetails" in {
         val answers = baseAnswers.set(RegisteringTrustFor5APage, true).success.value
 

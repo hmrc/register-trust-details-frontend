@@ -47,6 +47,7 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     case CountryAdministeringTrustPage => ua => navigateAwayFromCountryOfAdministrationQuestions(ua, draftId)
     case TrustOwnsUkPropertyOrLandPage => _ => TrustListedOnEeaRegisterController.onPageLoad(draftId)
     case TrustListedOnEeaRegisterPage => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
+    case TrustHasBusinessRelationshipInUkPage => _ => RegisteringTrustFor5AController.onPageLoad(draftId)
     case EstablishedUnderScotsLawPage => _ => TrustResidentOffshoreController.onPageLoad(draftId)
     case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => _ => CheckDetailsController.onPageLoad(draftId)
     case CheckDetailsPage => _ => Call(GET, config.registrationProgressUrl(draftId))
@@ -92,12 +93,6 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
       fromPage = InheritanceTaxActPage,
       yesCall = AgentOtherThanBarristerController.onPageLoad(draftId),
       noCall = CheckDetailsController.onPageLoad(draftId)
-    )
-    case TrustHasBusinessRelationshipInUkPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = TrustHasBusinessRelationshipInUkPage,
-      yesCall = CheckDetailsController.onPageLoad(draftId),
-      noCall = RegisteringTrustFor5AController.onPageLoad(draftId)
     )
   }
 
