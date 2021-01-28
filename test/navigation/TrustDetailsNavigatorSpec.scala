@@ -274,11 +274,11 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           .mustBe(routes.EstablishedUnderScotsLawController.onPageLoad(fakeDraftId))
       }
 
-      "TrusteesBasedInTheUK -> NonUkBasedTrustees -> RegisteringTrustFor5A" in {
+      "TrusteesBasedInTheUK -> NonUkBasedTrustees -> TrustHasBusinessRelationshipInUk" in {
         val answers = baseAnswers.set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
 
         navigator.nextPage(TrusteesBasedInTheUKPage, fakeDraftId, answers)
-          .mustBe(routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId))
+          .mustBe(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId))
       }
 
       "TrusteesBasedInTheUK -> InternationalAndUKTrustees -> RegisteringTrustFor5A" in {

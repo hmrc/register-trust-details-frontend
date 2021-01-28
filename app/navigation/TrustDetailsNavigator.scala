@@ -98,10 +98,18 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
 
   private def otherNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case TrusteesBasedInTheUKPage => ua => ua.get(TrusteesBasedInTheUKPage) match {
-      case Some(UKBasedTrustees) => EstablishedUnderScotsLawController.onPageLoad(draftId)
-      case Some(NonUkBasedTrustees) => RegisteringTrustFor5AController.onPageLoad(draftId)
-      case Some(InternationalAndUKTrustees) => SettlorsBasedInTheUKController.onPageLoad(draftId)
-      case _ => SessionExpiredController.onPageLoad()
+      case Some(UKBasedTrustees) =>
+        EstablishedUnderScotsLawController.onPageLoad(draftId)
+      case Some(NonUkBasedTrustees) =>
+        if (ua.is5mldEnabled) {
+          TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+        } else {
+          RegisteringTrustFor5AController.onPageLoad(draftId)
+        }
+      case Some(InternationalAndUKTrustees) =>
+        SettlorsBasedInTheUKController.onPageLoad(draftId)
+      case _ =>
+        SessionExpiredController.onPageLoad()
     }
   }
 
