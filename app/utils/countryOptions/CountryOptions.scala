@@ -24,7 +24,6 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.InputOption
 
-
 @Singleton
 class CountryOptions @Inject()(environment: Environment, config: FrontendAppConfig) {
 
@@ -32,7 +31,7 @@ class CountryOptions @Inject()(environment: Environment, config: FrontendAppConf
     CountryOptions.getCountries(environment, getFileName)
   }
 
-  def getFileName()(implicit messages: Messages) = {
+  def getFileName()(implicit messages: Messages): String = {
     val isWelsh = messages.lang.code == config.WELSH
     if (isWelsh) config.locationCanonicalListCY else config.locationCanonicalList
   }

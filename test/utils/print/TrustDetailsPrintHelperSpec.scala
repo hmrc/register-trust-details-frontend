@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package utils
-
-import java.time.LocalDate
+package utils.print
 
 import base.SpecBase
 import controllers.register.trust_details.routes
 import models.TrusteesBasedInTheUK.UKBasedTrustees
 import pages.register.trust_details._
 import play.twirl.api.HtmlFormat
-import utils.print.TrustDetailsPrintHelper
 import viewmodels.AnswerRow
+
+import java.time.LocalDate
 
 class TrustDetailsPrintHelperSpec extends SpecBase {
 

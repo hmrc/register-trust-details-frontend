@@ -16,18 +16,19 @@
 
 package utils.print
 
-import java.time.LocalDate
 import com.google.inject.Inject
+import controllers.register.trust_details.routes
 import models.ReadableUserAnswers
+import pages.register.trust_details.TrusteesBasedInTheUKPage
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import queries.Gettable
-import utils.answers.CheckAnswersFormatters
-import utils.answers.CheckAnswersFormatters._
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
 
-class AnswerRowConverter @Inject()(countryOptions: CountryOptions) {
+import java.time.LocalDate
+
+class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatters,
+                                   countryOptions: CountryOptions) {
 
   def bind(userAnswers: ReadableUserAnswers)
           (implicit messages: Messages): Bound = new Bound(userAnswers)
@@ -37,10 +38,10 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions) {
     def stringQuestion(query: Gettable[String],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
+      userAnswers.get(query) map { x =>
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
-          HtmlFormat.escape(x),
+          checkAnswersFormatters.escape(x),
           Some(changeUrl)
         )
       }
@@ -49,10 +50,10 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions) {
     def yesNoQuestion(query: Gettable[Boolean],
                       labelKey: String,
                       changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map {x =>
+      userAnswers.get(query) map { x =>
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
-          yesOrNo(x),
+          checkAnswersFormatters.yesOrNo(x),
           Some(changeUrl)
         )
       }
@@ -64,7 +65,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions) {
       userAnswers.get(query) map { x =>
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
-          HtmlFormat.escape(x.format(dateFormatter)),
+          checkAnswersFormatters.formatDate(x),
           Some(changeUrl)
         )
       }
@@ -76,10 +77,21 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions) {
       userAnswers.get(query) map { x =>
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
-          HtmlFormat.escape(CheckAnswersFormatters.country(x, countryOptions)),
+          checkAnswersFormatters.country(x, countryOptions),
           Some(changeUrl)
         )
       }
     }
+
+    def trusteesBasedInUK(draftId: String): Option[AnswerRow] = {
+      userAnswers.get(TrusteesBasedInTheUKPage) map { x =>
+        AnswerRow(
+          "trusteesBasedInTheUK.checkYourAnswersLabel",
+          checkAnswersFormatters.answer("trusteesBasedInTheUK", x),
+          Some(routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url)
+        )
+      }
+    }
+
   }
 }
