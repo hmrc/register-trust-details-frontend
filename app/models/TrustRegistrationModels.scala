@@ -23,10 +23,11 @@ import play.api.libs.json._
 case class TrustDetailsType(startDate: LocalDate,
                             lawCountry: Option[String],
                             administrationCountry: Option[String],
-                            residentialStatus: Option[ResidentialStatusType])
-                            //trustUKProperty: Option[Boolean],
-                            //trustRecorded: Option[Boolean],
-                            //trustUKResident: Option[Boolean]
+                            residentialStatus: Option[ResidentialStatusType],
+                            trustUKProperty: Option[Boolean] = None,
+                            trustRecorded: Option[Boolean] = None,
+                            trustUKRelation: Option[Boolean] = None,
+                            trustUKResident: Option[Boolean] = None)
 
 object TrustDetailsType {
   implicit val trustDetailsTypeFormat: Format[TrustDetailsType] = Json.format[TrustDetailsType]

@@ -34,34 +34,36 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
       WhenTrustSetupPage.path.read[LocalDate] and
         CountryGoverningTrustPage.path.readNullable[String] and
         CountryAdministeringTrustPage.path.read[String].map(Some(_)).orElse(Reads(_ => JsSuccess(Some(GB)))) and
-        residentialStatusReads
+        residentialStatusReads.map(Some(_)) and
+        TrustOwnsUkPropertyOrLandPage.path.readNullable[Boolean] and
+        TrustListedOnEeaRegisterPage.path.readNullable[Boolean] and
+        trustUKRelationReads and
+        trustUkResidentReads
       )(TrustDetailsType.apply _)
 
-    def residentialStatusReads: Reads[Option[ResidentialStatusType]] = {
-      TrusteesBasedInTheUKPage.path.read[TrusteesBasedInTheUK].flatMap {
-        case UKBasedTrustees =>
-          (ukReads and Reads(_ => JsSuccess(None: Option[NonUKType])))(ResidentialStatusType.apply _)
-        case NonUkBasedTrustees =>
-          (Reads(_ => JsSuccess(None: Option[UkType])) and nonUkReads)(ResidentialStatusType.apply _)
-        case InternationalAndUKTrustees =>
-          SettlorsBasedInTheUKPage.path.read[Boolean].flatMap {
-            case true => (ukReads and Reads(_ => JsSuccess(None: Option[NonUKType])))(ResidentialStatusType.apply _)
-            case false => (Reads(_ => JsSuccess(None: Option[UkType])) and nonUkReads)(ResidentialStatusType.apply _)
-          }
-      }.map(Some(_))
+    def trustUKRelationReads: Reads[Option[Boolean]] = {
+      if (userAnswers.is5mldEnabled) {
+        TrustHasBusinessRelationshipInUkPage.path.read[Boolean].map(Some(_): Option[Boolean]).orElse(Reads(_ => JsSuccess(Some(true))))
+      } else {
+        Reads(_ => JsSuccess(None))
+      }
     }
 
-    def ukReads: Reads[Option[UkType]] = (
-      EstablishedUnderScotsLawPage.path.read[Boolean] and
-        TrustPreviouslyResidentPage.path.readNullable[String]
-      )(UkType.apply _).map(Some(_))
-
-    def nonUkReads: Reads[Option[NonUKType]] = (
-      RegisteringTrustFor5APage.path.read[Boolean] and
-        InheritanceTaxActPage.path.readNullable[Boolean] and
-        AgentOtherThanBarristerPage.path.readNullable[Boolean] and
+    def trustUkResidentReads: Reads[Option[Boolean]] = {
+      if (userAnswers.is5mldEnabled) {
+        residentialStatusReads.flatMap {
+          case ResidentialStatusType(Some(_), None) =>
+            Reads(_ => JsSuccess(Some(true)))
+          case ResidentialStatusType(None, Some(_)) =>
+            Reads(_ => JsSuccess(Some(false)))
+          case _ =>
+            logger.warn("residentialStatusReads returned an unexpected ResidentialStatusType")
+            Reads(_ => JsSuccess(None))
+        }
+      } else {
         Reads(_ => JsSuccess(None))
-      )(NonUKType.apply _).map(Some(_))
+      }
+    }
 
     userAnswers.data.validate[TrustDetailsType](reads) match {
       case JsSuccess(value, _) =>
@@ -71,4 +73,38 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
         None
     }
   }
+
+  private def residentialStatusReads: Reads[ResidentialStatusType] = {
+
+    lazy val uk: Reads[ResidentialStatusType] = (
+      ukReads and Reads(_ => JsSuccess(None: Option[NonUKType]))
+      )(ResidentialStatusType.apply _)
+
+    lazy val nonUk: Reads[ResidentialStatusType] = (
+      Reads(_ => JsSuccess(None: Option[UkType])) and nonUkReads
+      )(ResidentialStatusType.apply _)
+
+    TrusteesBasedInTheUKPage.path.read[TrusteesBasedInTheUK].flatMap {
+      case UKBasedTrustees => uk
+      case NonUkBasedTrustees => nonUk
+      case InternationalAndUKTrustees =>
+        SettlorsBasedInTheUKPage.path.read[Boolean].flatMap {
+          case true => uk
+          case false => nonUk
+        }
+    }
+  }
+
+  private def ukReads: Reads[Option[UkType]] = (
+    EstablishedUnderScotsLawPage.path.read[Boolean] and
+      TrustPreviouslyResidentPage.path.readNullable[String]
+    )(UkType.apply _).map(Some(_))
+
+  private def nonUkReads: Reads[Option[NonUKType]] = (
+    RegisteringTrustFor5APage.path.read[Boolean] and
+      InheritanceTaxActPage.path.readNullable[Boolean] and
+      AgentOtherThanBarristerPage.path.readNullable[Boolean] and
+      Reads(_ => JsSuccess(None))
+    )(NonUKType.apply _).map(Some(_))
+
 }
