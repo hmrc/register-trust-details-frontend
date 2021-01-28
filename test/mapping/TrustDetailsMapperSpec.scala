@@ -55,7 +55,7 @@ class TrustDetailsMapperSpec extends SpecBase {
 
           result mustBe TrustDetailsType(
             startDate = date,
-            lawCountry = None, // should this be Some(GB)?
+            lawCountry = None,
             administrationCountry = Some(GB),
             residentialStatus = Some(ResidentialStatusType(
               uk = Some(UkType(
@@ -81,7 +81,7 @@ class TrustDetailsMapperSpec extends SpecBase {
 
           result mustBe TrustDetailsType(
             startDate = date,
-            lawCountry = None, // should this be Some("GB")?
+            lawCountry = None,
             administrationCountry = Some(GB),
             residentialStatus = Some(ResidentialStatusType(
               uk = Some(UkType(
