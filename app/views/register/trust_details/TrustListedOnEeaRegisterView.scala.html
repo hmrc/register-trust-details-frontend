@@ -23,6 +23,17 @@
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
+@content = {
+    <p>@messages("trustListedOnEeaRegister.text")</p>
+
+    <ul class="trust-list--bullet">
+        <li class="inside">@messages("trustListedOnEeaRegister.text.bullet1")</li>
+        <li class="inside">@messages("trustListedOnEeaRegister.text.bullet2")</li>
+        <li class="inside">@messages("trustListedOnEeaRegister.text.bullet3")</li>
+        <li class="inside">@messages("trustListedOnEeaRegister.text.bullet4")</li>
+    </ul>
+}
+
 @main_template(
     title = s"${errorPrefix(form)} ${messages("trustListedOnEeaRegister.title")}"
 ) {
@@ -33,22 +44,12 @@
 
         @components.error_summary(form.errors)
 
-        <h1 class="heading-large">@messages("trustListedOnEeaRegister.heading")</h1>
-
-        <p>@messages("trustListedOnEeaRegister.text")</p>
-
-        <ul class="trust-list--bullet">
-            <li class="inside">@messages("trustListedOnEeaRegister.text.bullet1")</li>
-            <li class="inside">@messages("trustListedOnEeaRegister.text.bullet2")</li>
-            <li class="inside">@messages("trustListedOnEeaRegister.text.bullet3")</li>
-            <li class="inside">@messages("trustListedOnEeaRegister.text.bullet4")</li>
-        </ul>
-
         @components.input_yes_no(
             field = form("value"),
             label = messages("trustListedOnEeaRegister.heading"),
-            legendClass = Some("visually-hidden"),
-            legendAsHeading = false
+            legendClass = Some("heading-large"),
+            legendAsHeading = true,
+            additionalContent = Some(content)
         )
 
         @components.submit_button()

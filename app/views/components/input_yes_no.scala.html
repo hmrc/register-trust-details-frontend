@@ -26,10 +26,10 @@
     yesAssoc: Option[String] = None,
     noAssoc: Option[String] = None,
     legendClass: Option[String] = None,
-    link : Option[Link] = None,
-    legendAsHeading: Boolean = true
+    link: Option[Link] = None,
+    legendAsHeading: Boolean = true,
+    additionalContent: Option[Html] = None
 )(implicit messages: Messages)
-
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
 
@@ -48,12 +48,23 @@
                 @label
             </legend>
         }
-        @form_hint(hint = hint, readerHint = readerHint, link = link)
-        @field.errors.map { error =>
-        <span class="error-message" id="error-message-@{field.id}-input">
-            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)
-        </span>
+
+        @if(additionalContent.isDefined){
+            @additionalContent
         }
+
+        @form_hint(
+            hint = hint,
+            readerHint = readerHint,
+            link = link
+        )
+
+        @field.errors.map { error =>
+            <span class="error-message" id="error-message-@{field.id}-input">
+                <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)
+            </span>
+        }
+
         <div class="multiple-choice first">
             <input
                     id="@{field.id}-yes"
