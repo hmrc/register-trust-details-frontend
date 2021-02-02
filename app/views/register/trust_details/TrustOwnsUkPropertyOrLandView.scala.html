@@ -23,6 +23,10 @@
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
+@content = {
+    <p>@messages("trustOwnsUkPropertyOrLand.text")</p>
+}
+
 @main_template(
     title = s"${errorPrefix(form)} ${messages("trustOwnsUkPropertyOrLand.title")}"
 ) {
@@ -33,15 +37,12 @@
 
         @components.error_summary(form.errors)
 
-        <h1 class="heading-large">@messages("trustOwnsUkPropertyOrLand.heading")</h1>
-
-        <p>@messages("trustOwnsUkPropertyOrLand.text")</p>
-
         @components.input_yes_no(
             field = form("value"),
             label = messages("trustOwnsUkPropertyOrLand.heading"),
-            legendClass = Some("visually-hidden"),
-            legendAsHeading = false
+            legendClass = Some("heading-large"),
+            legendAsHeading = true,
+            additionalContent = Some(content)
         )
 
         @components.submit_button()
