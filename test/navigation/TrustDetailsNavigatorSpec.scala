@@ -197,9 +197,9 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
       }
     }
 
-    "in 5mld mode" must {
+    "in 5mld taxable mode" must {
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
+      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)
 
       "TrustName -> WhenTrustSetup" in {
         val answers = baseAnswers.setAtPath(TrustHaveAUTRPage.path, JsBoolean(false)).success.value
@@ -281,7 +281,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           .mustBe(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId))
       }
 
-      "TrusteesBasedInTheUK -> InternationalAndUKTrustees -> RegisteringTrustFor5A" in {
+      "TrusteesBasedInTheUK -> InternationalAndUKTrustees -> SettlorsBasedInTheUk" in {
         val answers = baseAnswers.set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
 
         navigator.nextPage(TrusteesBasedInTheUKPage, fakeDraftId, answers)
@@ -365,6 +365,82 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
         navigator.nextPage(TrustPreviouslyResidentPage, fakeDraftId, answers)
           .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
       }
+
+      "CheckDetails -> RegistrationProgress" in {
+        val route = navigator.nextPage(CheckDetailsPage, fakeDraftId, baseAnswers)
+
+        route.url mustBe "http://localhost:9781/trusts-registration/draftId/registration-progress"
+      }
+    }
+
+    "in 5mld none taxable mode" must {
+
+      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)
+
+      "TrustName -> WhenTrustSetup" in {
+        val answers = baseAnswers.setAtPath(TrustHaveAUTRPage.path, JsBoolean(false)).success.value
+
+        navigator.nextPage(TrustNamePage, fakeDraftId, answers)
+          .mustBe(routes.WhenTrustSetupController.onPageLoad(fakeDraftId))
+      }
+
+      "WhenTrustSetup -> TrustOwnsUkPropertyOrLand" in {
+        val answers = baseAnswers.set(WhenTrustSetupPage, date).success.value
+
+        navigator.nextPage(WhenTrustSetupPage, fakeDraftId, answers)
+          .mustBe(routes.TrustOwnsUkPropertyOrLandController.onPageLoad(fakeDraftId))
+      }
+
+      "TrustOwnsUkPropertyOrLand -> TrustListedOnEeaRegister" in {
+        navigator.nextPage(TrustOwnsUkPropertyOrLandPage, fakeDraftId, emptyUserAnswers)
+          .mustBe(routes.TrustListedOnEeaRegisterController.onPageLoad(draftId))
+      }
+
+      "TrustListedOnEeaRegister -> TrusteesBasedInTheUK" in {
+        navigator.nextPage(TrustListedOnEeaRegisterPage, fakeDraftId, emptyUserAnswers)
+          .mustBe(routes.TrusteesBasedInTheUKController.onPageLoad(draftId))
+      }
+
+      "TrusteesBasedInTheUK -> UKBasedTrustees -> CheckDetails" in {
+        val answers = baseAnswers.set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
+
+        navigator.nextPage(TrusteesBasedInTheUKPage, fakeDraftId, answers)
+          .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
+      }
+
+      "TrusteesBasedInTheUK -> NonUkBasedTrustees -> TrustHasBusinessRelationshipInUk" in {
+        val answers = baseAnswers.set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
+
+        navigator.nextPage(TrusteesBasedInTheUKPage, fakeDraftId, answers)
+          .mustBe(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId))
+      }
+
+      "TrusteesBasedInTheUK -> InternationalAndUKTrustees -> SettlorsBasedInTheUk" in {
+        val answers = baseAnswers.set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
+
+        navigator.nextPage(TrusteesBasedInTheUKPage, fakeDraftId, answers)
+          .mustBe(routes.SettlorsBasedInTheUKController.onPageLoad(fakeDraftId))
+      }
+
+      "SettlorsBasedInTheUK -> Yes -> CheckDetails" in {
+        val answers = baseAnswers.set(SettlorsBasedInTheUKPage, true).success.value
+
+        navigator.nextPage(SettlorsBasedInTheUKPage, fakeDraftId, answers)
+          .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
+      }
+
+      "SettlorsBasedInTheUK -> No -> TrustHasBusinessRelationshipInUk" in {
+        val answers = baseAnswers.set(SettlorsBasedInTheUKPage, false).success.value
+
+        navigator.nextPage(SettlorsBasedInTheUKPage, fakeDraftId, answers)
+          .mustBe(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId))
+      }
+
+      "TrustHasBusinessRelationshipInUk -> CheckDetails" in {
+        navigator.nextPage(TrustHasBusinessRelationshipInUkPage, fakeDraftId, baseAnswers)
+          .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
+      }
+
 
       "CheckDetails -> RegistrationProgress" in {
         val route = navigator.nextPage(CheckDetailsPage, fakeDraftId, baseAnswers)
