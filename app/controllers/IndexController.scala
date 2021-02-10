@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
 import models.Status.Completed
 import models.UserAnswers
@@ -29,15 +30,16 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
 import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction,
-                                 featureFlagService: FeatureFlagService
+                                 featureFlagService: FeatureFlagService,
+                                 submissionDraftConnector: SubmissionDraftConnector
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request: IdentifierRequest[AnyContent] =>
@@ -70,12 +72,15 @@ class IndexController @Inject()(
 
     featureFlagService.is5mldEnabled() flatMap {
       is5mldEnabled =>
-        repository.get(draftId) flatMap {
-          case Some(userAnswers) =>
-            redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
-          case _ =>
-            val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
-            redirect(userAnswers)
+        submissionDraftConnector.getIsTrustTaxable(draftId) flatMap {
+          isTaxable =>
+            repository.get(draftId) flatMap {
+              case Some(userAnswers) =>
+                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
+              case _ =>
+                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
+                redirect(userAnswers)
+            }
         }
     }
   }
