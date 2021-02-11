@@ -126,7 +126,7 @@ class IndexControllerSpec extends SpecBase {
         }
       }
 
-      "update value of is5mldEnabled and isTaxable in user answers" in {
+      "update value of is5mldEnabled and isTaxable to true in user answers" in {
 
         reset(registrationsRepository)
 
@@ -150,6 +150,35 @@ class IndexControllerSpec extends SpecBase {
 
           uaCaptor.getValue.is5mldEnabled mustBe true
           uaCaptor.getValue.isTaxable mustBe true
+
+          application.stop()
+        }
+      }
+
+      "update value of is5mldEnabled and isTaxable to false in user answers" in {
+
+        reset(registrationsRepository)
+
+        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .build()
+
+        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+        when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+        when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+
+        val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
+
+        route(application, request).value.map { _ =>
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+
+          uaCaptor.getValue.is5mldEnabled mustBe false
+          uaCaptor.getValue.isTaxable mustBe false
 
           application.stop()
         }
