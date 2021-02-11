@@ -42,12 +42,12 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
 
   private def simpleNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case TrustNamePage => _ => WhenTrustSetupController.onPageLoad(draftId)
-    case WhenTrustSetupPage => _ => GovernedInsideTheUKController.onPageLoad(draftId)
+    case WhenTrustSetupPage => ua => navigateAwayFromTrustSetupPage(ua, draftId)
     case CountryGoverningTrustPage => _ => AdministrationInsideUKController.onPageLoad(draftId)
     case CountryAdministeringTrustPage => ua => navigateAwayFromCountryOfAdministrationQuestions(ua, draftId)
     case TrustOwnsUkPropertyOrLandPage => _ => TrustListedOnEeaRegisterController.onPageLoad(draftId)
     case TrustListedOnEeaRegisterPage => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
-    case TrustHasBusinessRelationshipInUkPage => _ => RegisteringTrustFor5AController.onPageLoad(draftId)
+    case TrustHasBusinessRelationshipInUkPage => ua => navigateAwayFromRelationshipInTheUk(ua,draftId)
     case EstablishedUnderScotsLawPage => _ => TrustResidentOffshoreController.onPageLoad(draftId)
     case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => _ => CheckDetailsController.onPageLoad(draftId)
     case CheckDetailsPage => _ => Call(GET, config.registrationProgressUrl(draftId))
@@ -69,12 +69,8 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     case SettlorsBasedInTheUKPage => ua => yesNoNav(
       ua = ua,
       fromPage = SettlorsBasedInTheUKPage,
-      yesCall = EstablishedUnderScotsLawController.onPageLoad(draftId),
-      noCall = if (ua.is5mldEnabled) {
-        TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
-      } else {
-        RegisteringTrustFor5AController.onPageLoad(draftId)
-      }
+      yesCall = navigateAwayFromUkSelection(ua, draftId),
+      noCall = navigateAwayFromNoneUkSelection(ua, draftId)
     )
     case TrustResidentOffshorePage => ua => yesNoNav(
       ua = ua,
@@ -99,17 +95,38 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
   private def otherNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
     case TrusteesBasedInTheUKPage => ua => ua.get(TrusteesBasedInTheUKPage) match {
       case Some(UKBasedTrustees) =>
-        EstablishedUnderScotsLawController.onPageLoad(draftId)
+        navigateAwayFromUkSelection(ua, draftId)
       case Some(NonUkBasedTrustees) =>
-        if (ua.is5mldEnabled) {
-          TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
-        } else {
-          RegisteringTrustFor5AController.onPageLoad(draftId)
-        }
+        navigateAwayFromNoneUkSelection(ua, draftId)
       case Some(InternationalAndUKTrustees) =>
         SettlorsBasedInTheUKController.onPageLoad(draftId)
       case _ =>
         SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def navigateAwayFromUkSelection(ua: ReadableUserAnswers, draftId: String): Call = {
+    if (ua.isTaxable) {
+      EstablishedUnderScotsLawController.onPageLoad(draftId)
+    } else {
+      CheckDetailsController.onPageLoad(draftId)
+    }
+  }
+
+  private def navigateAwayFromNoneUkSelection(ua: ReadableUserAnswers, draftId: String): Call = {
+    if (ua.is5mldEnabled) {
+      TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+    } else {
+      RegisteringTrustFor5AController.onPageLoad(draftId)
+    }
+  }
+
+
+  private def navigateAwayFromTrustSetupPage(ua: ReadableUserAnswers, draftId: String): Call = {
+    if (ua.isTaxable) {
+      GovernedInsideTheUKController.onPageLoad(draftId)
+    } else {
+      TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
     }
   }
 
@@ -118,6 +135,14 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
       TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
     } else {
       TrusteesBasedInTheUKController.onPageLoad(draftId)
+    }
+  }
+
+  private def navigateAwayFromRelationshipInTheUk(ua: ReadableUserAnswers, draftId: String): Call = {
+    if (ua.isTaxable) {
+      RegisteringTrustFor5AController.onPageLoad(draftId)
+    } else {
+      CheckDetailsController.onPageLoad(draftId)
     }
   }
 

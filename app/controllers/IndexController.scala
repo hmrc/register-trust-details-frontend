@@ -76,9 +76,9 @@ class IndexController @Inject()(
           isTaxable =>
             repository.get(draftId) flatMap {
               case Some(userAnswers) =>
-                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
+                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
               case _ =>
-                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
+                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable)
                 redirect(userAnswers)
             }
         }
