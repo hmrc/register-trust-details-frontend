@@ -185,185 +185,283 @@ class TrustDetailsMapperSpec extends SpecBase {
 
       "5mld" when {
 
-        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
-          .set(TrustNamePage, name).success.value
-          .set(WhenTrustSetupPage, date).success.value
+        "taxable" when {
 
-        "UK governed, UK administered, owns UK property/land, not recorded on another register, all trustees UK based and never based offshore" in {
+          val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)
+            .set(TrustNamePage, name).success.value
+            .set(WhenTrustSetupPage, date).success.value
 
-          val userAnswers: UserAnswers = baseAnswers
-            .set(GovernedInsideTheUKPage, true).success.value
-            .set(AdministrationInsideUKPage, true).success.value
-            .set(TrustOwnsUkPropertyOrLandPage, true).success.value
-            .set(TrustListedOnEeaRegisterPage, false).success.value
-            .set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
-            .set(EstablishedUnderScotsLawPage, true).success.value
-            .set(TrustResidentOffshorePage, false).success.value
+          "UK governed, UK administered, owns UK property/land, not recorded on another register, all trustees UK based and never based offshore" in {
 
-          val result = mapper.build(userAnswers).get
+            val userAnswers: UserAnswers = baseAnswers
+              .set(GovernedInsideTheUKPage, true).success.value
+              .set(AdministrationInsideUKPage, true).success.value
+              .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+              .set(TrustListedOnEeaRegisterPage, false).success.value
+              .set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
+              .set(EstablishedUnderScotsLawPage, true).success.value
+              .set(TrustResidentOffshorePage, false).success.value
 
-          result mustBe TrustDetailsType(
-            startDate = date,
-            lawCountry = None,
-            administrationCountry = Some(GB),
-            residentialStatus = Some(ResidentialStatusType(
-              uk = Some(UkType(
-                scottishLaw = true,
-                preOffShore = None
+            val result = mapper.build(userAnswers).get
+
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = None,
+              administrationCountry = Some(GB),
+              residentialStatus = Some(ResidentialStatusType(
+                uk = Some(UkType(
+                  scottishLaw = true,
+                  preOffShore = None
+                )),
+                nonUK = None
               )),
-              nonUK = None
-            )),
-            trustUKProperty = Some(true),
-            trustRecorded = Some(false),
-            trustUKRelation = None,
-            trustUKResident = Some(true)
-          )
-        }
+              trustUKProperty = Some(true),
+              trustRecorded = Some(false),
+              trustUKRelation = None,
+              trustUKResident = Some(true)
+            )
+          }
 
-        "UK governed, UK administered, owns UK property/land, not recorded on another register, some trustees UK based, " +
-          "some/all settlors UK based and previously based offshore" in {
+          "UK governed, UK administered, owns UK property/land, not recorded on another register, some trustees UK based, " +
+            "some/all settlors UK based and previously based offshore" in {
 
-          val userAnswers: UserAnswers = baseAnswers
-            .set(GovernedInsideTheUKPage, true).success.value
-            .set(AdministrationInsideUKPage, true).success.value
-            .set(TrustOwnsUkPropertyOrLandPage, true).success.value
-            .set(TrustListedOnEeaRegisterPage, false).success.value
-            .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
-            .set(SettlorsBasedInTheUKPage, true).success.value
-            .set(EstablishedUnderScotsLawPage, false).success.value
-            .set(TrustResidentOffshorePage, true).success.value
-            .set(TrustPreviouslyResidentPage, country).success.value
+            val userAnswers: UserAnswers = baseAnswers
+              .set(GovernedInsideTheUKPage, true).success.value
+              .set(AdministrationInsideUKPage, true).success.value
+              .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+              .set(TrustListedOnEeaRegisterPage, false).success.value
+              .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
+              .set(SettlorsBasedInTheUKPage, true).success.value
+              .set(EstablishedUnderScotsLawPage, false).success.value
+              .set(TrustResidentOffshorePage, true).success.value
+              .set(TrustPreviouslyResidentPage, country).success.value
 
-          val result = mapper.build(userAnswers).get
+            val result = mapper.build(userAnswers).get
 
-          result mustBe TrustDetailsType(
-            startDate = date,
-            lawCountry = None,
-            administrationCountry = Some(GB),
-            residentialStatus = Some(ResidentialStatusType(
-              uk = Some(UkType(
-                scottishLaw = false,
-                preOffShore = Some(country)
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = None,
+              administrationCountry = Some(GB),
+              residentialStatus = Some(ResidentialStatusType(
+                uk = Some(UkType(
+                  scottishLaw = false,
+                  preOffShore = Some(country)
+                )),
+                nonUK = None
               )),
-              nonUK = None
-            )),
-            trustUKProperty = Some(true),
-            trustRecorded = Some(false),
-            trustUKRelation = None,
-            trustUKResident = Some(true)
-          )
+              trustUKProperty = Some(true),
+              trustRecorded = Some(false),
+              trustUKRelation = None,
+              trustUKResident = Some(true)
+            )
+          }
+
+          "non-UK governed, non-UK administered, doesn't own UK property/land, recorded on another register, " +
+            "no trustees UK based, trust has UK business relationship and settlor benefits from assets" in {
+
+            val userAnswers: UserAnswers = baseAnswers
+              .set(GovernedInsideTheUKPage, false).success.value
+              .set(CountryGoverningTrustPage, country).success.value
+              .set(AdministrationInsideUKPage, false).success.value
+              .set(CountryAdministeringTrustPage, country).success.value
+              .set(TrustOwnsUkPropertyOrLandPage, false).success.value
+              .set(TrustListedOnEeaRegisterPage, true).success.value
+              .set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
+              .set(TrustHasBusinessRelationshipInUkPage, true).success.value
+              .set(RegisteringTrustFor5APage, true).success.value
+
+            val result = mapper.build(userAnswers).get
+
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = Some(country),
+              administrationCountry = Some(country),
+              residentialStatus = Some(ResidentialStatusType(
+                uk = None,
+                nonUK = Some(NonUKType(
+                  sch5atcgga92 = true,
+                  s218ihta84 = None,
+                  agentS218IHTA84 = None,
+                  trusteeStatus = None
+                ))
+              )),
+              trustUKProperty = Some(false),
+              trustRecorded = Some(true),
+              trustUKRelation = Some(true),
+              trustUKResident = Some(false)
+            )
+          }
+
+          "non-UK governed, non-UK administered, doesn't own UK property/land, recorded on another register, " +
+            "no trustees UK based, trust doesn't have UK business relationship and not registering for purpose of section 218" in {
+
+            val userAnswers: UserAnswers = baseAnswers
+              .set(GovernedInsideTheUKPage, false).success.value
+              .set(CountryGoverningTrustPage, country).success.value
+              .set(AdministrationInsideUKPage, false).success.value
+              .set(CountryAdministeringTrustPage, country).success.value
+              .set(TrustOwnsUkPropertyOrLandPage, false).success.value
+              .set(TrustListedOnEeaRegisterPage, true).success.value
+              .set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
+              .set(TrustHasBusinessRelationshipInUkPage, false).success.value
+              .set(RegisteringTrustFor5APage, false).success.value
+              .set(InheritanceTaxActPage, false).success.value
+
+            val result = mapper.build(userAnswers).get
+
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = Some(country),
+              administrationCountry = Some(country),
+              residentialStatus = Some(ResidentialStatusType(
+                uk = None,
+                nonUK = Some(NonUKType(
+                  sch5atcgga92 = false,
+                  s218ihta84 = Some(false),
+                  agentS218IHTA84 = None,
+                  trusteeStatus = None
+                ))
+              )),
+              trustUKProperty = Some(false),
+              trustRecorded = Some(true),
+              trustUKRelation = Some(false),
+              trustUKResident = Some(false)
+            )
+          }
+
+          "non-UK governed, non-UK administered, doesn't own UK property/land, recorded on another register," +
+            " some trustees UK based, no settlors UK based, doesn't have UK Business relationship and registering for purpose of section 218" in {
+
+            val userAnswers: UserAnswers = baseAnswers
+              .set(GovernedInsideTheUKPage, false).success.value
+              .set(CountryGoverningTrustPage, country).success.value
+              .set(AdministrationInsideUKPage, false).success.value
+              .set(CountryAdministeringTrustPage, country).success.value
+              .set(TrustOwnsUkPropertyOrLandPage, false).success.value
+              .set(TrustListedOnEeaRegisterPage, true).success.value
+              .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
+              .set(SettlorsBasedInTheUKPage, false).success.value
+              .set(TrustHasBusinessRelationshipInUkPage, false).success.value
+              .set(RegisteringTrustFor5APage, false).success.value
+              .set(InheritanceTaxActPage, true).success.value
+              .set(AgentOtherThanBarristerPage, true).success.value
+
+            val result = mapper.build(userAnswers).get
+
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = Some(country),
+              administrationCountry = Some(country),
+              residentialStatus = Some(ResidentialStatusType(
+                uk = None,
+                nonUK = Some(NonUKType(
+                  sch5atcgga92 = false,
+                  s218ihta84 = Some(true),
+                  agentS218IHTA84 = Some(true),
+                  trusteeStatus = None
+                ))
+              )),
+              trustUKProperty = Some(false),
+              trustRecorded = Some(true),
+              trustUKRelation = Some(false),
+              trustUKResident = Some(false)
+            )
+          }
         }
 
-        "non-UK governed, non-UK administered, doesn't own UK property/land, recorded on another register, " +
-          "no trustees UK based, trust has UK business relationship and settlor benefits from assets" in {
+        "non-taxable" when {
 
-          val userAnswers: UserAnswers = baseAnswers
-            .set(GovernedInsideTheUKPage, false).success.value
-            .set(CountryGoverningTrustPage, country).success.value
-            .set(AdministrationInsideUKPage, false).success.value
-            .set(CountryAdministeringTrustPage, country).success.value
-            .set(TrustOwnsUkPropertyOrLandPage, false).success.value
-            .set(TrustListedOnEeaRegisterPage, true).success.value
-            .set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
-            .set(TrustHasBusinessRelationshipInUkPage, true).success.value
-            .set(RegisteringTrustFor5APage, true).success.value
+          val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)
+            .set(TrustNamePage, name).success.value
+            .set(WhenTrustSetupPage, date).success.value
 
-          val result = mapper.build(userAnswers).get
+          "owns UK property/land, not recorded on another register, all trustees UK based" in {
 
-          result mustBe TrustDetailsType(
-            startDate = date,
-            lawCountry = Some(country),
-            administrationCountry = Some(country),
-            residentialStatus = Some(ResidentialStatusType(
-              uk = None,
-              nonUK = Some(NonUKType(
-                sch5atcgga92 = true,
-                s218ihta84 = None,
-                agentS218IHTA84 = None,
-                trusteeStatus = None
-              ))
-            )),
-            trustUKProperty = Some(false),
-            trustRecorded = Some(true),
-            trustUKRelation = Some(true),
-            trustUKResident = Some(false)
-          )
-        }
+            val userAnswers: UserAnswers = baseAnswers
+              .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+              .set(TrustListedOnEeaRegisterPage, false).success.value
+              .set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
 
-        "non-UK governed, non-UK administered, doesn't own UK property/land, recorded on another register, " +
-          "no trustees UK based, trust doesn't have UK business relationship and not registering for purpose of section 218" in {
+            val result = mapper.build(userAnswers).get
 
-          val userAnswers: UserAnswers = baseAnswers
-            .set(GovernedInsideTheUKPage, false).success.value
-            .set(CountryGoverningTrustPage, country).success.value
-            .set(AdministrationInsideUKPage, false).success.value
-            .set(CountryAdministeringTrustPage, country).success.value
-            .set(TrustOwnsUkPropertyOrLandPage, false).success.value
-            .set(TrustListedOnEeaRegisterPage, true).success.value
-            .set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
-            .set(TrustHasBusinessRelationshipInUkPage, false).success.value
-            .set(RegisteringTrustFor5APage, false).success.value
-            .set(InheritanceTaxActPage, false).success.value
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = None,
+              administrationCountry = None,
+              residentialStatus = None,
+              trustUKProperty = Some(true),
+              trustRecorded = Some(false),
+              trustUKRelation = None,
+              trustUKResident = Some(true)
+            )
+          }
 
-          val result = mapper.build(userAnswers).get
+          "owns UK property/land, not recorded on another register, some trustees UK based, some/all settlors UK based" in {
 
-          result mustBe TrustDetailsType(
-            startDate = date,
-            lawCountry = Some(country),
-            administrationCountry = Some(country),
-            residentialStatus = Some(ResidentialStatusType(
-              uk = None,
-              nonUK = Some(NonUKType(
-                sch5atcgga92 = false,
-                s218ihta84 = Some(false),
-                agentS218IHTA84 = None,
-                trusteeStatus = None
-              ))
-            )),
-            trustUKProperty = Some(false),
-            trustRecorded = Some(true),
-            trustUKRelation = Some(false),
-            trustUKResident = Some(false)
-          )
-        }
+            val userAnswers: UserAnswers = baseAnswers
+              .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+              .set(TrustListedOnEeaRegisterPage, false).success.value
+              .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
+              .set(SettlorsBasedInTheUKPage, true).success.value
 
-        "non-UK governed, non-UK administered, doesn't own UK property/land, recorded on another register," +
-          " some trustees UK based, doesn't have UK Business relationship and registering for purpose of section 218" in {
+            val result = mapper.build(userAnswers).get
 
-          val userAnswers: UserAnswers = baseAnswers
-            .set(GovernedInsideTheUKPage, false).success.value
-            .set(CountryGoverningTrustPage, country).success.value
-            .set(AdministrationInsideUKPage, false).success.value
-            .set(CountryAdministeringTrustPage, country).success.value
-            .set(TrustOwnsUkPropertyOrLandPage, false).success.value
-            .set(TrustListedOnEeaRegisterPage, true).success.value
-            .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
-            .set(SettlorsBasedInTheUKPage, false).success.value
-            .set(TrustHasBusinessRelationshipInUkPage, false).success.value
-            .set(RegisteringTrustFor5APage, false).success.value
-            .set(InheritanceTaxActPage, true).success.value
-            .set(AgentOtherThanBarristerPage, true).success.value
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = None,
+              administrationCountry = None,
+              residentialStatus = None,
+              trustUKProperty = Some(true),
+              trustRecorded = Some(false),
+              trustUKRelation = None,
+              trustUKResident = Some(true)
+            )
+          }
 
-          val result = mapper.build(userAnswers).get
+          "doesn't own UK property/land, recorded on another register, no trustees UK based, trust has UK business relationship" in {
 
-          result mustBe TrustDetailsType(
-            startDate = date,
-            lawCountry = Some(country),
-            administrationCountry = Some(country),
-            residentialStatus = Some(ResidentialStatusType(
-              uk = None,
-              nonUK = Some(NonUKType(
-                sch5atcgga92 = false,
-                s218ihta84 = Some(true),
-                agentS218IHTA84 = Some(true),
-                trusteeStatus = None
-              ))
-            )),
-            trustUKProperty = Some(false),
-            trustRecorded = Some(true),
-            trustUKRelation = Some(false),
-            trustUKResident = Some(false)
-          )
+            val userAnswers: UserAnswers = baseAnswers
+              .set(TrustOwnsUkPropertyOrLandPage, false).success.value
+              .set(TrustListedOnEeaRegisterPage, true).success.value
+              .set(TrusteesBasedInTheUKPage, NonUkBasedTrustees).success.value
+              .set(TrustHasBusinessRelationshipInUkPage, true).success.value
+
+            val result = mapper.build(userAnswers).get
+
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = None,
+              administrationCountry = None,
+              residentialStatus = None,
+              trustUKProperty = Some(false),
+              trustRecorded = Some(true),
+              trustUKRelation = Some(true),
+              trustUKResident = Some(false)
+            )
+          }
+
+          "doesn't own UK property/land, recorded on another register, some trustees UK based, no settlors UK based, doesn't have UK Business relationship" in {
+
+            val userAnswers: UserAnswers = baseAnswers
+              .set(TrustOwnsUkPropertyOrLandPage, false).success.value
+              .set(TrustListedOnEeaRegisterPage, true).success.value
+              .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
+              .set(SettlorsBasedInTheUKPage, false).success.value
+              .set(TrustHasBusinessRelationshipInUkPage, false).success.value
+
+            val result = mapper.build(userAnswers).get
+
+            result mustBe TrustDetailsType(
+              startDate = date,
+              lawCountry = None,
+              administrationCountry = None,
+              residentialStatus = None,
+              trustUKProperty = Some(false),
+              trustRecorded = Some(true),
+              trustUKRelation = Some(false),
+              trustUKResident = Some(false)
+            )
+          }
         }
       }
     }
