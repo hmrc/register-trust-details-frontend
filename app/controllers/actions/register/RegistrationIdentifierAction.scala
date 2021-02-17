@@ -26,7 +26,7 @@ import play.api.mvc.{Request, Result, _}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.Session
@@ -56,22 +56,18 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
     val hmrcAgentEnrolmentKey = "HMRC-AS-AGENT"
     val arnIdentifier = "AgentReferenceNumber"
 
-    enrolments.getEnrolment(hmrcAgentEnrolmentKey).fold(
-      redirectToCreateAgentServicesAccount("missing HMRC-AS-AGENT enrolment group")
-    ){
-      agentEnrolment =>
-        agentEnrolment.getIdentifier(arnIdentifier).fold(
-          redirectToCreateAgentServicesAccount("missing agent reference number")
-        ){
-          enrolmentIdentifier =>
-            val arn = enrolmentIdentifier.value
+    case class AgentIdentifier(enrolment: Enrolment, arn: String)
 
-            if(arn.isEmpty) {
-              redirectToCreateAgentServicesAccount("agent reference number is empty")
-            } else {
-              block(IdentifierRequest(request, internalId, AffinityGroup.Agent, enrolments, Some(arn)))
-            }
-        }
+    val e = for {
+      enrolment   <- enrolments.getEnrolment(hmrcAgentEnrolmentKey)
+      identifier  <- enrolment.getIdentifier(arnIdentifier)
+      _           <- if(identifier.value.nonEmpty) Some(identifier) else None
+    } yield AgentIdentifier(enrolment, identifier.value)
+
+    e.fold {
+      redirectToCreateAgentServicesAccount("Agent not enrolled for HMRC-AS-AGENT")
+    }{ x =>
+      block(IdentifierRequest(request, internalId, AffinityGroup.Agent, enrolments, Some(x.arn)))
     }
   }
 
@@ -81,31 +77,29 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
                             block: IdentifierRequest[A] => Future[Result]
                           ): Future[Result] = {
 
-    val enrolmentKey = "HMRC-TERS-ORG"
-    val identifier = "SAUTR"
-
     val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     val continueWithoutEnrolment =
       block(IdentifierRequest(request, internalId, AffinityGroup.Organisation, enrolments))
 
-    enrolments.getEnrolment(enrolmentKey).fold(continueWithoutEnrolment){
-      enrolment =>
-        enrolment.getIdentifier(identifier).fold{
-          logger.info(s"[authoriseOrg][Session ID: ${Session.id(hc)}] user is not enrolled, continuing to registered online")
-          continueWithoutEnrolment
-        }{
-          enrolmentIdentifier =>
-            val utr = enrolmentIdentifier.value
+    val taxEnrolment = "HMRC-TERS-ORG"
+    val taxIdentifier = "SAUTR"
+    val nonTaxEnrolment = "HMRC-TERSNT-ORG"
+    val nonTaxIdentifier = "URN"
 
-            if(utr.isEmpty) {
-              logger.info(s"[authoriseOrg][Session ID: ${Session.id(hc)}] no utr for enrolment value")
-              continueWithoutEnrolment
-            } else {
-              logger.info(s"[authoriseOrg][Session ID: ${Session.id(hc)}] user is already enrolled, redirecting to maintain")
-              Future.successful(Redirect(config.maintainATrustFrontendUrl))
-            }
-        }
+    val enrolment: Option[Enrolment] = for {
+      enrolment <- enrolments.getEnrolment(taxEnrolment).orElse(enrolments.getEnrolment(nonTaxEnrolment))
+      id        <- enrolment.getIdentifier(taxIdentifier).orElse(enrolment.getIdentifier(nonTaxIdentifier))
+      _         <- if(id.value.nonEmpty) Some(id) else None
+    } yield enrolment
+
+    enrolment.fold {
+      logger.info(s"[Session ID: ${Session.id(hc)}] user is not enrolled for Trusts, continuing to register online")
+      continueWithoutEnrolment
+    } {
+      x =>
+        logger.info(s"[Session ID: ${Session.id(hc)}] user is already enrolled with ${x.key}, redirecting to maintain")
+        Future.successful(Redirect(config.maintainATrustFrontendUrl))
     }
   }
 
@@ -119,10 +113,8 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
 
     trustsAuth.authorised().retrieve(retrievals) {
       case Some(internalId) ~ Some(Agent) ~ enrolments =>
-        logger.info(s"[Session ID: ${Session.id(hc)}] successfully identified as an Agent")
         authoriseAgent(request, enrolments, internalId, block)
       case Some(internalId) ~ Some(Organisation) ~ enrolments =>
-        logger.info(s"[Session ID: ${Session.id(hc)}] successfully identified as Organisation")
         authoriseOrg(request, enrolments, internalId, block)
       case Some(_) ~ _ ~ _ =>
         logger.info(s"[Session ID: ${Session.id(hc)}] Unauthorised due to affinityGroup being Individual")
