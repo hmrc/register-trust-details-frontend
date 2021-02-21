@@ -53,7 +53,7 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
       bound.countryQuestion(CountryAdministeringTrustPage, "countryAdministeringTrust", routes.CountryAdministeringTrustController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustOwnsUkPropertyOrLandPage, "trustOwnsUkPropertyOrLand", routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustListedOnEeaRegisterPage, "trustListedOnEeaRegister", routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url),
-      bound.trusteesBasedInUK(draftId),
+      bound.enumQuestion(TrusteesBasedInTheUKPage, "trusteesBasedInTheUK", routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url),
       bound.yesNoQuestion(SettlorsBasedInTheUKPage, "settlorsBasedInTheUK", routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url),
       bound.yesNoQuestion(EstablishedUnderScotsLawPage, "establishedUnderScotsLaw", routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url),
       bound.yesNoQuestion(TrustResidentOffshorePage, "trustResidentOffshore", routes.TrustResidentOffshoreController.onPageLoad(draftId).url),

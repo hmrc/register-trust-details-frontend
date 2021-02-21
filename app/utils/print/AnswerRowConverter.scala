@@ -17,18 +17,16 @@
 package utils.print
 
 import com.google.inject.Inject
-import controllers.register.trust_details.routes
 import models.ReadableUserAnswers
-import pages.register.trust_details.TrusteesBasedInTheUKPage
 import play.api.i18n.Messages
+import play.api.libs.json.Reads
+import play.twirl.api.{Html, HtmlFormat}
 import queries.Gettable
-import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
 
 import java.time.LocalDate
 
-class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatters,
-                                   countryOptions: CountryOptions) {
+class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatters) {
 
   def bind(userAnswers: ReadableUserAnswers)
           (implicit messages: Messages): Bound = new Bound(userAnswers)
@@ -38,57 +36,47 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def stringQuestion(query: Gettable[String],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map { x =>
-        AnswerRow(
-          s"$labelKey.checkYourAnswersLabel",
-          checkAnswersFormatters.escape(x),
-          Some(changeUrl)
-        )
-      }
+      val format = (x: String) => HtmlFormat.escape(x)
+      question(query, labelKey, format, changeUrl)
     }
 
     def yesNoQuestion(query: Gettable[Boolean],
                       labelKey: String,
                       changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map { x =>
-        AnswerRow(
-          s"$labelKey.checkYourAnswersLabel",
-          checkAnswersFormatters.yesOrNo(x),
-          Some(changeUrl)
-        )
-      }
+      val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
+      question(query, labelKey, format, changeUrl)
     }
 
     def dateQuestion(query: Gettable[LocalDate],
                      labelKey: String,
                      changeUrl: String): Option[AnswerRow] = {
-      userAnswers.get(query) map { x =>
-        AnswerRow(
-          s"$labelKey.checkYourAnswersLabel",
-          checkAnswersFormatters.formatDate(x),
-          Some(changeUrl)
-        )
-      }
+      val format = (x: LocalDate) => checkAnswersFormatters.formatDate(x)
+      question(query, labelKey, format, changeUrl)
     }
 
     def countryQuestion(query: Gettable[String],
                         labelKey: String,
                         changeUrl: String): Option[AnswerRow] = {
+      val format = (x: String) => checkAnswersFormatters.country(x)
+      question(query, labelKey, format, changeUrl)
+    }
+
+    def enumQuestion[T](query: Gettable[T],
+                        labelKey: String,
+                        changeUrl: String)(implicit rds: Reads[T]): Option[AnswerRow] = {
+      val format = (x: T) => checkAnswersFormatters.formatEnum(labelKey, x)
+      question(query, labelKey, format, changeUrl)
+    }
+
+    private def question[T](query: Gettable[T],
+                            labelKey: String,
+                            format: T => Html,
+                            changeUrl: String)(implicit rds: Reads[T]): Option[AnswerRow] = {
       userAnswers.get(query) map { x =>
         AnswerRow(
           s"$labelKey.checkYourAnswersLabel",
-          checkAnswersFormatters.country(x, countryOptions),
+          format(x),
           Some(changeUrl)
-        )
-      }
-    }
-
-    def trusteesBasedInUK(draftId: String): Option[AnswerRow] = {
-      userAnswers.get(TrusteesBasedInTheUKPage) map { x =>
-        AnswerRow(
-          "trusteesBasedInTheUK.checkYourAnswersLabel",
-          checkAnswersFormatters.answer("trusteesBasedInTheUK", x),
-          Some(routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url)
         )
       }
     }

@@ -18,14 +18,16 @@ package utils.print
 
 import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
+import play.twirl.api.HtmlFormat.escape
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
 
 import java.time.{LocalDate => JavaDate}
 import javax.inject.Inject
 
-class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
+class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
+                                       countryOptions: CountryOptions) {
 
   def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
     val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
@@ -40,14 +42,12 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
     }
   }
 
-  def country(code: String, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
+  def country(code: String)(implicit messages: Messages): Html = {
     escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
   }
 
-  def answer[T](key: String, answer: T)(implicit messages: Messages): Html = {
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
     escape(messages(s"$key.$answer"))
   }
-
-  def escape(x: String): Html = HtmlFormat.escape(x)
 
 }
