@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +46,7 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
                               block: IdentifierRequest[A] => Future[Result]
                             ) = {
 
-    val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def redirectToCreateAgentServicesAccount(reason: String): Future[Result] = {
       logger.info(s"[authoriseAgent][Session ID: ${Session.id(hc)}]: Agent services account required - $reason")
@@ -77,7 +77,7 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
                             block: IdentifierRequest[A] => Future[Result]
                           ): Future[Result] = {
 
-    val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val continueWithoutEnrolment =
       block(IdentifierRequest(request, internalId, AffinityGroup.Organisation, enrolments))
@@ -105,7 +105,7 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val retrievals = Retrievals.internalId and
       Retrievals.affinityGroup and
