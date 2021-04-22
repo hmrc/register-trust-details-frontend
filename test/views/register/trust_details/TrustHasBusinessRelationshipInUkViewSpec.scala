@@ -35,7 +35,12 @@ class TrustHasBusinessRelationshipInUkViewSpec extends YesNoViewBehaviours {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, fakeDraftId)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like normalPage(
+      view = applyView(form),
+      messageKeyPrefix = messageKeyPrefix,
+      expectedGuidanceKeys = "paragraph1", "bullet1", "bullet2", "bullet3",
+      "paragraph2", "bullet4", "bullet5", "bullet6", "bullet7", "bullet8"
+    )
 
     behave like pageWithBackLink(applyView(form))
 

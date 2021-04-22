@@ -23,6 +23,32 @@
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
+@content = {
+    <p>@messages("trustHasBusinessRelationshipInUk.paragraph1")</p>
+
+    @components.bullet_list(
+        "trustHasBusinessRelationshipInUk",
+        Seq(
+            "bullet1",
+            "bullet2",
+            "bullet3"
+        )
+    )
+
+    <p>@messages("trustHasBusinessRelationshipInUk.paragraph2")</p>
+
+    @components.bullet_list(
+        "trustHasBusinessRelationshipInUk",
+        Seq(
+            "bullet4",
+            "bullet5",
+            "bullet6",
+            "bullet7",
+            "bullet8"
+        )
+    )
+}
+
 @main_template(
     title = s"${errorPrefix(form)} ${messages("trustHasBusinessRelationshipInUk.title")}"
 ) {
@@ -37,7 +63,8 @@
             field = form("value"),
             label = messages("trustHasBusinessRelationshipInUk.heading"),
             legendClass = Some("heading-large"),
-            legendAsHeading = true
+            legendAsHeading = true,
+            additionalContent = Some(content)
         )
 
         @components.submit_button()
