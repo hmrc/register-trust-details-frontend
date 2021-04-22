@@ -164,6 +164,16 @@ trustHasBusinessRelationshipInUk.title = Does the trust have a business relation
 trustHasBusinessRelationshipInUk.heading = Does the trust have a business relationship in the UK?
 trustHasBusinessRelationshipInUk.checkYourAnswersLabel = Does the trust have a business relationship in the UK?
 trustHasBusinessRelationshipInUk.error.required = Select yes if the trust has a business relationship in the UK
+trustHasBusinessRelationshipInUk.paragraph1 = The trust will have a business relationship if the trustees managing the trust get any of the following from a UK-based organisation on an ongoing basis:
+trustHasBusinessRelationshipInUk.bullet1 = financial services
+trustHasBusinessRelationshipInUk.bullet2 = legal advice
+trustHasBusinessRelationshipInUk.bullet3 = professional advice
+trustHasBusinessRelationshipInUk.paragraph2 = Professional advice can include the services of:
+trustHasBusinessRelationshipInUk.bullet4 = a solicitor
+trustHasBusinessRelationshipInUk.bullet5 = an accountant
+trustHasBusinessRelationshipInUk.bullet6 = an estate agent
+trustHasBusinessRelationshipInUk.bullet7 = a bank or building society
+trustHasBusinessRelationshipInUk.bullet8 = another professional organisation
 
 trustListedOnEeaRegister.title = Is the trust listed on a European Economic Area (EEA) register?
 trustListedOnEeaRegister.heading = Is the trust listed on a European Economic Area (EEA) register?

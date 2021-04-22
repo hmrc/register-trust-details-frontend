@@ -60,16 +60,9 @@ p.font-xsmall{
     list-style-type: decimal;
 }
 
-.trust-list--bullet--padding-left {
-    padding-left: 20px;
-}
-
-.trust-list--bullet {
+.govuk-list--bullet {
+  padding-left: 20px;
   list-style-type: disc;
-}
-
-.trust-list--bullet .inside {
-  list-style-position: inside;
 }
 
 .govuk-caption-xl {
@@ -91,4 +84,3 @@ p.font-xsmall{
     line-height: 1.11111;
   }
 }
-
