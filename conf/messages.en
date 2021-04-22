@@ -175,12 +175,12 @@ trustHasBusinessRelationshipInUk.bullet6 = an estate agent
 trustHasBusinessRelationshipInUk.bullet7 = a bank or building society
 trustHasBusinessRelationshipInUk.bullet8 = another professional organisation
 
-trustListedOnEeaRegister.title = Is the trust listed on a European Economic Area (EEA) register?
-trustListedOnEeaRegister.heading = Is the trust listed on a European Economic Area (EEA) register?
-trustListedOnEeaRegister.checkYourAnswersLabel = Is the trust listed on a European Economic Area (EEA) register?
+trustListedOnEeaRegister.title = Is the trust registered on the trust register of any other countries within the European Economic Area (EEA)?
+trustListedOnEeaRegister.heading = Is the trust registered on the trust register of any other countries within the European Economic Area (EEA)?
+trustListedOnEeaRegister.checkYourAnswersLabel = Is the trust registered on the trust register of any other countries within the European Economic Area (EEA)?
 trustListedOnEeaRegister.error.required = Select yes if the trust is listed on a European Economic Area (EEA) register
 trustListedOnEeaRegister.text = The EEA includes:
-trustListedOnEeaRegister.text.bullet1 = All countries within the European Union (EU)
+trustListedOnEeaRegister.text.bullet1 = all countries within the European Union (EU)
 trustListedOnEeaRegister.text.bullet2 = Iceland
 trustListedOnEeaRegister.text.bullet3 = Lichtenstein
 trustListedOnEeaRegister.text.bullet4 = Norway
