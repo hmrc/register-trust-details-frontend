@@ -35,7 +35,7 @@ class TrustOwnsUkPropertyOrLandViewSpec extends YesNoViewBehaviours {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, fakeDraftId)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix, "text")
+    behave like normalPage(applyView(form), messageKeyPrefix, "paragraph1", "paragraph2")
 
     behave like pageWithBackLink(applyView(form))
 
