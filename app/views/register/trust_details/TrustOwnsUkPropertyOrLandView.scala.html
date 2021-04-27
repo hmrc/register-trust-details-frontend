@@ -24,7 +24,9 @@
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
 @content = {
-    <p>@messages("trustOwnsUkPropertyOrLand.text")</p>
+    <p>@messages("trustOwnsUkPropertyOrLand.paragraph1")</p>
+
+    <p>@messages("trustOwnsUkPropertyOrLand.paragraph2")</p>
 }
 
 @main_template(
