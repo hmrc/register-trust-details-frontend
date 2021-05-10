@@ -79,9 +79,9 @@ agentOtherThanBarrister.error.required = Select yes if an agent who is not a bar
 countryAdministeringTrust.title = In what country is the trust administered?
 countryAdministeringTrust.heading = In what country is the trust administered?
 countryAdministeringTrust.checkYourAnswersLabel = In what country is the trust administered?
-countryAdministeringTrust.error.required = Enter the country the trust is administered in
-countryAdministeringTrust.error.length = The country that is administered in must be 100 characters or less
-countryAdministeringTrust.error.invalidCharacters = The country that governs the trust must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
+countryAdministeringTrust.error.required = Enter the country that the trust is administered in
+countryAdministeringTrust.error.length = The country that the trust is administered in must be 100 characters or less
+countryAdministeringTrust.error.invalidCharacters = The country that the trust is administered in must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
 
 countryGoverningTrust.title = What country governs the trust?
 countryGoverningTrust.heading = What country governs the trust?
