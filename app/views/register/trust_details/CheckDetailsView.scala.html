@@ -21,7 +21,7 @@
 @import viewmodels.Section
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
         govukSummaryList: GovukSummaryList,
         submitButton: SubmitButton,
@@ -31,7 +31,7 @@
 
 @(answerSection: Seq[Section], draftId: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("trustDetailsAnswerPage.title"),
     showBackLink = true
     ) {

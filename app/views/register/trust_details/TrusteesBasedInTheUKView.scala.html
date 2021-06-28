@@ -19,7 +19,7 @@
 @import views.html.components.{ErrorSummary, SubmitButton, InputRadio}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
         errorSummary: ErrorSummary,
         inputRadio: InputRadio,
@@ -28,14 +28,14 @@
 
 @(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("trusteesBasedInTheUK.title")}",
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("trusteesBasedInTheUK.title")}",
     showBackLink = true
     ) {
 
     @formHelper(action = TrusteesBasedInTheUKController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, TrusteesBasedInTheUK.options)
 
         @inputRadio(
             field = form("value"),

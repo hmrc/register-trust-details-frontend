@@ -32,8 +32,6 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   final val ENGLISH = "en"
   final val WELSH = "cy"
 
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-
   val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl

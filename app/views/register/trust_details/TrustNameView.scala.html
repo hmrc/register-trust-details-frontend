@@ -18,7 +18,7 @@
 @import views.html.components.{InputText, ErrorSummary, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
         inputText: InputText,
         errorSummary: ErrorSummary,
@@ -27,8 +27,8 @@
 
 @(form: Form[_], draftId: String, hintTextShown: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("trustName.title")}",
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("trustName.title")}",
     showBackLink = true
     ) {
 

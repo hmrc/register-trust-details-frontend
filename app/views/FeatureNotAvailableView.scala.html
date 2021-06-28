@@ -19,14 +19,14 @@
 @import views.html.components.Heading
 
 @this(
-        main_template: MainTemplate,
+        mainTemplate: MainTemplate,
         heading: Heading,
         config: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("featureNotAvailable.title"),
     showBackLink = true
 ) {
