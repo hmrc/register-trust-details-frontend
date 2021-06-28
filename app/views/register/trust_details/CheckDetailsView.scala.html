@@ -16,26 +16,32 @@
 
 @import viewmodels.AnswerSection
 @import controllers.register.trust_details.routes._
+@import views.html.components.{Heading, SubmitButton}
+@import utils.SectionFormatter.formatSections
+@import viewmodels.Section
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        govukSummaryList: GovukSummaryList,
+        submitButton: SubmitButton,
+        heading: Heading
 )
 
-@(answerSection: AnswerSection, draftId: String)(implicit request: Request[_], messages: Messages)
+
+@(answerSection: Seq[Section], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("trustDetailsAnswerPage.title")
+    title = messages("trustDetailsAnswerPage.title"),
+    showBackLink = true
     ) {
 
     @formHelper(action = CheckDetailsController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @heading("trustDetailsAnswerPage.heading")
 
-        @components.heading("trustDetailsAnswerPage.heading")
+        @govukSummaryList(SummaryList(rows = formatSections(answerSection)))
 
-        @components.answer_section(answerSection)
-
-        @components.submit_button()
+        @submitButton()
     }
 }

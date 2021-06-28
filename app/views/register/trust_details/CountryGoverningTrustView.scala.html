@@ -16,34 +16,37 @@
 
 @import controllers.register.trust_details.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InputSelect, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        errorSummary: ErrorSummary,
+        select: InputSelect,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("countryGoverningTrust.title")}"
+    title = s"${errorPrefix(form)} ${messages("countryGoverningTrust.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = CountryGoverningTrustController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.select(field = form("value"),
+        @select(
+            field = form("value"),
             label = messages("countryGoverningTrust.heading"),
-            labelClasses = Set("heading-large"),
             labelAsHeading = true,
             options = countryOptions,
             placeholder = Some(messages("address.country.select")),
-            formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-non-uk-countries")
+            formGroupClasses = Set("autocomplete-wrapper"),
+            selectAttribute = Map("data-non-uk-countries" -> "")
         )
 
-        @components.submit_button(submitClass = Some("countryLookupHelper"))
+        @submitButton(submitClass = Some("countryLookupHelper"))
     }
 }

@@ -14,17 +14,17 @@
 
     @formHelper(action = $className$Controller.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_radio(
+        @input_radio(
             field = form("value"),
             legend = messages("$className;format="decap"$.heading"),
             headingIsLegend = true,
             inputs = $className$.options.toSeq
         )
 
-        @components.submit_button()
+        @submit_button()
     }
 }

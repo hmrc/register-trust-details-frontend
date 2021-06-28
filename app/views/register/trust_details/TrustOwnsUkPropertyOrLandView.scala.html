@@ -15,10 +15,15 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{InputYesNo, Heading, ErrorSummary, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        heading: Heading,
+        errorSummary: ErrorSummary,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
@@ -30,23 +35,25 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustOwnsUkPropertyOrLand.title")}"
+    title = s"${errorPrefix(form)} ${messages("trustOwnsUkPropertyOrLand.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = TrustOwnsUkPropertyOrLandController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading(messages("trustOwnsUkPropertyOrLand.heading"))
 
-        @components.input_yes_no(
+        @content
+
+        @inputYesNo(
             field = form("value"),
             label = messages("trustOwnsUkPropertyOrLand.heading"),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true,
-            additionalContent = Some(content)
+            legendAsHeading = false,
+            legendClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

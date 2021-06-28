@@ -11,16 +11,16 @@
 
     @formHelper(action = $className$Controller.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @back_link()
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @input_text(
             field = form("value"),
             label = messages("$className;format="decap"$.heading"),
             headingIsLabel = true
         )
 
-        @components.submit_button()
+        @submit_button()
     }
 }

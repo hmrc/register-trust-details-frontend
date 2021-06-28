@@ -1,6 +1,4 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
+service.name = Register and Maintain a Trust
 
 date.day = Day
 date.month = Month
@@ -134,7 +132,6 @@ trusteesBasedInTheUK.error.required = Select how many of the trustees are based 
 trustName.title = What is the trust’s name?
 trustName.heading = What is the trust’s name?
 trustName.hint.hasUtr = This must be entered exactly as it is on the trust’s most recent Self Assessment notice to file (SA316) or tax return.
-trustName.hint.hasUtr.reader = This must be entered exactly as it is on the trust’s most recent Self Assessment notice to file (S A 3 1 6) or tax return.
 trustName.hint.noUtr = This must be 53 characters or fewer
 trustName.checkYourAnswersLabel = What is the trust’s name?
 trustName.error.length = The trust’s name must be 53 characters or less

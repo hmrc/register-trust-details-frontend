@@ -16,32 +16,36 @@
 
 @import controllers.register.trust_details.routes._
 @import models.TrusteesBasedInTheUK
+@import views.html.components.{ErrorSummary, SubmitButton, InputRadio}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        errorSummary: ErrorSummary,
+        inputRadio: InputRadio,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trusteesBasedInTheUK.title")}"
+    title = s"${errorPrefix(form)} ${messages("trusteesBasedInTheUK.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = TrusteesBasedInTheUKController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("trusteesBasedInTheUK.heading"),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true,
-            inputs = TrusteesBasedInTheUK.options
+            headingIsLegend = true,
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, TrusteesBasedInTheUK.options),
+            legendClass = Some("govuk-fieldset__legend--m"),
+            inline = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

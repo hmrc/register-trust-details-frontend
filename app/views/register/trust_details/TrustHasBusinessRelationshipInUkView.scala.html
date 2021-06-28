@@ -15,10 +15,16 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{Heading, InputYesNo, BulletList, ErrorSummary, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        heading: Heading,
+        errorSummary: ErrorSummary,
+        bulletList: BulletList,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
@@ -26,7 +32,7 @@
 @content = {
     <p>@messages("trustHasBusinessRelationshipInUk.paragraph1")</p>
 
-    @components.bullet_list(
+    @bulletList(
         "trustHasBusinessRelationshipInUk",
         Seq(
             "bullet1",
@@ -37,7 +43,7 @@
 
     <p>@messages("trustHasBusinessRelationshipInUk.paragraph2")</p>
 
-    @components.bullet_list(
+    @bulletList(
         "trustHasBusinessRelationshipInUk",
         Seq(
             "bullet4",
@@ -50,23 +56,25 @@
 }
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustHasBusinessRelationshipInUk.title")}"
+    title = s"${errorPrefix(form)} ${messages("trustHasBusinessRelationshipInUk.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = TrustHasBusinessRelationshipInUkController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading(messages("trustHasBusinessRelationshipInUk.heading"))
 
-        @components.input_yes_no(
-            field = form("value"),
-            label = messages("trustHasBusinessRelationshipInUk.heading"),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true,
-            additionalContent = Some(content)
+        @content
+
+        @inputYesNo(
+           field = form("value"),
+           label = messages("trustHasBusinessRelationshipInUk.heading"),
+           legendAsHeading = false,
+           legendClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

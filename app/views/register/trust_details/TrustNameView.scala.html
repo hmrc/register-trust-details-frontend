@@ -15,34 +15,37 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{InputText, ErrorSummary, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        inputText: InputText,
+        errorSummary: ErrorSummary,
+        submitButton: SubmitButton,
 )
 
 @(form: Form[_], draftId: String, hintTextShown: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustName.title")}"
+    title = s"${errorPrefix(form)} ${messages("trustName.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = TrustNameController.onSubmit(draftId), 'autoComplete -> "on") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
           field = form("value"),
           label = messages("trustName.heading"),
-          labelAsHeading = true,
-          hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else Some(messages("trustName.hint.noUtr")),
-          readerHint = if(hintTextShown) Some(messages(s"trustName.hint.hasUtr.reader")) else None,
-          labelClass = Some("heading-large"),
-          autocomplete = Some("name")
+            labelClass = Some("govuk-label--l"),
+            labelAsHeading = true,
+            hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else Some(messages("trustName.hint.noUtr")),
+            inputClass = Some("govuk-!-width-one-half"),
+            autocomplete = Some("business-name")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

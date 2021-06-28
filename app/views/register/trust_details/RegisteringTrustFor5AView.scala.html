@@ -15,32 +15,34 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{InputYesNo, ErrorSummary, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        errorSummary: ErrorSummary,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("registeringTrustFor5A.title")}"
+    title = s"${errorPrefix(form)} ${messages("registeringTrustFor5A.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = RegisteringTrustFor5AController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+       @inputYesNo(
             field = form("value"),
             label = messages("registeringTrustFor5A.heading"),
             hint = Some(messages("registeringTrustFor5A.hint")),
-            legendClass = Some("heading-large"),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
