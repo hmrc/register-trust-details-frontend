@@ -82,7 +82,6 @@ site.hidden-delete=Dileu {0}
 site.hidden-edit=Newid {0}
 site.no=Na
 site.save.continue=Cadw ac yn eich blaen
-site.service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
 site.sign_in=Mewngofnodi
 site.sign_out=Allgofnodi
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
