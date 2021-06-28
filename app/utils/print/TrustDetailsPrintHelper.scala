@@ -46,22 +46,22 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
 
     Seq(
       bound.stringQuestion(TrustNamePage, "trustName", routes.TrustNameController.onPageLoad(draftId).url),
-      bound.dateQuestion(WhenTrustSetupPage, "whenTrustSetup", routes.WhenTrustSetupController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(GovernedInsideTheUKPage, "governedInsideTheUK", routes.GovernedInsideTheUKController.onPageLoad(draftId).url),
+      bound.dateQuestion(WhenTrustSetupPage, "whenTrustSetupDate", routes.WhenTrustSetupController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(GovernedInsideTheUKPage, "governedInsideTheUKYesNo", routes.GovernedInsideTheUKController.onPageLoad(draftId).url),
       bound.countryQuestion(CountryGoverningTrustPage, "countryGoverningTrust", routes.CountryGoverningTrustController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(AdministrationInsideUKPage, "administrationInsideUK", routes.AdministrationInsideUKController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(AdministrationInsideUKPage, "administrationInsideUKYesNo", routes.AdministrationInsideUKController.onPageLoad(draftId).url),
       bound.countryQuestion(CountryAdministeringTrustPage, "countryAdministeringTrust", routes.CountryAdministeringTrustController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(TrustOwnsUkPropertyOrLandPage, "trustOwnsUkPropertyOrLand", routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(TrustListedOnEeaRegisterPage, "trustListedOnEeaRegister", routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(TrustOwnsUkPropertyOrLandPage, "trustOwnsUkPropertyOrLandYesNo", routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(TrustListedOnEeaRegisterPage, "trustListedOnEeaRegisterYesNo", routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url),
       bound.enumQuestion(TrusteesBasedInTheUKPage, "trusteesBasedInTheUK", routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(SettlorsBasedInTheUKPage, "settlorsBasedInTheUK", routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(EstablishedUnderScotsLawPage, "establishedUnderScotsLaw", routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(TrustResidentOffshorePage, "trustResidentOffshore", routes.TrustResidentOffshoreController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(SettlorsBasedInTheUKPage, "settlorsBasedInTheUKYesNo", routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(EstablishedUnderScotsLawPage, "establishedUnderScotsLawYesNo", routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(TrustResidentOffshorePage, "trustResidentOffshoreYesNo", routes.TrustResidentOffshoreController.onPageLoad(draftId).url),
       bound.countryQuestion(TrustPreviouslyResidentPage, "trustPreviouslyResident", routes.TrustPreviouslyResidentController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(TrustHasBusinessRelationshipInUkPage, "trustHasBusinessRelationshipInUk", routes.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(RegisteringTrustFor5APage, "registeringTrustFor5A", routes.RegisteringTrustFor5AController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(InheritanceTaxActPage, "inheritanceTaxAct", routes.InheritanceTaxActController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarrister", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
+      bound.yesNoQuestion(TrustHasBusinessRelationshipInUkPage, "trustHasBusinessRelationshipInUkYesNo", routes.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(RegisteringTrustFor5APage, "registeringTrustFor5AYesNo", routes.RegisteringTrustFor5AController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(InheritanceTaxActPage, "inheritanceTaxActYesNo", routes.InheritanceTaxActController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarristerYesNo", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
     ).flatten
 
   }

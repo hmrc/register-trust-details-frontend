@@ -24,9 +24,9 @@ import views.html.register.trust_details.EstablishedUnderScotsLawView
 
 class EstablishedUnderScotsLawViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "establishedUnderScotsLaw"
+  val messageKeyPrefix = "establishedUnderScotsLawYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("establishedUnderScotsLaw")
+  val form = new YesNoFormProvider().withPrefix("establishedUnderScotsLawYesNo")
 
   "EstablishedUnderScotsLaw view" must {
 

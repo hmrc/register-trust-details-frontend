@@ -26,7 +26,7 @@ import views.html.register.trust_details.TrustListedOnEeaRegisterView
 
 class TrustListedOnEeaRegisterControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustListedOnEeaRegister")
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustListedOnEeaRegisterYesNo")
 
   private lazy val onPageLoadRoute: String = routes.TrustListedOnEeaRegisterController.onPageLoad(fakeDraftId).url
 

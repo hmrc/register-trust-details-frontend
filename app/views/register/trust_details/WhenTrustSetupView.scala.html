@@ -29,7 +29,7 @@
 @(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("whenTrustSetup.title")}",
+    title = s"${errorPrefix(form)}${messages("whenTrustSetupDate.title")}",
     showBackLink = true
 ) {
 
@@ -37,16 +37,16 @@
 
         @errorSummary(form.errors)
 
-        @heading(messages("whenTrustSetup.heading"))
+        @heading(messages("whenTrustSetupDate.heading"))
 
-        <p>@messages("twhenTrustSetup.text")</p>
+        <p>@messages("whenTrustSetupDate.text")</p>
 
         @inputDate(
             field = form("value"),
-            legend = messages("whenTrustSetup.heading"),
+            legend = messages("whenTrustSetupDate.heading"),
             legendClass = "govuk-visually-hidden",
             legendAsHeading = false,
-            hint = Some(messages(s"whenTrustSetup.hint"))
+            hint = Some(messages(s"whenTrustSetupDate.hint"))
         )
 
         @submitButton()

@@ -42,7 +42,7 @@ class InheritanceTaxActController @Inject()(
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("inheritanceTaxAct")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("inheritanceTaxActYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

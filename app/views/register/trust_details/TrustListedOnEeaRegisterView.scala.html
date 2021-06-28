@@ -30,10 +30,10 @@
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
 @content = {
-    <p>@messages("trustListedOnEeaRegister.text")</p>
+    <p>@messages("trustListedOnEeaRegisterYesNo.text")</p>
 
     @bulletList(
-        "trustListedOnEeaRegister.text",
+        "trustListedOnEeaRegisterYesNo.text",
         Seq(
             "bullet1",
             "bullet2",
@@ -44,7 +44,7 @@
 }
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("trustListedOnEeaRegister.title")}",
+    title = s"${errorPrefix(form)}${messages("trustListedOnEeaRegisterYesNo.title")}",
     showBackLink = true
 ) {
 
@@ -52,13 +52,13 @@
 
         @errorSummary(form.errors)
 
-        @heading(messages("trustListedOnEeaRegister.heading"))
+        @heading(messages("trustListedOnEeaRegisterYesNo.heading"))
 
         @content
 
         @inputYesNo(
             field = form("value"),
-            label = messages("trustListedOnEeaRegister.heading"),
+            label = messages("trustListedOnEeaRegisterYesNo.heading"),
             legendAsHeading = false,
             legendClass = Some("govuk-visually-hidden")
         )

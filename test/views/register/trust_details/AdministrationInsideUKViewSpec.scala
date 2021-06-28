@@ -24,9 +24,9 @@ import views.html.register.trust_details.AdministrationInsideUKView
 
 class AdministrationInsideUKViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "administrationInsideUK"
+  val messageKeyPrefix = "administrationInsideUKYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("administrationInsideUK")
+  val form = new YesNoFormProvider().withPrefix("administrationInsideUKYesNo")
 
   "AdministrationInsideUK view" must {
 

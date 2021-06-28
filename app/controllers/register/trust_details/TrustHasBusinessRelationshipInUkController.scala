@@ -45,7 +45,7 @@ class TrustHasBusinessRelationshipInUkController @Inject()(
     standardActions.identifiedUserWithData(draftId)
   }
 
-  private val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustHasBusinessRelationshipInUk")
+  private val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustHasBusinessRelationshipInUkYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

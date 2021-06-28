@@ -26,7 +26,7 @@ import views.html.register.trust_details.TrustOwnsUkPropertyOrLandView
 
 class TrustOwnsUkPropertyOrLandControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustOwnsUkPropertyOrLand")
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustOwnsUkPropertyOrLandYesNo")
 
   private lazy val onPageLoadRoute: String = routes.TrustOwnsUkPropertyOrLandController.onPageLoad(fakeDraftId).url
 

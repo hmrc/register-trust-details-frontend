@@ -24,7 +24,7 @@ import views.html.register.trust_details.RegisteringTrustFor5AView
 
 class RegisteringTrustFor5AViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "registeringTrustFor5A"
+  val messageKeyPrefix = "registeringTrustFor5AYesNo"
 
   val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 

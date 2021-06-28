@@ -24,9 +24,9 @@ import views.html.register.trust_details.SettlorsBasedInTheUKView
 
 class SettlorsBasedInTheUKViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "settlorsBasedInTheUK"
+  val messageKeyPrefix = "settlorsBasedInTheUKYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("settlorsBasedInTheUK")
+  val form = new YesNoFormProvider().withPrefix("settlorsBasedInTheUKYesNo")
 
   "SettlorsBasedInTheUK view" must {
 

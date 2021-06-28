@@ -24,9 +24,9 @@ import views.html.register.trust_details.TrustResidentOffshoreView
 
 class TrustResidentOffshoreViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "trustResidentOffshore"
+  val messageKeyPrefix = "trustResidentOffshoreYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("trustResidentOffshore")
+  val form = new YesNoFormProvider().withPrefix("trustResidentOffshoreYesNo")
 
   "TrustResidentOffshore view" must {
 

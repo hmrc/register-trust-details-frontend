@@ -42,7 +42,7 @@ class RegisteringTrustFor5AController @Inject()(
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("registeringTrustFor5A")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("registeringTrustFor5AYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

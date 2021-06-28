@@ -25,7 +25,7 @@ import views.html.register.trust_details.RegisteringTrustFor5AView
 
 class RegisteringTrustFor5AControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("registeringTrustFor5A")
+  val form = new YesNoFormProvider().withPrefix("registeringTrustFor5AYesNo")
 
 
   lazy val registeringTrustFor5ARoute = routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId).url

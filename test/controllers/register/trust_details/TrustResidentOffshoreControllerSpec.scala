@@ -27,7 +27,7 @@ import views.html.register.trust_details.TrustResidentOffshoreView
 class TrustResidentOffshoreControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("trustResidentOffshore")
+  val form = formProvider.withPrefix("trustResidentOffshoreYesNo")
 
   lazy val trustResidentOffshoreRoute = routes.TrustResidentOffshoreController.onPageLoad(fakeDraftId).url
 

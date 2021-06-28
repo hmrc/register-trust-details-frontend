@@ -24,7 +24,7 @@ import views.html.register.trust_details.GovernedInsideTheUKView
 
 class GovernedInsideTheUKViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "governedInsideTheUK"
+  val messageKeyPrefix = "governedInsideTheUKYesNo"
 
   val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 

@@ -28,7 +28,7 @@
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("inheritanceTaxAct.title")}",
+    title = s"${errorPrefix(form)}${messages("inheritanceTaxActYesNo.title")}",
     showBackLink = true
     ) {
 
@@ -38,8 +38,8 @@
 
        @inputYesNo(
             field = form("value"),
-            label = messages("inheritanceTaxAct.heading"),
-            hint = Some(messages("inheritanceTaxAct.hint")),
+            label = messages("inheritanceTaxActYesNo.heading"),
+            hint = Some(messages("inheritanceTaxActYesNo.hint")),
             legendAsHeading = true
         )
 

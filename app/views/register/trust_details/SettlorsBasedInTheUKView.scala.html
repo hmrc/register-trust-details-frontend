@@ -28,7 +28,7 @@
 @(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("settlorsBasedInTheUK.title")}",
+    title = s"${errorPrefix(form)}${messages("settlorsBasedInTheUKYesNo.title")}",
     showBackLink = true
     ) {
 
@@ -38,7 +38,7 @@
 
        @inputYesNo(
             field = form("value"),
-            label = messages("settlorsBasedInTheUK.heading"),
+            label = messages("settlorsBasedInTheUKYesNo.heading"),
             legendAsHeading = true
         )
 

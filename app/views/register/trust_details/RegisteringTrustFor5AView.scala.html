@@ -28,7 +28,7 @@
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("registeringTrustFor5A.title")}",
+    title = s"${errorPrefix(form)}${messages("registeringTrustFor5AYesNo.title")}",
     showBackLink = true
     ) {
 
@@ -38,8 +38,8 @@
 
        @inputYesNo(
             field = form("value"),
-            label = messages("registeringTrustFor5A.heading"),
-            hint = Some(messages("registeringTrustFor5A.hint")),
+            label = messages("registeringTrustFor5AYesNo.heading"),
+            hint = Some(messages("registeringTrustFor5AYesNo.hint")),
             legendAsHeading = true
         )
 

@@ -45,7 +45,7 @@ class TrustListedOnEeaRegisterController @Inject()(
     standardActions.identifiedUserWithData(draftId)
   }
 
-  private val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustListedOnEeaRegister")
+  private val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustListedOnEeaRegisterYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

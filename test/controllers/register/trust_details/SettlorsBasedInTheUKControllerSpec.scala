@@ -26,7 +26,7 @@ import views.html.register.trust_details.SettlorsBasedInTheUKView
 class SettlorsBasedInTheUKControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("settlorsBasedInTheUK")
+  val form = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
 
   lazy val settlorsBasedInTheUKRoute = routes.SettlorsBasedInTheUKController.onPageLoad( fakeDraftId).url
 
