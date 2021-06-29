@@ -9,7 +9,6 @@ agentOtherThanBarristerYesNo.error.required=Dewiswch ‘Iawn’ os yw asiant nad
 agentOtherThanBarristerYesNo.heading=A oes asiant nad yw’n fargyfreithiwr wedi creu’r ymddiriedolaeth hon?
 agentOtherThanBarristerYesNo.title=A oes asiant nad yw’n fargyfreithiwr wedi creu’r ymddiriedolaeth hon?
 answerPage.section.trustDetails.heading=Manylion yr ymddiriedolaeth
-answerPage.section.trustDetails.subheading=Manylion yr ymddiriedolaeth
 countryAdministeringTrust.checkYourAnswersLabel=Ym mha wlad y gweinyddir yr ymddiriedolaeth?
 countryAdministeringTrust.error.invalidCharacters=Mae’n rhaid i’r wlad sy’n llywodraethu’r ymddiriedolaeth gynnwys y llythrennau a i z yn unig
 countryAdministeringTrust.error.length=Mae’n rhaid i’r wlad y gweinyddir ynddi fod yn 100 o gymeriadau neu lai

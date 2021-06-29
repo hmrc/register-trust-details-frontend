@@ -27,19 +27,20 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
 
   def printSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      Some(messages("answerPage.section.trustDetails.subheading")),
-      answers(userAnswers, draftId)
+      headingKey = None,
+      rows = answers(userAnswers, draftId),
+      sectionKey = Some(messages("answerPage.section.trustDetails.heading"))
     )
   }
 
   def checkDetailsSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      None,
-      answers(userAnswers, draftId)
+      headingKey = None,
+      rows = answers(userAnswers, draftId)
     )
   }
 
-  def answers(userAnswers: ReadableUserAnswers, draftId: String)
+  private def answers(userAnswers: ReadableUserAnswers, draftId: String)
              (implicit messages: Messages): Seq[AnswerRow] = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers)

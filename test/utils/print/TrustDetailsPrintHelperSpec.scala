@@ -21,7 +21,7 @@ import controllers.register.trust_details.routes
 import models.TrusteesBasedInTheUK.UKBasedTrustees
 import pages.register.trust_details._
 import play.twirl.api.HtmlFormat
-import viewmodels.AnswerRow
+import viewmodels.{AnswerRow, AnswerSection}
 
 import java.time.LocalDate
 
@@ -30,11 +30,14 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
   private val printHelper = app.injector.instanceOf[TrustDetailsPrintHelper]
 
   "Trust details print helper" must {
+
     "return no answer rows" when  {
       "there are no answers" in {
-        printHelper.answers(emptyUserAnswers, "draftId") mustBe Seq.empty
+        printHelper.printSection(emptyUserAnswers, "draftId").rows mustBe Seq.empty
+        printHelper.checkDetailsSection(emptyUserAnswers, "draftId").rows mustBe Seq.empty
       }
     }
+
     "return answer rows" when  {
       "there are answers" in {
         val answers = emptyUserAnswers
@@ -55,7 +58,8 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           .set(RegisteringTrustFor5APage, true).success.value
           .set(InheritanceTaxActPage, false).success.value
           .set(AgentOtherThanBarristerPage, true).success.value
-        printHelper.answers(answers, "draftId") mustBe Seq(
+
+        val rows = Seq(
           AnswerRow(
             "trustName.checkYourAnswersLabel",
             HtmlFormat.escape("Trust of John"),
@@ -141,6 +145,18 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             HtmlFormat.escape("Yes"),
             Some(routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
           )
+        )
+
+        printHelper.printSection(answers, "draftId") mustBe AnswerSection(
+          headingKey = None,
+          rows = rows,
+          sectionKey = Some(messages("answerPage.section.trustDetails.heading"))
+        )
+
+        printHelper.checkDetailsSection(answers, "draftId") mustBe AnswerSection(
+          headingKey = None,
+          rows = rows,
+          sectionKey = None
         )
       }
     }
