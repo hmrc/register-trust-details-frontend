@@ -29,7 +29,7 @@ class WhenTrustSetupFormProviderSpec extends DateBehaviours with FakeTrustsApp {
   private val min = LocalDate.of(1500, 1, 1)
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  "whenTrustSetUp.value" should {
+  "whenTrustSetupDate.value" should {
 
     val validData = datesBetween(
       min = min,
@@ -38,16 +38,16 @@ class WhenTrustSetupFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "whenTrustSetup.error.required.all")
+    behave like mandatoryDateField(form, "value", "whenTrustSetupDate.error.required.all")
 
     behave like dateFieldWithMax(form, "value",
       max = max,
-      FormError("value", s"whenTrustSetup.error.future", List("day", "month", "year"))
+      FormError("value", s"whenTrustSetupDate.error.future", List("day", "month", "year"))
     )
 
     behave like dateFieldWithMin(form, "value",
       min = min,
-      FormError("value", s"whenTrustSetup.error.past", List("day", "month", "year"))
+      FormError("value", s"whenTrustSetupDate.error.past", List("day", "month", "year"))
     )
   }
 }

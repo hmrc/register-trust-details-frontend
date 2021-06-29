@@ -15,33 +15,40 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{ErrorSummary, Heading, InputDate, SubmitButton}
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        errorSummary: ErrorSummary,
+        heading: Heading,
+        inputDate: InputDate,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("whenTrustSetup.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("whenTrustSetupDate.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = WhenTrustSetupController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading(messages("whenTrustSetupDate.heading"))
 
-        @components.input_date(
+        <p>@messages("whenTrustSetupDate.text")</p>
+
+        @inputDate(
             field = form("value"),
-            legend = messages("whenTrustSetup.heading"),
-            extraText = Some(messages("whenTrustSetup.text")),
-            hint = Some(messages(s"whenTrustSetup.hint")),
-            legendClass = "heading-large",
-            legendAsHeading = true
+            legend = messages("whenTrustSetupDate.heading"),
+            legendClass = "govuk-visually-hidden",
+            legendAsHeading = false,
+            hint = Some(messages(s"whenTrustSetupDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

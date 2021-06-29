@@ -25,7 +25,7 @@ import views.html.register.trust_details.EstablishedUnderScotsLawView
 
 class EstablishedUnderScotsLawControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("establishedUnderScotsLaw")
+  val form = new YesNoFormProvider().withPrefix("establishedUnderScotsLawYesNo")
 
   lazy val establishedUnderScotsLawRoute = routes.EstablishedUnderScotsLawController.onPageLoad(fakeDraftId).url
 

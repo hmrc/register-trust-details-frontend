@@ -28,13 +28,13 @@ class WhenTrustSetupFormProvider @Inject()(appConfig: FrontendAppConfig) extends
   def withConfig(minimumDate: (LocalDate, String) = (appConfig.minDate, "past")): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "whenTrustSetup.error.invalid",
-        allRequiredKey = "whenTrustSetup.error.required.all",
-        twoRequiredKey = "whenTrustSetup.error.required.two",
-        requiredKey    = "whenTrustSetup.error.required"
+        invalidKey     = "whenTrustSetupDate.error.invalid",
+        allRequiredKey = "whenTrustSetupDate.error.required.all",
+        twoRequiredKey = "whenTrustSetupDate.error.required.two",
+        requiredKey    = "whenTrustSetupDate.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, s"whenTrustSetup.error.future", "day", "month", "year"),
-        minDate(minimumDate._1, s"whenTrustSetup.error.${minimumDate._2}", "day", "month", "year")
+        maxDate(LocalDate.now, s"whenTrustSetupDate.error.future", "day", "month", "year"),
+        minDate(minimumDate._1, s"whenTrustSetupDate.error.${minimumDate._2}", "day", "month", "year")
       ))
 
     )

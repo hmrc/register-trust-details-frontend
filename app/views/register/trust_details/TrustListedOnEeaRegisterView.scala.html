@@ -15,19 +15,25 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{Heading, InputYesNo, BulletList, ErrorSummary, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        heading: Heading,
+        errorSummary: ErrorSummary,
+        bulletList: BulletList,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
 @content = {
-    <p>@messages("trustListedOnEeaRegister.text")</p>
+    <p>@messages("trustListedOnEeaRegisterYesNo.text")</p>
 
-    @components.bullet_list(
-        "trustListedOnEeaRegister.text",
+    @bulletList(
+        "trustListedOnEeaRegisterYesNo.text",
         Seq(
             "bullet1",
             "bullet2",
@@ -37,24 +43,26 @@
     )
 }
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("trustListedOnEeaRegister.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("trustListedOnEeaRegisterYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = TrustListedOnEeaRegisterController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @heading(messages("trustListedOnEeaRegisterYesNo.heading"))
 
-        @components.input_yes_no(
+        @content
+
+        @inputYesNo(
             field = form("value"),
-            label = messages("trustListedOnEeaRegister.heading"),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true,
-            additionalContent = Some(content)
+            label = messages("trustListedOnEeaRegisterYesNo.heading"),
+            legendAsHeading = false,
+            legendClass = Some("govuk-visually-hidden")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

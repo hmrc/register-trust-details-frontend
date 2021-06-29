@@ -25,7 +25,7 @@ import views.html.register.trust_details.InheritanceTaxActView
 
 class InheritanceTaxActControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("inheritanceTaxAct")
+  val form = new YesNoFormProvider().withPrefix("inheritanceTaxActYesNo")
 
 
   lazy val inheritanceTaxActRoute = routes.InheritanceTaxActController.onPageLoad(fakeDraftId).url

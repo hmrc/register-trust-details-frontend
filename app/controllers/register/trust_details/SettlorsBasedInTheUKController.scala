@@ -41,7 +41,7 @@ class SettlorsBasedInTheUKController @Inject()(
                                                 view: SettlorsBasedInTheUKView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
-  val form = formProvider.withPrefix("settlorsBasedInTheUK")
+  val form = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 

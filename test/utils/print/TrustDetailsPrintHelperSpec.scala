@@ -62,12 +62,12 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.TrustNameController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "whenTrustSetup.checkYourAnswersLabel",
+            "whenTrustSetupDate.checkYourAnswersLabel",
             HtmlFormat.escape("9 June 2012"),
             Some(routes.WhenTrustSetupController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "governedInsideTheUK.checkYourAnswersLabel",
+            "governedInsideTheUKYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
             Some(routes.GovernedInsideTheUKController.onPageLoad(draftId).url)
           ),
@@ -77,7 +77,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.CountryGoverningTrustController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "administrationInsideUK.checkYourAnswersLabel",
+            "administrationInsideUKYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
             Some(routes.AdministrationInsideUKController.onPageLoad(draftId).url)
           ),
@@ -87,12 +87,12 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.CountryAdministeringTrustController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "trustOwnsUkPropertyOrLand.checkYourAnswersLabel",
+            "trustOwnsUkPropertyOrLandYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "trustListedOnEeaRegister.checkYourAnswersLabel",
+            "trustListedOnEeaRegisterYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url)
           ),
@@ -102,17 +102,17 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "settlorsBasedInTheUK.checkYourAnswersLabel",
+            "settlorsBasedInTheUKYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.SettlorsBasedInTheUKController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "establishedUnderScotsLaw.checkYourAnswersLabel",
+            "establishedUnderScotsLawYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
             Some(routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "trustResidentOffshore.checkYourAnswersLabel",
+            "trustResidentOffshoreYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
             Some(routes.TrustResidentOffshoreController.onPageLoad(draftId).url)
           ),
@@ -122,22 +122,22 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.TrustPreviouslyResidentController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "trustHasBusinessRelationshipInUk.checkYourAnswersLabel",
+            "trustHasBusinessRelationshipInUkYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "registeringTrustFor5A.checkYourAnswersLabel",
+            "registeringTrustFor5AYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.RegisteringTrustFor5AController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "inheritanceTaxAct.checkYourAnswersLabel",
+            "inheritanceTaxActYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
             Some(routes.InheritanceTaxActController.onPageLoad(draftId).url)
           ),
           AnswerRow(
-            "agentOtherThanBarrister.checkYourAnswersLabel",
+            "agentOtherThanBarristerYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
           )

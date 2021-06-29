@@ -25,7 +25,7 @@ import views.html.register.trust_details.AgentOtherThanBarristerView
 
 class AgentOtherThanBarristerControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("agentOtherThanBarrister")
+  val form = new YesNoFormProvider().withPrefix("agentOtherThanBarristerYesNo")
 
   lazy val agentOtherThanBarristerRoute = routes.AgentOtherThanBarristerController.onPageLoad(fakeDraftId).url
 

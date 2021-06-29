@@ -40,7 +40,7 @@ class AdministrationInsideUKController @Inject()(
                                                   view: AdministrationInsideUKView
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = formProvider.withPrefix("administrationInsideUK")
+  val form: Form[Boolean] = formProvider.withPrefix("administrationInsideUKYesNo")
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 

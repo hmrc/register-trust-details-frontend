@@ -42,7 +42,7 @@ class TrustResidentOffshoreController @Inject()(
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  val form: Form[Boolean] = formProvider.withPrefix("trustResidentOffshore")
+  val form: Form[Boolean] = formProvider.withPrefix("trustResidentOffshoreYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

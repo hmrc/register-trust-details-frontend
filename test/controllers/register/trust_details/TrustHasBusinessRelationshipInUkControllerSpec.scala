@@ -26,7 +26,7 @@ import views.html.register.trust_details.TrustHasBusinessRelationshipInUkView
 
 class TrustHasBusinessRelationshipInUkControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustHasBusinessRelationshipInUk")
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustHasBusinessRelationshipInUkYesNo")
 
   private lazy val onPageLoadRoute: String = routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId).url
 

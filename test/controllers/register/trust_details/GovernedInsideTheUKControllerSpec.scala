@@ -25,7 +25,7 @@ import views.html.register.trust_details.GovernedInsideTheUKView
 
 class GovernedInsideTheUKControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("governedInsideTheUK")
+  val form = new YesNoFormProvider().withPrefix("governedInsideTheUKYesNo")
 
   lazy val governedInsideTheUKRoute = routes.GovernedInsideTheUKController.onPageLoad(fakeDraftId).url
 

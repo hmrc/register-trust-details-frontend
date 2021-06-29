@@ -24,7 +24,7 @@ import views.html.register.trust_details.TrustListedOnEeaRegisterView
 
 class TrustListedOnEeaRegisterViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix = "trustListedOnEeaRegister"
+  private val messageKeyPrefix = "trustListedOnEeaRegisterYesNo"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 

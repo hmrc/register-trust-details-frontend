@@ -24,7 +24,7 @@ import views.html.register.trust_details.InheritanceTaxActView
 
 class InheritanceTaxActViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "inheritanceTaxAct"
+  val messageKeyPrefix = "inheritanceTaxActYesNo"
 
   val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 

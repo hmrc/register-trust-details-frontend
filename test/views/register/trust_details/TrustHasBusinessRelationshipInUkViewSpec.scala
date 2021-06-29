@@ -24,7 +24,7 @@ import views.html.register.trust_details.TrustHasBusinessRelationshipInUkView
 
 class TrustHasBusinessRelationshipInUkViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix = "trustHasBusinessRelationshipInUk"
+  private val messageKeyPrefix = "trustHasBusinessRelationshipInUkYesNo"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 

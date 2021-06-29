@@ -42,7 +42,7 @@ class GovernedInsideTheUKController @Inject()(
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("governedInsideTheUK")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("governedInsideTheUKYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

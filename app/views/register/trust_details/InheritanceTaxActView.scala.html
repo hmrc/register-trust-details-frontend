@@ -15,32 +15,34 @@
  *@
 
 @import controllers.register.trust_details.routes._
+@import views.html.components.{InputYesNo, ErrorSummary, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
+        errorSummary: ErrorSummary,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId:String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("inheritanceTaxAct.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("inheritanceTaxActYesNo.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = InheritanceTaxActController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+       @inputYesNo(
             field = form("value"),
-            label = messages("inheritanceTaxAct.heading"),
-            hint = Some(messages("inheritanceTaxAct.hint")),
-            legendClass = Some("heading-large"),
+            label = messages("inheritanceTaxActYesNo.heading"),
+            hint = Some(messages("inheritanceTaxActYesNo.hint")),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -1,4 +1,6 @@
 # microservice specific routes
+->         /govuk-frontend                              govuk.Routes
+->         /hmrc-frontend                               hmrcfrontend.Routes
 
 GET        /:draftId/start                              controllers.IndexController.onPageLoad(draftId: String)
 
@@ -14,6 +16,7 @@ GET        /logout                                      controllers.LogoutContro
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
+POST       /this-service-has-been-reset                 controllers.SessionExpiredController.onSubmit
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 

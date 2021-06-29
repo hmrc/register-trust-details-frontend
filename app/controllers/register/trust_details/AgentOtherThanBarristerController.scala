@@ -42,7 +42,7 @@ class AgentOtherThanBarristerController @Inject()(
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("agentOtherThanBarrister")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("agentOtherThanBarristerYesNo")
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

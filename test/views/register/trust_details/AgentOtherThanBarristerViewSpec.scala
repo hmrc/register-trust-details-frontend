@@ -24,7 +24,7 @@ import views.html.register.trust_details.AgentOtherThanBarristerView
 
 class AgentOtherThanBarristerViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "agentOtherThanBarrister"
+  val messageKeyPrefix = "agentOtherThanBarristerYesNo"
 
   val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 

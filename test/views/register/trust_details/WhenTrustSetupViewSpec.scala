@@ -26,7 +26,7 @@ import views.html.register.trust_details.WhenTrustSetupView
 
 class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
 
-  val messageKeyPrefix = "whenTrustSetup"
+  val messageKeyPrefix = "whenTrustSetupDate"
 
 
   val form = new WhenTrustSetupFormProvider(frontendAppConfig).withConfig()
