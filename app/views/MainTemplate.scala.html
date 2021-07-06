@@ -20,29 +20,30 @@
 @import resources._
 
 @this(
-        appConfig: FrontendAppConfig,
-        govukLayout: GovukLayout,
-        hmrcHead: HmrcHead,
-        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        hmrcStandardFooter: HmrcStandardFooter,
-        hmrcStandardHeader: HmrcStandardHeader,
-        standardBetaBanner: StandardBetaBanner,
-        hmrcScripts: HmrcScripts,
-        stylesheets: Stylesheets,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    appConfig: FrontendAppConfig,
+    govukLayout: GovukLayout,
+    hmrcHead: HmrcHead,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcStandardFooter: HmrcStandardFooter,
+    hmrcStandardHeader: HmrcStandardHeader,
+    standardBetaBanner: StandardBetaBanner,
+    hmrcScripts: HmrcScripts,
+    stylesheets: Stylesheets,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
-@(title: String,
-        sidebarLinks: Option[Html] = None,
-        contentHeader: Option[Html] = None,
-        bodyClasses: Option[String] = None,
-        mainClass: Option[String] = None,
-        scriptElem: Option[Html] = None,
-        timeoutEnabled: Boolean = true,
-        canSignOut: Boolean = true,
-        showBackLink: Boolean = false
+@(
+    title: String,
+    sidebarLinks: Option[Html] = None,
+    contentHeader: Option[Html] = None,
+    bodyClasses: Option[String] = None,
+    mainClass: Option[String] = None,
+    scriptElem: Option[Html] = None,
+    timeoutEnabled: Boolean = true,
+    canSignOut: Boolean = true,
+    showBackLink: Boolean = false
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
@@ -62,15 +63,15 @@
 }
 
 @beforeContentBlock = {
-@hmrcLanguageSelectHelper()
-@if(showBackLink) {
-    @govukBackLink(BackLink(
-        attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
-    ))
-}
+    @hmrcLanguageSelectHelper()
+    @if(showBackLink) {
+        @govukBackLink(BackLink(
+            attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
+        ))
+    }
 }
 
-    @mainContentWithGetHelp = {
+@mainContentWithGetHelp = {
     @mainContent
     @hmrcReportTechnicalIssueHelper()
 }
@@ -81,7 +82,7 @@
         headBlock = Some(headScripts)
     )),
     headerBlock = Some(hmrcStandardHeader(
-        serviceUrl = Some(appConfig.trustsUrl),
+        serviceUrl = Some(appConfig.loginContinueUrl),
         signOutUrl = if(canSignOut) Some(controllers.routes.LogoutController.logout().url) else None,
         phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrl))
     )),
