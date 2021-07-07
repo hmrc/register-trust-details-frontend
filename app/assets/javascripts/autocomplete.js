@@ -40,6 +40,9 @@ $(document).ready(function() {
         $(".autocomplete__wrapper #value").attr('aria-describedby', selectDescribedByValues);
     }
 
+    if (document.querySelectorAll('.autocomplete__dropdown-arrow-down').length) {
+        $('.autocomplete__dropdown-arrow-down').attr('aria-hidden', true);
+    }
 
     //======================================================
     // Fix CSS styling of errors (red outline) around the country input dropdown
