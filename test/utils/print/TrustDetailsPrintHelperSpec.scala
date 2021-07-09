@@ -150,7 +150,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
         printHelper.printSection(answers, "draftId") mustBe AnswerSection(
           headingKey = None,
           rows = rows,
-          sectionKey = Some(messages("answerPage.section.trustDetails.heading"))
+          sectionKey = Some("answerPage.section.trustDetails.heading")
         )
 
         printHelper.checkDetailsSection(answers, "draftId") mustBe AnswerSection(
