@@ -20,8 +20,6 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 error.postcode.invalidCharacters = Enter a real postcode
 
-answerPage.section.trustDetails.heading = Trust Details
-
 featureNotAvailable.title = This part of the online service is not available yet
 featureNotAvailable.heading = This part of the online service is not available yet
 featureNotAvailable.p1 = If you need to make any changes to the trust you can

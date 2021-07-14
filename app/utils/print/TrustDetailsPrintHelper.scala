@@ -27,15 +27,13 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
 
   def printSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      headingKey = None,
       rows = answers(userAnswers, draftId),
-      sectionKey = Some(messages("answerPage.section.trustDetails.heading"))
+      sectionKey = Some("answerPage.section.trustDetails.heading")
     )
   }
 
   def checkDetailsSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      headingKey = None,
       rows = answers(userAnswers, draftId)
     )
   }

@@ -34,17 +34,17 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     val status = registrationProgress.trustDetailsStatus(userAnswers)
 
     RegistrationSubmission.DataSet(
-      Json.toJson(userAnswers),
-      status,
-      mappedDataIfCompleted(userAnswers, status),
-      answerSectionsIfCompleted(userAnswers, status)
+      data = Json.toJson(userAnswers),
+      status = status,
+      registrationPieces = mappedDataIfCompleted(userAnswers, status),
+      answerSections = answerSectionsIfCompleted(userAnswers, status)
     )
   }
 
   private def mappedPieces(trustDetailsJson: JsValue) =
     List(RegistrationSubmission.MappedPiece("trust/details", trustDetailsJson))
 
-  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
+  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]): List[RegistrationSubmission.MappedPiece] = {
     if (status.contains(Status.Completed)) {
       trustDetailsMapper.build(userAnswers) match {
         case Some(trustDetails) => mappedPieces(Json.toJson(trustDetails))
@@ -66,11 +66,12 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     }
   }
 
+  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
+    RegistrationSubmission.AnswerSection(section.headingKey, section.rows.map(convertForSubmission), section.sectionKey)
+  }
+
   private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {
     RegistrationSubmission.AnswerRow(row.label, row.answer.toString, row.labelArg)
   }
 
-  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
-    RegistrationSubmission.AnswerSection(section.headingKey, section.rows.map(convertForSubmission), section.sectionKey)
-  }
 }
