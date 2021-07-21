@@ -149,6 +149,6 @@ whenTrustSetupDate.error.required=Mae’n rhaid i’r dyddiad y cafodd yr ymddir
 whenTrustSetupDate.error.required.all=Nodwch y dyddiad y cafodd yr ymddiriedolaeth ei chreu
 whenTrustSetupDate.error.required.two=Mae’n rhaid i’r dyddiad y cafodd yr ymddiriedolaeth ei chreu gynnwys {0} a {1}
 whenTrustSetupDate.heading=Pryd y cafodd yr ymddiriedolaeth ei chreu?
-whenTrustSetupDate.hint=Er enghraifft,
+whenTrustSetupDate.hint=Er enghraifft, 31 3 2015
 whenTrustSetupDate.text=Dyma’r dyddiad pan gafodd y weithred ymddiriedolaeth ei llofnodi. Ar gyfer ymddiriedolaethau ewyllys, defnyddiwch ddyddiad marwolaeth y setlwr.
 whenTrustSetupDate.title=Pryd y cafodd yr ymddiriedolaeth ei chreu?
