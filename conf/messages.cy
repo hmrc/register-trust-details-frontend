@@ -96,10 +96,22 @@ trusteesBasedInTheUK.InternationalAndUKTrustees=Mae’r ymddiriedolaeth yn cynnw
 trusteesBasedInTheUK.NonUkBasedTrustees=Nid oes yr un o’r ymddiriedolwyr wedi’u lleoli yn y DU
 trusteesBasedInTheUK.title=A yw’r ymddiriedolwyr wedi’u lleoli yn y DU?
 trusteesBasedInTheUK.UKBasedTrustees=Mae pob un o’r ymddiriedolwyr wedi’u lleoli yn y DU
-trustHasBusinessRelationshipInUkYesNo.checkYourAnswersLabel=A oes gan yr ymddiriedolaeth berthynas fusnes yn y DU?
-trustHasBusinessRelationshipInUkYesNo.error.required=Dewiswch ‘Iawn’ os oes gan yr ymddiriedolaeth berthynas fusnes yn y DU
-trustHasBusinessRelationshipInUkYesNo.heading=A oes gan yr ymddiriedolaeth berthynas fusnes yn y DU?
-trustHasBusinessRelationshipInUkYesNo.title=A oes gan yr ymddiriedolaeth berthynas fusnes yn y DU?
+
+trustHasBusinessRelationshipInUkYesNo.title = A oes gan yr ymddiriedolaeth berthynas fusnes yn y DU?
+trustHasBusinessRelationshipInUkYesNo.heading = A oes gan yr ymddiriedolaeth berthynas fusnes yn y DU?
+trustHasBusinessRelationshipInUkYesNo.checkYourAnswersLabel = A oes gan yr ymddiriedolaeth berthynas fusnes yn y DU?
+trustHasBusinessRelationshipInUkYesNo.error.required = Dewiswch ‘Iawn’ os oes gan yr ymddiriedolaeth berthynas fusnes yn y DU
+trustHasBusinessRelationshipInUkYesNo.paragraph1 = Bydd gan yr ymddiriedolaeth berthynas busnes os yw’r ymddiriedolwyr rheoli yn defnyddio, ar sail barhaol, unrhyw un o’r canlynol sydd wedi’i leoli yn y DU:
+trustHasBusinessRelationshipInUkYesNo.bullet1 = gwasanaethau ariannol
+trustHasBusinessRelationshipInUkYesNo.bullet2 = cyngor cyfreithiol
+trustHasBusinessRelationshipInUkYesNo.bullet3 = cyngor proffesiynol
+trustHasBusinessRelationshipInUkYesNo.paragraph2 = Gall cyngor proffesiynol gynnwys gwasanaethau’r canlynol:
+trustHasBusinessRelationshipInUkYesNo.bullet4 = cyfreithiwr
+trustHasBusinessRelationshipInUkYesNo.bullet5 = cyfrifydd
+trustHasBusinessRelationshipInUkYesNo.bullet6 = asiant tai
+trustHasBusinessRelationshipInUkYesNo.bullet7 = banc neu gymdeithas adeiladu
+trustHasBusinessRelationshipInUkYesNo.bullet8 = sefydliad proffesiynol arall
+
 trustListedOnEeaRegisterYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth wedi’i rhestru ar gofrestr Ardal Economaidd Ewropeaidd (AEE)?
 trustListedOnEeaRegisterYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth wedi’i rhestru ar gofrestr Ardal Economaidd Ewropeaidd (AEE)
 trustListedOnEeaRegisterYesNo.heading=A yw’r ymddiriedolaeth wedi’i rhestru ar gofrestr Ardal Economaidd Ewropeaidd (AEE)?
@@ -117,11 +129,15 @@ trustName.heading=Beth yw enw’r ymddiriedolaeth?
 trustName.hint.hasUtr=Mae’n rhaid nodi hyn yn union fel y mae ar hysbysiad i gyflwyno Hunanasesiad (SA316) diweddaraf neu Ffurflen Dreth ddiweddaraf yr ymddiriedolaeth.
 trustName.hint.noUtr=Mae’n rhaid i hyn fod yn 53 o gymeriadau neu lai
 trustName.title=Beth yw enw’r ymddiriedolaeth?
+  
 trustOwnsUkPropertyOrLandYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
 trustOwnsUkPropertyOrLandYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020
 trustOwnsUkPropertyOrLandYesNo.heading=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
 trustOwnsUkPropertyOrLandYesNo.text=Daeth y rheolau presennol ar gyfer cofrestru ymddiriedolaeth newydd i rym ar 6 Hydref 2020.
 trustOwnsUkPropertyOrLandYesNo.title=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
+trustOwnsUkPropertyOrLandYesNo.paragraph1 = Daeth y rheolau presennol ar gyfer cofrestru ymddiriedolaeth newydd i rym ar 6 Hydref 2020.
+trustOwnsUkPropertyOrLandYesNo.paragraph2 = Mae tir neu eiddo yn cyfeirio at leiniau o dir neu adeiladau o frics a morter yn y DU.
+
 trustPreviouslyResident.checkYourAnswersLabel=Ym mha wlad yr oedd yr ymddiriedolaeth yn preswylio yn flaenorol?
 trustPreviouslyResident.error.invalidCharacters=Mae’n rhaid i’r wlad sy’n llywodraethu’r ymddiriedolaeth gynnwys y llythrennau a i z yn unig
 trustPreviouslyResident.error.length=Mae’n rhaid i’r wlad yr oedd yr ymddiriedolaeth yn preswylio ynddi yn flaenorol fod yn 100 o gymeriadau neu lai
