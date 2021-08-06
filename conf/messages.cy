@@ -127,7 +127,6 @@ trustName.error.length=Mae’n rhaid i enw’r ymddiriedolaeth fod yn 53 o gymer
 trustName.error.required=Nodwch enw’r ymddiriedolaeth
 trustName.heading=Beth yw enw’r ymddiriedolaeth?
 trustName.hint.hasUtr=Mae’n rhaid nodi hyn yn union fel y mae ar hysbysiad i gyflwyno Hunanasesiad (SA316) diweddaraf neu Ffurflen Dreth ddiweddaraf yr ymddiriedolaeth.
-trustName.hint.noUtr=Mae’n rhaid i hyn fod yn 53 o gymeriadau neu lai
 trustName.title=Beth yw enw’r ymddiriedolaeth?
   
 trustOwnsUkPropertyOrLandYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?

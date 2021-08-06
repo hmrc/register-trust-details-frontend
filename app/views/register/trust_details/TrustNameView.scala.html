@@ -42,7 +42,7 @@
             name = "value",
             label = messages("trustName.heading"),
             isPageHeading = true,
-            hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else Some(messages("trustName.hint.noUtr")),
+            hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else None,
             maxLength = Some(53),
             textAreaAttribute = Map("autocomplete" -> "organization")
         )
