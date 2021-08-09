@@ -15,14 +15,14 @@
  *@
 
 @import controllers.register.trust_details.routes._
-@import views.html.components.{InputText, ErrorSummary, SubmitButton}
+@import views.html.components.{InputCharacterCount, ErrorSummary, SubmitButton}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-        inputText: InputText,
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        characterCount: InputCharacterCount,
         errorSummary: ErrorSummary,
-        submitButton: SubmitButton,
+        submitButton: SubmitButton
 )
 
 @(form: Form[_], draftId: String, hintTextShown: Boolean)(implicit request: Request[_], messages: Messages)
@@ -36,14 +36,15 @@
 
         @errorSummary(form.errors)
 
-        @inputText(
-          field = form("value"),
-          label = messages("trustName.heading"),
-            labelClass = Some("govuk-label--l"),
-            labelAsHeading = true,
-            hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else Some(messages("trustName.hint.noUtr")),
-            inputClass = Some("govuk-!-width-one-half"),
-            autocomplete = Some("organization")
+        @characterCount(
+            field = form("value"),
+            id = "value",
+            name = "value",
+            label = messages("trustName.heading"),
+            isPageHeading = true,
+            hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else None,
+            maxLength = Some(53),
+            textAreaAttribute = Map("autocomplete" -> "organization")
         )
 
         @submitButton()
