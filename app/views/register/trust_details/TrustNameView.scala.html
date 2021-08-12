@@ -15,12 +15,12 @@
  *@
 
 @import controllers.register.trust_details.routes._
-@import views.html.components.{InputCharacterCount, ErrorSummary, SubmitButton}
+@import views.html.components.{InputTextCharacterCount, ErrorSummary, SubmitButton}
 
 @this(
         mainTemplate: MainTemplate,
         formHelper: FormWithCSRF,
-        characterCount: InputCharacterCount,
+        characterCount: InputTextCharacterCount,
         errorSummary: ErrorSummary,
         submitButton: SubmitButton
 )
@@ -41,10 +41,12 @@
             id = "value",
             name = "value",
             label = messages("trustName.heading"),
+            isLabelHidden = true,
             isPageHeading = true,
             hint = if(hintTextShown) Some(messages("trustName.hint.hasUtr")) else None,
             maxLength = Some(53),
-            textAreaAttribute = Map("autocomplete" -> "organization")
+            inputClass = Some("govuk-!-width-one-half"),
+            autocomplete = Some("organization")
         )
 
         @submitButton()
