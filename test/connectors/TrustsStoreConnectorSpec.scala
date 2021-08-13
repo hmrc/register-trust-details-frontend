@@ -28,9 +28,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
-
 class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionValues with WireMockHelper {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -50,52 +47,27 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
       val url = s"/trusts-store/register/tasks/update-trust-details/$draftId"
 
       "return OK with the current task status" in {
-        val application = applicationBuilder()
-          .configure(
-            Seq(
-              "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
-            ): _*
-          ).build()
-
-        val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
           post(urlEqualTo(url))
             .willReturn(ok())
         )
 
-        val futureResult = connector.updateTaskStatus(draftId, Completed)
-
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe 200
+        whenReady(connector.updateTaskStatus(draftId, Completed)) {
+          _.status mustBe 200
         }
-
-        application.stop()
       }
 
       "return default tasks when a failure occurs" in {
-        val application = applicationBuilder()
-          .configure(
-            Seq(
-              "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
-            ): _*
-          ).build()
-
-        val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
           post(urlEqualTo(url))
             .willReturn(serverError())
         )
 
-        connector.updateTaskStatus(draftId, Completed) map { response =>
-          response.status mustBe 500
+        connector.updateTaskStatus(draftId, Completed) map {
+          _.status mustBe 500
         }
-
-        application.stop()
       }
     }
 
@@ -104,15 +76,6 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
       val url = s"/trusts-store/register/tasks/$draftId"
 
       "return OK with the current task status" in {
-        val application = applicationBuilder()
-          .configure(
-            Seq(
-              "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
-            ): _*
-          ).build()
-
-        val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         val json = Json.parse(
           """
@@ -126,14 +89,9 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
             .willReturn(okJson(json.toString()))
         )
 
-        val futureResult = connector.getTaskStatus(draftId)
-
-        whenReady(futureResult) {
-          r =>
-            r mustBe Task(Completed)
+        whenReady(connector.getTaskStatus(draftId)) {
+          _ mustBe Task(Completed)
         }
-
-        application.stop()
       }
     }
 
@@ -156,8 +114,9 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
             )
         )
 
-        val result = Await.result(connector.getFeature("5mld"), Duration.Inf)
-        result mustBe FeatureResponse("5mld", isEnabled = true)
+        whenReady(connector.getFeature("5mld")) {
+          _ mustBe FeatureResponse("5mld", isEnabled = true)
+        }
       }
 
       "return a feature flag of false if 5mld is not enabled" in {
@@ -175,8 +134,9 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
             )
         )
 
-        val result = Await.result(connector.getFeature("5mld"), Duration.Inf)
-        result mustBe FeatureResponse("5mld", isEnabled = false)
+        whenReady(connector.getFeature("5mld")) {
+          _ mustBe FeatureResponse("5mld", isEnabled = false)
+        }
       }
     }
   }
