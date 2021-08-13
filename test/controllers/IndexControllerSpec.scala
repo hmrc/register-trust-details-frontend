@@ -21,9 +21,9 @@ import connectors.SubmissionDraftConnector
 import models.TaskStatus._
 import models.UserAnswers
 import models.registration.Matched.Success
-import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import pages.register.ExistingTrustMatched
 import play.api.inject.bind
@@ -77,7 +77,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(fakeDraftId).url
 
-          verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+          val inOrder = Mockito.inOrder(trustsStoreService)
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -106,7 +108,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
 
-            verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+            val inOrder = Mockito.inOrder(trustsStoreService)
+            inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+            inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
             application.stop()
           }
@@ -132,7 +136,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
 
-            verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+            val inOrder = Mockito.inOrder(trustsStoreService)
+            inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+            inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
             application.stop()
           }
@@ -161,7 +167,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           uaCaptor.getValue.is5mldEnabled mustBe true
           uaCaptor.getValue.isTaxable mustBe true
 
-          verify(trustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(InProgress))(any(), any())
+          val inOrder = Mockito.inOrder(trustsStoreService)
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -189,7 +197,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           uaCaptor.getValue.is5mldEnabled mustBe false
           uaCaptor.getValue.isTaxable mustBe false
 
-          verify(trustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(InProgress))(any(), any())
+          val inOrder = Mockito.inOrder(trustsStoreService)
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -219,7 +229,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
 
-          verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+          val inOrder = Mockito.inOrder(trustsStoreService)
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -245,7 +257,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
 
-          verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+          val inOrder = Mockito.inOrder(trustsStoreService)
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -276,7 +290,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               uaCaptor.getValue.draftId mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "internalId"
 
-              verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+              val inOrder = Mockito.inOrder(trustsStoreService)
+              inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+              inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
               application.stop()
             }
@@ -306,7 +322,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               uaCaptor.getValue.draftId mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "internalId"
 
-              verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+              val inOrder = Mockito.inOrder(trustsStoreService)
+              inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
+              inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
               application.stop()
             }
