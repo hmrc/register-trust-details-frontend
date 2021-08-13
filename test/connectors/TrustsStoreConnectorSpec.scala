@@ -33,9 +33,11 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
+    .configure(
+      Seq(
+        "microservice.services.trusts-store.port" -> server.port(),
+        "auditing.enabled" -> false
+      ): _*
     ).build()
 
   private lazy val connector = injector.instanceOf[TrustsStoreConnector]
