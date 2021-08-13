@@ -47,7 +47,7 @@ class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "return no answer sections if not completed" in {
 
-      forAll(arbitrary[Option[Status]].suchThat(x => !x.contains(Completed))) { status =>
+      forAll(arbitrary[Option[Status]].suchThat(!_.contains(Completed))) { status =>
 
         when(mockRegistrationProgress.trustDetailsStatus(any())(any(), any())).thenReturn(Future.successful(status))
 
