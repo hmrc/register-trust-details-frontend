@@ -18,11 +18,10 @@ package controllers
 
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
-import models.Status.Completed
+import models.TaskStatus._
 import models.UserAnswers
 import models.registration.Matched.Success
 import models.requests.IdentifierRequest
-import pages.TrustDetailsStatus
 import pages.register.ExistingTrustMatched
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -46,25 +45,18 @@ class IndexController @Inject()(
 
     def redirect(userAnswers: UserAnswers): Future[Result] = {
 
-      def successfullyMatched: Future[Boolean] = {
-        repository.getMainAnswers(draftId) map {
-          _.exists {
-            _.get(ExistingTrustMatched).contains(Success)
-          }
-        }
-      }
-
-      repository.set(userAnswers) flatMap { _ =>
-        if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
-          Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
+      for {
+        taskStatus <- trustsStoreService.getTaskStatus(draftId)
+        _ <- repository.set(userAnswers)
+        successfullyMatched <- repository.getMainAnswers(draftId).map(_.exists(_.get(ExistingTrustMatched).contains(Success)))
+      } yield {
+        if (taskStatus == Completed) {
+          Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
         } else {
-          successfullyMatched map {
-            matched =>
-              if (matched) {
-                Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
-              } else {
-                Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
-              }
+          if (successfullyMatched) {
+            Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+          } else {
+            Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
           }
         }
       }
@@ -78,6 +70,7 @@ class IndexController @Inject()(
         case Some(value) => redirect(value.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
         case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable))
       }
+      _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
     } yield result
   }
 }

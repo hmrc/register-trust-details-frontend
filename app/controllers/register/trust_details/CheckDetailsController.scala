@@ -18,9 +18,8 @@ package controllers.register.trust_details
 
 import config.FrontendAppConfig
 import controllers.actions._
-import models.Status.Completed
+import models.TaskStatus.Completed
 import navigation.Navigator
-import pages.TrustDetailsStatus
 import pages.register.trust_details.CheckDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,7 +31,7 @@ import viewmodels.AnswerSection
 import views.html.register.trust_details.CheckDetailsView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -56,11 +55,8 @@ class CheckDetailsController @Inject()(
   def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(TrustDetailsStatus, Completed)
-
       for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
+        _ <- trustsStoreService.updateTaskStatus(draftId, Completed)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
   }
 }

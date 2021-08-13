@@ -18,8 +18,8 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.FeatureResponse
 import models.TaskStatus.Completed
+import models.{FeatureResponse, Task}
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
@@ -47,8 +47,7 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
 
     ".updateTaskStatus" must {
 
-      val identifier = "1234567809"
-      val url = s"/trusts-store/register/tasks/update-trust-details/$identifier"
+      val url = s"/trusts-store/register/tasks/update-trust-details/$draftId"
 
       "return OK with the current task status" in {
         val application = applicationBuilder()
@@ -66,7 +65,7 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
             .willReturn(ok())
         )
 
-        val futureResult = connector.updateTaskStatus(identifier, Completed)
+        val futureResult = connector.updateTaskStatus(draftId, Completed)
 
         whenReady(futureResult) {
           r =>
@@ -92,8 +91,46 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
             .willReturn(serverError())
         )
 
-        connector.updateTaskStatus(identifier, Completed) map { response =>
+        connector.updateTaskStatus(draftId, Completed) map { response =>
           response.status mustBe 500
+        }
+
+        application.stop()
+      }
+    }
+
+    ".getTaskStatus" must {
+
+      val url = s"/trusts-store/register/tasks/$draftId"
+
+      "return OK with the current task status" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        val json = Json.parse(
+          """
+            |{
+            |  "trustDetails": "completed"
+            |}
+            |""".stripMargin)
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(json.toString()))
+        )
+
+        val futureResult = connector.getTaskStatus(draftId)
+
+        whenReady(futureResult) {
+          r =>
+            r mustBe Task(Completed)
         }
 
         application.stop()

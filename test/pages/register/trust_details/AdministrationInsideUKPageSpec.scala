@@ -16,9 +16,7 @@
 
 package pages.register.trust_details
 
-import models.Status._
 import models.UserAnswers
-import pages.TrustDetailsStatus
 import pages.behaviours.PageBehaviours
 
 class AdministrationInsideUKPageSpec extends PageBehaviours {
@@ -41,34 +39,6 @@ class AdministrationInsideUKPageSpec extends PageBehaviours {
         val result = userAnswers.set(AdministrationInsideUKPage, true).success.value
 
         result.get(CountryAdministeringTrustPage) mustNot be(defined)
-      }
-
-      "no selected" when {
-
-        "CountryAdministeringTrustPage is not answered" must {
-          "set TrustDetailsStatus to InProgress" in {
-
-            val userAnswers: UserAnswers = emptyUserAnswers
-              .set(TrustDetailsStatus, Completed).success.value
-
-            val result = userAnswers.set(AdministrationInsideUKPage, false).success.value
-
-            result.get(TrustDetailsStatus).get mustBe InProgress
-          }
-        }
-
-        "CountryAdministeringTrustPage is answered" must {
-          "not set TrustDetailsStatus to InProgress" in {
-
-            val userAnswers: UserAnswers = emptyUserAnswers
-              .set(CountryAdministeringTrustPage, "FR").success.value
-              .set(TrustDetailsStatus, Completed).success.value
-
-            val result = userAnswers.set(AdministrationInsideUKPage, false).success.value
-
-            result.get(TrustDetailsStatus).get mustBe Completed
-          }
-        }
       }
     }
   }

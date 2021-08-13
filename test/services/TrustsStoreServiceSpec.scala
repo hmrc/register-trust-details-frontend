@@ -18,8 +18,8 @@ package services
 
 import base.SpecBase
 import connectors.TrustsStoreConnector
-import models.FeatureResponse
 import models.TaskStatus.Completed
+import models.{FeatureResponse, Task}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.OK
@@ -63,14 +63,33 @@ class TrustsStoreServiceSpec extends SpecBase {
   ".updateTaskStatus" must {
     "call trusts store connector" in {
 
+      val draftId = "draftId"
+
       when(mockConnector.updateTaskStatus(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val result = featureFlagService.updateTaskStatus("identifier", Completed)
+      val result = featureFlagService.updateTaskStatus(draftId, Completed)
 
       whenReady(result) { res =>
         res.status mustBe OK
-        verify(mockConnector).updateTaskStatus(eqTo("identifier"), eqTo(Completed))(any(), any())
+        verify(mockConnector).updateTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
+      }
+    }
+  }
+
+  ".getTaskStatus" must {
+    "call trusts store connector" in {
+
+      val draftId = "draftId"
+
+      when(mockConnector.getTaskStatus(any())(any(), any()))
+        .thenReturn(Future.successful(Task(Completed)))
+
+      val result = featureFlagService.getTaskStatus(draftId)
+
+      whenReady(result) { res =>
+        res mustBe Completed
+        verify(mockConnector).getTaskStatus(eqTo(draftId))(any(), any())
       }
     }
   }

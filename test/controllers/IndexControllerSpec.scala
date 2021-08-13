@@ -18,26 +18,39 @@ package controllers
 
 import base.SpecBase
 import connectors.SubmissionDraftConnector
-import models.Status.Completed
+import models.TaskStatus._
 import models.UserAnswers
 import models.registration.Matched.Success
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
-import pages.TrustDetailsStatus
+import org.scalatest.BeforeAndAfterEach
 import pages.register.ExistingTrustMatched
 import play.api.inject.bind
 import play.api.libs.json.JsString
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustsStoreService
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends SpecBase {
+class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val featureFlagService: TrustsStoreService = mock[TrustsStoreService]
+  private val trustsStoreService: TrustsStoreService = mock[TrustsStoreService]
   private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
+
+  override def beforeEach(): Unit = {
+    reset(registrationsRepository, trustsStoreService)
+
+    when(registrationsRepository.set(any())(any(), any()))
+      .thenReturn(Future.successful(true))
+
+    when(trustsStoreService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(InProgress))
+
+    when(trustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
 
   "Index Controller" when {
 
@@ -46,18 +59,16 @@ class IndexControllerSpec extends SpecBase {
       "trust details completed" must {
         "redirect to CheckDetailsController" in {
 
-          reset(registrationsRepository)
-
           val answers = emptyUserAnswers
-            .set(TrustDetailsStatus, Completed).success.value
 
           val application = applicationBuilder()
-            .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+            .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
             .build()
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+          when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+          when(trustsStoreService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(Completed))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -65,6 +76,8 @@ class IndexControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(fakeDraftId).url
+
+          verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -75,19 +88,16 @@ class IndexControllerSpec extends SpecBase {
         "trust has been matched" must {
           "redirect to WhenTrustSetupController" in {
 
-            reset(registrationsRepository)
-
             val answers = emptyUserAnswers
               .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
 
             val application = applicationBuilder()
-              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
             when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -96,6 +106,8 @@ class IndexControllerSpec extends SpecBase {
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
 
+            verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+
             application.stop()
           }
         }
@@ -103,16 +115,15 @@ class IndexControllerSpec extends SpecBase {
         "trust has not been matched" must {
           "redirect to TrustNameController" in {
 
-            reset(registrationsRepository)
+            val answers = emptyUserAnswers
 
             val application = applicationBuilder()
-              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
               .build()
 
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -121,6 +132,8 @@ class IndexControllerSpec extends SpecBase {
             status(result) mustEqual SEE_OTHER
             redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
 
+            verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+
             application.stop()
           }
         }
@@ -128,18 +141,15 @@ class IndexControllerSpec extends SpecBase {
 
       "update value of is5mldEnabled and isTaxable to true in user answers" in {
 
-        reset(registrationsRepository)
-
         val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
         when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
@@ -151,24 +161,23 @@ class IndexControllerSpec extends SpecBase {
           uaCaptor.getValue.is5mldEnabled mustBe true
           uaCaptor.getValue.isTaxable mustBe true
 
+          verify(trustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(InProgress))(any(), any())
+
           application.stop()
         }
       }
 
       "update value of is5mldEnabled and isTaxable to false in user answers" in {
 
-        reset(registrationsRepository)
-
         val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
         when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
@@ -180,6 +189,8 @@ class IndexControllerSpec extends SpecBase {
           uaCaptor.getValue.is5mldEnabled mustBe false
           uaCaptor.getValue.isTaxable mustBe false
 
+          verify(trustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(InProgress))(any(), any())
+
           application.stop()
         }
       }
@@ -190,19 +201,16 @@ class IndexControllerSpec extends SpecBase {
       "redirect to WhenTrustSetupController" when {
         "trust has been matched" in {
 
-          reset(registrationsRepository)
-
           val answers = emptyUserAnswers
             .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
 
           val application = applicationBuilder()
-            .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+            .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
             .build()
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
           when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+          when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -211,6 +219,8 @@ class IndexControllerSpec extends SpecBase {
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
 
+          verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+
           application.stop()
         }
       }
@@ -218,16 +228,15 @@ class IndexControllerSpec extends SpecBase {
       "redirect to TrustNameController" when {
         "trust has not been matched" in {
 
-          reset(registrationsRepository)
+          val answers = emptyUserAnswers
 
           val application = applicationBuilder()
-            .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+            .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
             .build()
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+          when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -235,6 +244,8 @@ class IndexControllerSpec extends SpecBase {
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
+
+          verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
         }
@@ -245,16 +256,15 @@ class IndexControllerSpec extends SpecBase {
         "5mld enabled" must {
           "add is5mldEnabled = true to user answers" in {
 
-            reset(registrationsRepository)
+            val answers = emptyUserAnswers
 
             val application = applicationBuilder(userAnswers = None)
-              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -266,6 +276,8 @@ class IndexControllerSpec extends SpecBase {
               uaCaptor.getValue.draftId mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "internalId"
 
+              verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
+
               application.stop()
             }
           }
@@ -274,16 +286,15 @@ class IndexControllerSpec extends SpecBase {
         "5mld not enabled" must {
           "add is5mldEnabled = false to user answers" in {
 
-            reset(registrationsRepository)
+            val answers = emptyUserAnswers
 
             val application = applicationBuilder(userAnswers = None)
-              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -294,6 +305,8 @@ class IndexControllerSpec extends SpecBase {
               uaCaptor.getValue.is5mldEnabled mustBe false
               uaCaptor.getValue.draftId mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "internalId"
+
+              verify(trustsStoreService).updateTaskStatus(eqTo(answers.draftId), eqTo(InProgress))(any(), any())
 
               application.stop()
             }

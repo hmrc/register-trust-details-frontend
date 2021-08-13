@@ -37,9 +37,14 @@ class TrustsStoreService @Inject()(trustsStoreConnector: TrustsStoreConnector) {
     }
   }
 
-  def updateTaskStatus(identifier: String, taskStatus: TaskStatus)
+  def updateTaskStatus(draftId: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    trustsStoreConnector.updateTaskStatus(identifier, taskStatus)
+    trustsStoreConnector.updateTaskStatus(draftId, taskStatus)
+  }
+
+  def getTaskStatus(draftId: String)
+                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TaskStatus] = {
+    trustsStoreConnector.getTaskStatus(draftId).map(_.trustDetails)
   }
   
 }

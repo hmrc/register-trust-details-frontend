@@ -16,20 +16,11 @@
 
 package models
 
-import play.api.libs.json.{Format, Reads, Writes}
+import models.TaskStatus.TaskStatus
+import play.api.libs.json.{Format, Json}
 
-object TaskStatus extends Enumeration {
+case class Task(trustDetails: TaskStatus)
 
-  type TaskStatus = Value
-
-  val Completed: Value = Value("completed")
-  val InProgress: Value = Value("in-progress")
-  val NotStarted: Value = Value("not-started")
-  val CannotStartYet: Value = Value("cannot-start-yet")
-  val NoActionNeeded: Value = Value("no-action-needed")
-
-  implicit val reads: Reads[Value] = Reads.enumNameReads(TaskStatus)
-  implicit val writes: Writes[Value] = Writes.enumNameWrites
-  implicit val formats: Format[Value] = Format.apply(reads, writes)
-
+object Task {
+  implicit val formats: Format[Task] = Json.format[Task]
 }
