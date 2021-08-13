@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
 import models.Status.Completed
 import navigation.Navigator
 import pages.TrustDetailsStatus
@@ -26,11 +25,13 @@ import pages.register.trust_details.CheckDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.TrustDetailsPrintHelper
 import viewmodels.AnswerSection
 import views.html.register.trust_details.CheckDetailsView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckDetailsController @Inject()(
@@ -41,7 +42,8 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         val appConfig: FrontendAppConfig,
-                                        printHelper: TrustDetailsPrintHelper
+                                        printHelper: TrustDetailsPrintHelper,
+                                        trustsStoreService: TrustsStoreService
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {

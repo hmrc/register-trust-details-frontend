@@ -28,17 +28,17 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
-import services.FeatureFlagService
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction,
-                                 featureFlagService: FeatureFlagService,
+                                 trustsStoreService: TrustsStoreService,
                                  submissionDraftConnector: SubmissionDraftConnector
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -70,18 +70,14 @@ class IndexController @Inject()(
       }
     }
 
-    featureFlagService.is5mldEnabled() flatMap {
-      is5mldEnabled =>
-        submissionDraftConnector.getIsTrustTaxable(draftId) flatMap {
-          isTaxable =>
-            repository.get(draftId) flatMap {
-              case Some(userAnswers) =>
-                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
-              case _ =>
-                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable)
-                redirect(userAnswers)
-            }
-        }
-    }
+    for {
+      is5mldEnabled <- trustsStoreService.is5mldEnabled()
+      isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
+      userAnswers <- repository.get(draftId)
+      result <- userAnswers match {
+        case Some(value) => redirect(value.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
+        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable))
+      }
+    } yield result
   }
 }

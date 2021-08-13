@@ -30,13 +30,13 @@ import play.api.inject.bind
 import play.api.libs.json.JsString
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.FeatureFlagService
+import services.TrustsStoreService
 
 import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  private val featureFlagService: FeatureFlagService = mock[FeatureFlagService]
+  private val featureFlagService: TrustsStoreService = mock[TrustsStoreService]
   private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
 
   "Index Controller" when {
@@ -52,7 +52,7 @@ class IndexControllerSpec extends SpecBase {
             .set(TrustDetailsStatus, Completed).success.value
 
           val application = applicationBuilder()
-            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
             .build()
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
@@ -81,7 +81,7 @@ class IndexControllerSpec extends SpecBase {
               .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
 
             val application = applicationBuilder()
-              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
@@ -106,7 +106,7 @@ class IndexControllerSpec extends SpecBase {
             reset(registrationsRepository)
 
             val application = applicationBuilder()
-              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
@@ -133,7 +133,7 @@ class IndexControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
@@ -162,7 +162,7 @@ class IndexControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
           .build()
 
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
@@ -196,7 +196,7 @@ class IndexControllerSpec extends SpecBase {
             .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
 
           val application = applicationBuilder()
-            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
             .build()
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
@@ -221,7 +221,7 @@ class IndexControllerSpec extends SpecBase {
           reset(registrationsRepository)
 
           val application = applicationBuilder()
-            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
             .build()
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
@@ -248,7 +248,7 @@ class IndexControllerSpec extends SpecBase {
             reset(registrationsRepository)
 
             val application = applicationBuilder(userAnswers = None)
-              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
@@ -277,7 +277,7 @@ class IndexControllerSpec extends SpecBase {
             reset(registrationsRepository)
 
             val application = applicationBuilder(userAnswers = None)
-              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .overrides(bind[TrustsStoreService].toInstance(featureFlagService))
               .build()
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
