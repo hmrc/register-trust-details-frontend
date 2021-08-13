@@ -17,23 +17,83 @@
 package repositories
 
 import base.SpecBase
-import models.RegistrationSubmission
+import generators.ModelGenerators
+import mapping.TrustDetailsMapper
+import models.Status.Completed
+import models.{RegistrationSubmission, Status, TrustDetailsType}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsNull, Json}
+import play.twirl.api.Html
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.RegistrationProgress
+import utils.print.TrustDetailsPrintHelper
+import viewmodels.{AnswerRow, AnswerSection}
 
-class SubmissionSetFactorySpec extends SpecBase {
+import java.time.LocalDate
+import scala.concurrent.Future
+
+class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
+
+  val mockRegistrationProgress: RegistrationProgress = mock[RegistrationProgress]
+  val mockMapper: TrustDetailsMapper = mock[TrustDetailsMapper]
+  val mockPrintHelper: TrustDetailsPrintHelper = mock[TrustDetailsPrintHelper]
+  val factory: SubmissionSetFactory = new SubmissionSetFactory(mockRegistrationProgress, mockMapper, mockPrintHelper)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "Submission set factory" must {
 
-    val factory = injector.instanceOf[SubmissionSetFactory]
+    "return no answer sections if not completed" in {
 
-    "return no answer sections if no completed" in {
+      forAll(arbitrary[Option[Status]].suchThat(x => !x.contains(Completed))) { status =>
 
-      factory.createFrom(emptyUserAnswers) mustBe RegistrationSubmission.DataSet(
-        Json.toJson(emptyUserAnswers),
-        None,
-        List(RegistrationSubmission.MappedPiece("trust/details", JsNull)),
-        List.empty
+        when(mockRegistrationProgress.trustDetailsStatus(any())(any(), any())).thenReturn(Future.successful(status))
+
+        val userAnswers = emptyUserAnswers
+
+        whenReady(factory.createFrom(userAnswers)) {
+          _ mustBe RegistrationSubmission.DataSet(
+            data = Json.toJson(userAnswers),
+            status = status,
+            registrationPieces = List(RegistrationSubmission.MappedPiece("trust/details", JsNull)),
+            answerSections = List.empty
+          )
+        }
+      }
+    }
+
+    "return answer sections if completed" in {
+
+      val status = Some(Completed)
+
+      val trustDetails = TrustDetailsType(LocalDate.parse("2000-01-01"), None, None, None, None, None, None, None)
+
+      val answerSection = AnswerSection(
+        rows = Seq(AnswerRow("Label", Html("Answer"), None))
       )
+
+      val convertedAnswerSection = RegistrationSubmission.AnswerSection(
+        headingKey = None,
+        rows = Seq(RegistrationSubmission.AnswerRow("Label", "Answer", "")),
+        sectionKey = None
+      )
+
+      when(mockRegistrationProgress.trustDetailsStatus(any())(any(), any())).thenReturn(Future.successful(status))
+      when(mockMapper.build(any())).thenReturn(Some(trustDetails))
+      when(mockPrintHelper.printSection(any())(any())).thenReturn(answerSection)
+
+      val userAnswers = emptyUserAnswers
+
+      whenReady(factory.createFrom(userAnswers)) {
+        _ mustBe RegistrationSubmission.DataSet(
+          data = Json.toJson(userAnswers),
+          status = status,
+          registrationPieces = List(RegistrationSubmission.MappedPiece("trust/details", Json.toJson(trustDetails))),
+          answerSections = List(convertedAnswerSection)
+        )
+      }
     }
 
   }

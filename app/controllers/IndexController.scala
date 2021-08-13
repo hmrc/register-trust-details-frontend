@@ -50,7 +50,7 @@ class IndexController @Inject()(
         _ <- repository.set(userAnswers)
         successfullyMatched <- repository.getMainAnswers(draftId).map(_.exists(_.get(ExistingTrustMatched).contains(Success)))
       } yield {
-        if (taskStatus == Completed) {
+        if (taskStatus.isCompleted) {
           Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
         } else {
           if (successfullyMatched) {

@@ -48,7 +48,7 @@ class CheckDetailsController @Inject()(
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
 
-      val section: AnswerSection = printHelper.checkDetailsSection(request.userAnswers, draftId)
+      val section: AnswerSection = printHelper.checkDetailsSection(request.userAnswers)
       Ok(view(Seq(section), draftId))
   }
 
@@ -57,6 +57,7 @@ class CheckDetailsController @Inject()(
 
       for {
         _ <- trustsStoreService.updateTaskStatus(draftId, Completed)
+        _ <- repository.set(request.userAnswers)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
   }
 }

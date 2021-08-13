@@ -16,54 +16,67 @@
 
 package utils
 
-import java.time.LocalDate
-
 import base.SpecBase
-import models.Status.{Completed, InProgress}
-import pages.TrustDetailsStatus
+import generators.ModelGenerators
+import models.TaskStatus._
+import models.{Status, TaskStatus}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.trust_details.WhenTrustSetupPage
+import services.TrustsStoreService
 import uk.gov.hmrc.http.HeaderCarrier
 
-class RegistrationProgressSpec extends SpecBase {
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+import java.time.LocalDate
+import scala.concurrent.Future
 
-  "Trust details section" must {
+class RegistrationProgressSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
 
-    "render no tag" when {
+  val mockService: TrustsStoreService = mock[TrustsStoreService]
+  val registrationProgress: RegistrationProgress = new RegistrationProgress(mockService)
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
-      "no status value in user answers" in {
-        val registrationProgress = injector.instanceOf[RegistrationProgress]
+  "RegistrationProgress" when {
 
-        val userAnswers = emptyUserAnswers
+    "WhenTrustSetupPage not populated" must {
 
-        registrationProgress.trustDetailsStatus(userAnswers) mustBe None
+      val userAnswers = emptyUserAnswers
+
+      "return None" in {
+
+        whenReady(registrationProgress.trustDetailsStatus(userAnswers)) {
+          _ mustBe None
+        }
       }
     }
 
-    "render in-progress tag" when {
+    "WhenTrustSetupPage populated" when {
 
-      "user has entered when the trust was created" in {
+      val userAnswers = emptyUserAnswers.set(WhenTrustSetupPage, LocalDate.parse("2010-10-10")).success.value
 
-        val registrationProgress = injector.instanceOf[RegistrationProgress]
+      "task is not completed" must {
+        "return Some(InProgress)" in {
 
-        val userAnswers = emptyUserAnswers
-            .set(WhenTrustSetupPage, LocalDate.of(2010, 10, 10)).success.value
+          forAll(arbitrary[TaskStatus].suchThat(_ != TaskStatus.Completed)) { taskStatus =>
+            when(mockService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(taskStatus))
 
-        registrationProgress.trustDetailsStatus(userAnswers).value mustBe InProgress
+            whenReady(registrationProgress.trustDetailsStatus(userAnswers)) {
+              _ mustBe Some(Status.InProgress)
+            }
+          }
+        }
       }
-    }
 
-    "render complete tag" when {
+      "task is completed" must {
+        "return Some(Completed)" in {
 
-      "user answer has reached check-trust-details" in {
+          when(mockService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(TaskStatus.Completed))
 
-        val registrationProgress = injector.instanceOf[RegistrationProgress]
-
-        val userAnswers = emptyUserAnswers
-          .set(WhenTrustSetupPage, LocalDate.of(2010, 10, 10)).success.value
-          .set(TrustDetailsStatus, Completed).success.value
-
-        registrationProgress.trustDetailsStatus(userAnswers).value mustBe Completed
+          whenReady(registrationProgress.trustDetailsStatus(userAnswers)) {
+            _ mustBe Some(Status.Completed)
+          }
+        }
       }
     }
   }

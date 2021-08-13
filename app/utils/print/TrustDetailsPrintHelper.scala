@@ -18,29 +18,30 @@ package utils.print
 
 import com.google.inject.Inject
 import controllers.register.trust_details.routes
-import models.ReadableUserAnswers
+import models.UserAnswers
 import pages.register.trust_details._
 import play.api.i18n.Messages
 import viewmodels.{AnswerRow, AnswerSection}
 
 class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def printSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
+  def printSection(userAnswers: UserAnswers)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      rows = answers(userAnswers, draftId),
+      rows = answers(userAnswers),
       sectionKey = Some("answerPage.section.trustDetails.heading")
     )
   }
 
-  def checkDetailsSection(userAnswers: ReadableUserAnswers, draftId: String)(implicit messages: Messages): AnswerSection = {
+  def checkDetailsSection(userAnswers: UserAnswers)(implicit messages: Messages): AnswerSection = {
     AnswerSection(
-      rows = answers(userAnswers, draftId)
+      rows = answers(userAnswers)
     )
   }
 
-  private def answers(userAnswers: ReadableUserAnswers, draftId: String)
+  private def answers(userAnswers: UserAnswers)
              (implicit messages: Messages): Seq[AnswerRow] = {
 
+    val draftId: String = userAnswers.draftId
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers)
 
     Seq(

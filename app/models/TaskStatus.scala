@@ -32,4 +32,8 @@ object TaskStatus extends Enumeration {
   implicit val writes: Writes[Value] = Writes.enumNameWrites
   implicit val formats: Format[Value] = Format.apply(reads, writes)
 
+  implicit class TaskStatusValue(taskStatus: TaskStatus) {
+    def isCompleted: Boolean = taskStatus == Completed
+  }
+
 }

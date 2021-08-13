@@ -17,20 +17,24 @@
 package utils
 
 import models.Status.{Completed, InProgress}
-import models.{ReadableUserAnswers, Status}
-import pages.TrustDetailsStatus
+import models.{Status, UserAnswers}
 import pages.register.trust_details.WhenTrustSetupPage
+import services.TrustsStoreService
+import uk.gov.hmrc.http.HeaderCarrier
 
-class RegistrationProgress  {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  def trustDetailsStatus(userAnswers: ReadableUserAnswers): Option[Status] =
-  userAnswers.get(WhenTrustSetupPage) match {
-    case None => None
-    case Some(_) =>
-      if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
-        Some(Completed)
-      } else {
-        Some(InProgress)
+class RegistrationProgress @Inject()(trustsStoreService: TrustsStoreService) {
+
+  def trustDetailsStatus(userAnswers: UserAnswers)
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Status]] = {
+
+    userAnswers.get(WhenTrustSetupPage) match {
+      case Some(_) => trustsStoreService.getTaskStatus(userAnswers.draftId) map { taskStatus =>
+        if (taskStatus.isCompleted) Some(Completed) else Some(InProgress)
       }
+      case None => Future.successful(None)
+    }
   }
 }

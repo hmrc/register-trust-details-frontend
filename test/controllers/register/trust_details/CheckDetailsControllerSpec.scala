@@ -20,9 +20,8 @@ import base.SpecBase
 import models.TaskStatus.Completed
 import models.UserAnswers
 import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{verify, when}
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,13 +32,23 @@ import views.html.register.trust_details.CheckDetailsView
 
 import scala.concurrent.Future
 
-class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   private lazy val checkDetailsRoute = routes.CheckDetailsController.onPageLoad(fakeDraftId).url
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
 
   val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+
+  override def beforeEach(): Unit = {
+    reset(registrationsRepository, mockTrustsStoreService)
+
+    when(registrationsRepository.set(any())(any(), any()))
+      .thenReturn(Future.successful(true))
+
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
+  }
 
   "CheckDetails Controller" must {
 
@@ -55,7 +64,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val view = application.injector.instanceOf[CheckDetailsView]
       val printHelper = application.injector.instanceOf[TrustDetailsPrintHelper]
-      val answerSection = printHelper.checkDetailsSection(userAnswers, fakeDraftId)
+      val answerSection = printHelper.checkDetailsSection(userAnswers)
 
       status(result) mustEqual OK
 
@@ -66,9 +75,6 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     }
 
     "set task to completed and redirect for a POST" in {
-
-      when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val userAnswers = emptyUserAnswers
 
@@ -84,6 +90,7 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       verify(mockTrustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(Completed))(any(), any())
+      verify(registrationsRepository).set(eqTo(userAnswers))(any(), any())
 
       application.stop()
     }

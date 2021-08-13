@@ -33,8 +33,8 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
 
     "return no answer rows" when  {
       "there are no answers" in {
-        printHelper.printSection(emptyUserAnswers, "draftId").rows mustBe Seq.empty
-        printHelper.checkDetailsSection(emptyUserAnswers, "draftId").rows mustBe Seq.empty
+        printHelper.printSection(emptyUserAnswers).rows mustBe Seq.empty
+        printHelper.checkDetailsSection(emptyUserAnswers).rows mustBe Seq.empty
       }
     }
 
@@ -147,13 +147,13 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           )
         )
 
-        printHelper.printSection(answers, "draftId") mustBe AnswerSection(
+        printHelper.printSection(answers) mustBe AnswerSection(
           headingKey = None,
           rows = rows,
           sectionKey = Some("answerPage.section.trustDetails.heading")
         )
 
-        printHelper.checkDetailsSection(answers, "draftId") mustBe AnswerSection(
+        printHelper.checkDetailsSection(answers) mustBe AnswerSection(
           headingKey = None,
           rows = rows,
           sectionKey = None
