@@ -20,6 +20,7 @@ import base.SpecBase
 import models.TaskStatus.Completed
 import models.UserAnswers
 import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
@@ -89,8 +90,9 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-      verify(mockTrustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(Completed))(any(), any())
-      verify(registrationsRepository).set(eqTo(userAnswers))(any(), any())
+      val inOrder = Mockito.inOrder(mockTrustsStoreService, registrationsRepository)
+      inOrder.verify(mockTrustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(Completed))(any(), any())
+      inOrder.verify(registrationsRepository).set(eqTo(userAnswers))(any(), any())
 
       application.stop()
     }
