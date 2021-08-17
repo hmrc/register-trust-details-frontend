@@ -18,20 +18,20 @@ package controllers.register.trust_details
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.Inject
-import models.Status.Completed
+import models.TaskStatus.Completed
 import navigation.Navigator
-import pages.TrustDetailsStatus
 import pages.register.trust_details.CheckDetailsPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.TrustDetailsPrintHelper
 import viewmodels.AnswerSection
 import views.html.register.trust_details.CheckDetailsView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -41,24 +41,23 @@ class CheckDetailsController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         view: CheckDetailsView,
                                         val appConfig: FrontendAppConfig,
-                                        printHelper: TrustDetailsPrintHelper
+                                        printHelper: TrustDetailsPrintHelper,
+                                        trustsStoreService: TrustsStoreService
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
 
-      val section: AnswerSection = printHelper.checkDetailsSection(request.userAnswers, draftId)
+      val section: AnswerSection = printHelper.checkDetailsSection(request.userAnswers)
       Ok(view(Seq(section), draftId))
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(TrustDetailsStatus, Completed)
-
       for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
+        _ <- trustsStoreService.updateTaskStatus(draftId, Completed)
+        _ <- repository.set(request.userAnswers)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
   }
 }

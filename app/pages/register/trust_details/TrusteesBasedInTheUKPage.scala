@@ -16,14 +16,13 @@
 
 package pages.register.trust_details
 
-import models.Status.InProgress
 import models.TrusteesBasedInTheUK._
 import models.{TrusteesBasedInTheUK, UserAnswers}
-import pages.{QuestionPage, TrustDetailsStatus}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] {
 
@@ -38,26 +37,12 @@ case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] 
           .flatMap(_.remove(EstablishedUnderScotsLawPage))
           .flatMap(_.remove(TrustResidentOffshorePage))
           .flatMap(_.remove(TrustPreviouslyResidentPage))
-          .flatMap { ua =>
-            if (ua.get(TrustHasBusinessRelationshipInUkPage).isEmpty) {
-              ua.set(TrustDetailsStatus, InProgress)
-            } else {
-              Success(ua)
-            }
-          }
       case Some(UKBasedTrustees) =>
         userAnswers.remove(SettlorsBasedInTheUKPage)
           .flatMap(_.remove(TrustHasBusinessRelationshipInUkPage))
           .flatMap(_.remove(RegisteringTrustFor5APage))
           .flatMap(_.remove(InheritanceTaxActPage))
           .flatMap(_.remove(AgentOtherThanBarristerPage))
-          .flatMap { ua =>
-            if (ua.get(EstablishedUnderScotsLawPage).isEmpty) {
-              ua.set(TrustDetailsStatus, InProgress)
-            } else {
-              Success(ua)
-            }
-          }
       case _ =>
         super.cleanup(value, userAnswers)
     }

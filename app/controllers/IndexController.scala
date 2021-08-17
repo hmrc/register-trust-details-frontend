@@ -18,27 +18,26 @@ package controllers
 
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
-import models.Status.Completed
+import models.TaskStatus._
 import models.UserAnswers
 import models.registration.Matched.Success
 import models.requests.IdentifierRequest
-import pages.TrustDetailsStatus
 import pages.register.ExistingTrustMatched
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
-import services.FeatureFlagService
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction,
-                                 featureFlagService: FeatureFlagService,
+                                 trustsStoreService: TrustsStoreService,
                                  submissionDraftConnector: SubmissionDraftConnector
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
@@ -46,42 +45,32 @@ class IndexController @Inject()(
 
     def redirect(userAnswers: UserAnswers): Future[Result] = {
 
-      def successfullyMatched: Future[Boolean] = {
-        repository.getMainAnswers(draftId) map {
-          _.exists {
-            _.get(ExistingTrustMatched).contains(Success)
-          }
-        }
-      }
-
-      repository.set(userAnswers) flatMap { _ =>
-        if (userAnswers.get(TrustDetailsStatus).contains(Completed)) {
-          Future.successful(Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId)))
+      for {
+        taskStatus <- trustsStoreService.getTaskStatus(draftId)
+        _ <- repository.set(userAnswers)
+        successfullyMatched <- repository.getMainAnswers(draftId).map(_.exists(_.get(ExistingTrustMatched).contains(Success)))
+      } yield {
+        if (taskStatus.isCompleted) {
+          Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
         } else {
-          successfullyMatched map {
-            matched =>
-              if (matched) {
-                Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
-              } else {
-                Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
-              }
+          if (successfullyMatched) {
+            Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+          } else {
+            Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
           }
         }
       }
     }
 
-    featureFlagService.is5mldEnabled() flatMap {
-      is5mldEnabled =>
-        submissionDraftConnector.getIsTrustTaxable(draftId) flatMap {
-          isTaxable =>
-            repository.get(draftId) flatMap {
-              case Some(userAnswers) =>
-                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
-              case _ =>
-                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable)
-                redirect(userAnswers)
-            }
-        }
-    }
+    for {
+      is5mldEnabled <- trustsStoreService.is5mldEnabled()
+      isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
+      userAnswers <- repository.get(draftId)
+      result <- userAnswers match {
+        case Some(value) => redirect(value.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
+        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable))
+      }
+      _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
+    } yield result
   }
 }

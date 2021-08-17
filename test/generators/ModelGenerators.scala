@@ -16,8 +16,9 @@
 
 package generators
 
-import models.TrusteesBasedInTheUK
+import models.TaskStatus.TaskStatus
 import models.registration.Matched
+import models.{Status, TaskStatus, TrusteesBasedInTheUK}
 import org.scalacheck.{Arbitrary, Gen}
 
 import java.time.LocalDate
@@ -54,5 +55,13 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(Matched.values.toList)
     }
+  }
+
+  implicit lazy val arbitraryTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
+    Gen.oneOf(TaskStatus.values.toList)
+  }
+
+  implicit lazy val arbitraryStatus: Arbitrary[Status] = Arbitrary {
+    Gen.oneOf(Status.values.toList)
   }
 }

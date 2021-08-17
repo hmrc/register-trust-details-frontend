@@ -16,9 +16,8 @@
 
 package pages.register.trust_details
 
-import models.Status.InProgress
 import models.UserAnswers
-import pages.{QuestionPage, TrustDetailsStatus}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
@@ -32,12 +31,8 @@ case object AdministrationInsideUKPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-      case Some(true) =>
-        userAnswers.remove(CountryAdministeringTrustPage)
-      case Some(false) if userAnswers.get(CountryAdministeringTrustPage).isEmpty =>
-        userAnswers.set(TrustDetailsStatus, InProgress)
-      case _ =>
-        super.cleanup(value, userAnswers)
+      case Some(true) => userAnswers.remove(CountryAdministeringTrustPage)
+      case _ => super.cleanup(value, userAnswers)
     }
   }
 }

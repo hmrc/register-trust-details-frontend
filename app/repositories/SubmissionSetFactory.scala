@@ -16,29 +16,33 @@
 
 package repositories
 
-import javax.inject.Inject
 import mapping.TrustDetailsMapper
 import models._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.RegistrationProgress
 import utils.print.TrustDetailsPrintHelper
 import viewmodels.{AnswerRow, AnswerSection}
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      trustDetailsMapper: TrustDetailsMapper,
                                      trustDetailsPrintHelper: TrustDetailsPrintHelper) {
 
-  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
+  def createFrom(userAnswers: UserAnswers)
+                (implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[RegistrationSubmission.DataSet] = {
 
-    val status = registrationProgress.trustDetailsStatus(userAnswers)
-
-    RegistrationSubmission.DataSet(
-      data = Json.toJson(userAnswers),
-      status = status,
-      registrationPieces = mappedDataIfCompleted(userAnswers, status),
-      answerSections = answerSectionsIfCompleted(userAnswers, status)
-    )
+    registrationProgress.trustDetailsStatus(userAnswers) map { status =>
+      RegistrationSubmission.DataSet(
+        data = Json.toJson(userAnswers),
+        status = status,
+        registrationPieces = mappedDataIfCompleted(userAnswers, status),
+        answerSections = answerSectionsIfCompleted(userAnswers, status)
+      )
+    }
   }
 
   private def mappedPieces(trustDetailsJson: JsValue) =
@@ -55,11 +59,10 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
     }
   }
 
-  def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
+  private def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
-
     if (status.contains(Status.Completed)) {
-      val answerSection = trustDetailsPrintHelper.printSection(userAnswers, userAnswers.draftId)
+      val answerSection = trustDetailsPrintHelper.printSection(userAnswers)
       List(answerSection).map(convertForSubmission)
     } else {
       List.empty

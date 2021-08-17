@@ -16,9 +16,8 @@
 
 package pages.register.trust_details
 
-import models.Status.InProgress
 import models.UserAnswers
-import pages.{QuestionPage, TrustDetailsStatus}
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.TrustDetails
 
@@ -32,12 +31,8 @@ case object InheritanceTaxActPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-      case Some(false) =>
-        userAnswers.remove(AgentOtherThanBarristerPage)
-      case Some(true) if userAnswers.get(AgentOtherThanBarristerPage).isEmpty =>
-        userAnswers.set(TrustDetailsStatus, InProgress)
-      case _ =>
-        super.cleanup(value, userAnswers)
+      case Some(false) => userAnswers.remove(AgentOtherThanBarristerPage)
+      case _ => super.cleanup(value, userAnswers)
     }
   }
 }
