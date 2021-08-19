@@ -132,7 +132,6 @@ trustName.title=Beth yw enw’r ymddiriedolaeth?
 trustOwnsUkPropertyOrLandYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
 trustOwnsUkPropertyOrLandYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020
 trustOwnsUkPropertyOrLandYesNo.heading=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
-trustOwnsUkPropertyOrLandYesNo.text=Daeth y rheolau presennol ar gyfer cofrestru ymddiriedolaeth newydd i rym ar 6 Hydref 2020.
 trustOwnsUkPropertyOrLandYesNo.title=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
 trustOwnsUkPropertyOrLandYesNo.paragraph1 = Daeth y rheolau presennol ar gyfer cofrestru ymddiriedolaeth newydd i rym ar 6 Hydref 2020.
 trustOwnsUkPropertyOrLandYesNo.paragraph2 = Mae tir neu eiddo yn cyfeirio at leiniau o dir neu adeiladau o frics a morter yn y DU.
