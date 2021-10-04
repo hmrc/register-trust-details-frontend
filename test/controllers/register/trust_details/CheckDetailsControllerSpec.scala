@@ -21,7 +21,7 @@ import models.TaskStatus.Completed
 import models.UserAnswers
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest
