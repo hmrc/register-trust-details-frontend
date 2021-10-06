@@ -166,3 +166,10 @@ whenTrustSetupDate.heading=Pryd y cafodd yr ymddiriedolaeth ei chreu?
 whenTrustSetupDate.hint=Er enghraifft, 31 3 2015
 whenTrustSetupDate.text=Dyma’r dyddiad pan gafodd y weithred ymddiriedolaeth ei llofnodi. Ar gyfer ymddiriedolaethau ewyllys, defnyddiwch ddyddiad marwolaeth y setlwr.
 whenTrustSetupDate.title=Pryd y cafodd yr ymddiriedolaeth ei chreu?
+
+pageNotFound.title = Heb ddod o hyd i’r dudalen
+pageNotFound.heading = Heb ddod o hyd i’r dudalen
+pageNotFound.p1 = Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
+pageNotFound.p2 = Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
+pageNotFound.p3 = Os yw’r cyfeiriad gwe yn gywir, neu eich bod wedi dewis cysylltiad neu fotwm, {0}.
+pageNotFound.link = cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM i siarad â rhywun ynghylch ymddiriedolaeth (yn agor tab newydd)
