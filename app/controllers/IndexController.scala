@@ -63,12 +63,11 @@ class IndexController @Inject()(
     }
 
     for {
-      is5mldEnabled <- trustsStoreService.is5mldEnabled()
       isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
       userAnswers <- repository.get(draftId)
       result <- userAnswers match {
-        case Some(value) => redirect(value.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
-        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable))
+        case Some(value) => redirect(value.copy(isTaxable = isTaxable))
+        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, isTaxable))
       }
       _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
     } yield result

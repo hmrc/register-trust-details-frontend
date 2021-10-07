@@ -44,65 +44,72 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     case TrustNamePage => _ => WhenTrustSetupController.onPageLoad(draftId)
     case WhenTrustSetupPage => ua => navigateAwayFromTrustSetupPage(ua, draftId)
     case CountryGoverningTrustPage => _ => AdministrationInsideUKController.onPageLoad(draftId)
-    case CountryAdministeringTrustPage => ua => navigateAwayFromCountryOfAdministrationQuestions(ua, draftId)
+    case CountryAdministeringTrustPage => ua => TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
     case TrustOwnsUkPropertyOrLandPage => _ => TrustListedOnEeaRegisterController.onPageLoad(draftId)
     case TrustListedOnEeaRegisterPage => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
-    case TrustHasBusinessRelationshipInUkPage => ua => navigateAwayFromRelationshipInTheUk(ua,draftId)
+    case TrustHasBusinessRelationshipInUkPage => ua => navigateAwayFromRelationshipInTheUk(ua, draftId)
     case EstablishedUnderScotsLawPage => _ => TrustResidentOffshoreController.onPageLoad(draftId)
     case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => _ => CheckDetailsController.onPageLoad(draftId)
     case CheckDetailsPage => _ => Call(GET, config.registrationProgressUrl(draftId))
   }
 
   private def yesNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case GovernedInsideTheUKPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = GovernedInsideTheUKPage,
-      yesCall = AdministrationInsideUKController.onPageLoad(draftId),
-      noCall = CountryGoverningTrustController.onPageLoad(draftId)
-    )
-    case AdministrationInsideUKPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = AdministrationInsideUKPage,
-      yesCall = navigateAwayFromCountryOfAdministrationQuestions(ua, draftId),
-      noCall = CountryAdministeringTrustController.onPageLoad(draftId)
-    )
-    case SettlorsBasedInTheUKPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = SettlorsBasedInTheUKPage,
-      yesCall = navigateAwayFromUkSelection(ua, draftId),
-      noCall = navigateAwayFromNoneUkSelection(ua, draftId)
-    )
-    case TrustResidentOffshorePage => ua => yesNoNav(
-      ua = ua,
-      fromPage = TrustResidentOffshorePage,
-      yesCall = TrustPreviouslyResidentController.onPageLoad(draftId),
-      noCall = CheckDetailsController.onPageLoad(draftId)
-    )
-    case RegisteringTrustFor5APage => ua => yesNoNav(
-      ua = ua,
-      fromPage = RegisteringTrustFor5APage,
-      yesCall = CheckDetailsController.onPageLoad(draftId),
-      noCall = InheritanceTaxActController.onPageLoad(draftId)
-    )
-    case InheritanceTaxActPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = InheritanceTaxActPage,
-      yesCall = AgentOtherThanBarristerController.onPageLoad(draftId),
-      noCall = CheckDetailsController.onPageLoad(draftId)
-    )
+    case GovernedInsideTheUKPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = GovernedInsideTheUKPage,
+        yesCall = AdministrationInsideUKController.onPageLoad(draftId),
+        noCall = CountryGoverningTrustController.onPageLoad(draftId)
+      )
+    case AdministrationInsideUKPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = AdministrationInsideUKPage,
+        yesCall = TrustOwnsUkPropertyOrLandController.onPageLoad(draftId),
+        noCall = CountryAdministeringTrustController.onPageLoad(draftId)
+      )
+    case SettlorsBasedInTheUKPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = SettlorsBasedInTheUKPage,
+        yesCall = navigateAwayFromUkSelection(ua, draftId),
+        noCall = TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+      )
+    case TrustResidentOffshorePage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = TrustResidentOffshorePage,
+        yesCall = TrustPreviouslyResidentController.onPageLoad(draftId),
+        noCall = CheckDetailsController.onPageLoad(draftId)
+      )
+    case RegisteringTrustFor5APage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = RegisteringTrustFor5APage,
+        yesCall = CheckDetailsController.onPageLoad(draftId),
+        noCall = InheritanceTaxActController.onPageLoad(draftId)
+      )
+    case InheritanceTaxActPage => ua =>
+      yesNoNav(
+        ua = ua,
+        fromPage = InheritanceTaxActPage,
+        yesCall = AgentOtherThanBarristerController.onPageLoad(draftId),
+        noCall = CheckDetailsController.onPageLoad(draftId)
+      )
   }
 
   private def otherNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {
-    case TrusteesBasedInTheUKPage => ua => ua.get(TrusteesBasedInTheUKPage) match {
-      case Some(UKBasedTrustees) =>
-        navigateAwayFromUkSelection(ua, draftId)
-      case Some(NonUkBasedTrustees) =>
-        navigateAwayFromNoneUkSelection(ua, draftId)
-      case Some(InternationalAndUKTrustees) =>
-        SettlorsBasedInTheUKController.onPageLoad(draftId)
-      case _ =>
-        SessionExpiredController.onPageLoad()
-    }
+    case TrusteesBasedInTheUKPage => ua =>
+      ua.get(TrusteesBasedInTheUKPage) match {
+        case Some(UKBasedTrustees) =>
+          navigateAwayFromUkSelection(ua, draftId)
+        case Some(NonUkBasedTrustees) =>
+          TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
+        case Some(InternationalAndUKTrustees) =>
+          SettlorsBasedInTheUKController.onPageLoad(draftId)
+        case _ =>
+          SessionExpiredController.onPageLoad()
+      }
   }
 
   private def navigateAwayFromUkSelection(ua: ReadableUserAnswers, draftId: String): Call = {
@@ -113,28 +120,11 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     }
   }
 
-  private def navigateAwayFromNoneUkSelection(ua: ReadableUserAnswers, draftId: String): Call = {
-    if (ua.is5mldEnabled) {
-      TrustHasBusinessRelationshipInUkController.onPageLoad(draftId)
-    } else {
-      RegisteringTrustFor5AController.onPageLoad(draftId)
-    }
-  }
-
-
   private def navigateAwayFromTrustSetupPage(ua: ReadableUserAnswers, draftId: String): Call = {
     if (ua.isTaxable) {
       GovernedInsideTheUKController.onPageLoad(draftId)
     } else {
       TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
-    }
-  }
-
-  private def navigateAwayFromCountryOfAdministrationQuestions(ua: ReadableUserAnswers, draftId: String): Call = {
-    if (ua.is5mldEnabled) {
-      TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
-    } else {
-      TrusteesBasedInTheUKController.onPageLoad(draftId)
     }
   }
 
