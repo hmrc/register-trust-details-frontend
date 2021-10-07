@@ -25,7 +25,6 @@ import scala.util.{Failure, Success, Try}
 trait ReadableUserAnswers {
 
   val data: JsObject
-  val is5mldEnabled: Boolean = false
   val isTaxable: Boolean = true
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
@@ -45,7 +44,6 @@ object ReadOnlyUserAnswers {
 final case class UserAnswers(draftId: String,
                              data: JsObject = Json.obj(),
                              internalAuthId: String,
-                             override val is5mldEnabled: Boolean = false,
                              override val isTaxable: Boolean = true) extends ReadableUserAnswers with Logging {
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
@@ -107,7 +105,6 @@ object UserAnswers {
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "internalId").read[String] and
-        (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
         (__ \ "isTaxable").readWithDefault[Boolean](true)
       ) (UserAnswers.apply _)
   }
@@ -120,7 +117,6 @@ object UserAnswers {
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "internalId").write[String] and
-        (__ \ "is5mldEnabled").write[Boolean] and
         (__ \ "isTaxable").write[Boolean]
       ) (unlift(UserAnswers.unapply))
   }

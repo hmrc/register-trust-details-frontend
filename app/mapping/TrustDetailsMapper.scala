@@ -61,11 +61,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
   }
 
   private def trustUkResidentReads(ua: UserAnswers): Reads[Option[Boolean]] = {
-    if (ua.is5mldEnabled) {
       basedInUkReads[Boolean](Reads(_ => JsSuccess(Some(true))), Reads(_ => JsSuccess(Some(false))))
-    } else {
-      Reads(_ => JsSuccess(None))
-    }
   }
 
   private def residentialStatusReads(ua: UserAnswers): Reads[Option[ResidentialStatusType]] = {

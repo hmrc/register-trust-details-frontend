@@ -96,50 +96,5 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
         }
       }
     }
-
-    ".getFeature" must {
-
-      val url = s"/trusts-store/features/5mld"
-
-      "return a feature flag of true if 5mld is enabled" in {
-
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-                .withBody(
-                  Json.stringify(
-                    Json.toJson(FeatureResponse("5mld", isEnabled = true))
-                  )
-                )
-            )
-        )
-
-        whenReady(connector.getFeature("5mld")) {
-          _ mustBe FeatureResponse("5mld", isEnabled = true)
-        }
-      }
-
-      "return a feature flag of false if 5mld is not enabled" in {
-
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-                .withBody(
-                  Json.stringify(
-                    Json.toJson(FeatureResponse("5mld", isEnabled = false))
-                  )
-                )
-            )
-        )
-
-        whenReady(connector.getFeature("5mld")) {
-          _ mustBe FeatureResponse("5mld", isEnabled = false)
-        }
-      }
-    }
   }
 }

@@ -67,7 +67,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
           when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
           when(trustsStoreService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(Completed))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
@@ -99,7 +98,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
             when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -127,7 +125,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
             when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -145,17 +142,15 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         }
       }
 
-      "update value of is5mldEnabled and isTaxable to true in user answers" in {
+      "update value of isTaxable to true in user answers" in {
 
-        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .build()
 
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
         when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
@@ -164,7 +159,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-          uaCaptor.getValue.is5mldEnabled mustBe true
           uaCaptor.getValue.isTaxable mustBe true
 
           val inOrder = Mockito.inOrder(trustsStoreService)
@@ -175,17 +169,14 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         }
       }
 
-      "update value of is5mldEnabled and isTaxable to false in user answers" in {
+      "update value of isTaxable to false in user answers" in {
 
-        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .build()
 
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
         when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
@@ -194,7 +185,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
-          uaCaptor.getValue.is5mldEnabled mustBe false
           uaCaptor.getValue.isTaxable mustBe false
 
           val inOrder = Mockito.inOrder(trustsStoreService)
@@ -220,7 +210,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
           when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -248,7 +237,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
           when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
           when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -262,73 +250,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
 
           application.stop()
-        }
-      }
-
-      "instantiate new set of user answers" when {
-
-        "5mld enabled" must {
-          "add is5mldEnabled = true to user answers" in {
-
-            val answers = emptyUserAnswers
-
-            val application = applicationBuilder(userAnswers = None)
-              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
-              .build()
-
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-
-            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
-
-            route(application, request).value.map { _ =>
-              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-              uaCaptor.getValue.is5mldEnabled mustBe true
-              uaCaptor.getValue.draftId mustBe fakeDraftId
-              uaCaptor.getValue.internalAuthId mustBe "internalId"
-
-              val inOrder = Mockito.inOrder(trustsStoreService)
-              inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-              inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
-
-              application.stop()
-            }
-          }
-        }
-
-        "5mld not enabled" must {
-          "add is5mldEnabled = false to user answers" in {
-
-            val answers = emptyUserAnswers
-
-            val application = applicationBuilder(userAnswers = None)
-              .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
-              .build()
-
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-            when(trustsStoreService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-
-            val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
-
-            route(application, request).value.map { _ =>
-              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-              uaCaptor.getValue.is5mldEnabled mustBe false
-              uaCaptor.getValue.draftId mustBe fakeDraftId
-              uaCaptor.getValue.internalAuthId mustBe "internalId"
-
-              val inOrder = Mockito.inOrder(trustsStoreService)
-              inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-              inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
-
-              application.stop()
-            }
-          }
         }
       }
     }
