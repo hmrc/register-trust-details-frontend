@@ -44,8 +44,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
     userAnswers.data.validate[TrustDetailsType](reads) match {
       case JsSuccess(value, _) =>
         Some(value)
-      case JsError(errors) =>
-        println(s"could not generate TrustDetailsType due to $errors")
+      case JsError(_) =>
         None
     }
   }
