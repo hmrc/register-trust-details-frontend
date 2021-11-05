@@ -21,26 +21,23 @@ import models._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.RegistrationProgress
 import utils.print.TrustDetailsPrintHelper
 import viewmodels.{AnswerRow, AnswerSection}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
-                                     trustDetailsMapper: TrustDetailsMapper,
+class SubmissionSetFactory @Inject()(trustDetailsMapper: TrustDetailsMapper,
                                      trustDetailsPrintHelper: TrustDetailsPrintHelper) {
 
   def createFrom(userAnswers: UserAnswers)
                 (implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[RegistrationSubmission.DataSet] = {
 
-    registrationProgress.trustDetailsStatus(userAnswers) map { status =>
+    Future.successful {
       RegistrationSubmission.DataSet(
         data = Json.toJson(userAnswers),
-        status = status,
-        registrationPieces = mappedDataIfCompleted(userAnswers, status),
-        answerSections = answerSectionsIfCompleted(userAnswers, status)
+        registrationPieces = mappedDataIfCompleted(userAnswers),
+        answerSections = answerSectionsIfCompleted(userAnswers)
       )
     }
   }
@@ -48,25 +45,17 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   private def mappedPieces(trustDetailsJson: JsValue) =
     List(RegistrationSubmission.MappedPiece("trust/details", trustDetailsJson))
 
-  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]): List[RegistrationSubmission.MappedPiece] = {
-    if (status.contains(Status.Completed)) {
-      trustDetailsMapper.build(userAnswers) match {
-        case Some(trustDetails) => mappedPieces(Json.toJson(trustDetails))
-        case _ => mappedPieces(JsNull)
-      }
-    } else {
-      mappedPieces(JsNull)
+  private def mappedDataIfCompleted(userAnswers: UserAnswers): List[RegistrationSubmission.MappedPiece] = {
+    trustDetailsMapper.build(userAnswers) match {
+      case Some(trustDetails) => mappedPieces(Json.toJson(trustDetails))
+      case _ => mappedPieces(JsNull)
     }
   }
 
-  private def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
+  private def answerSectionsIfCompleted(userAnswers: UserAnswers)
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
-    if (status.contains(Status.Completed)) {
-      val answerSection = trustDetailsPrintHelper.printSection(userAnswers)
-      List(answerSection).map(convertForSubmission)
-    } else {
-      List.empty
-    }
+    val answerSection = trustDetailsPrintHelper.printSection(userAnswers)
+    List(answerSection).map(convertForSubmission)
   }
 
   private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {

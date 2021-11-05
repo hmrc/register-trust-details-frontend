@@ -16,7 +16,6 @@
 
 package pages.register.trust_details
 
-import models.Status._
 import models.{TrusteesBasedInTheUK, UserAnswers}
 import pages.behaviours.PageBehaviours
 

@@ -18,7 +18,7 @@ package base
 
 import controllers.actions.register._
 import controllers.actions.{FakeDraftIdRetrievalActionProvider, FakeIdentifyForRegistration}
-import models.{Status, UserAnswers}
+import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -51,12 +51,7 @@ trait SpecBase extends PlaySpec
   lazy val fakeNavigator: FakeNavigator = new FakeNavigator()
 
   private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
-    new FakeDraftIdRetrievalActionProvider(
-      draftId,
-      Status.InProgress,
-      userAnswers,
-      registrationsRepository
-    )
+    new FakeDraftIdRetrievalActionProvider(userAnswers)
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
                                    affinityGroup: AffinityGroup = AffinityGroup.Organisation,

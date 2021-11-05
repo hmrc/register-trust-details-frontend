@@ -18,81 +18,80 @@ package repositories
 
 import base.SpecBase
 import generators.ModelGenerators
-import mapping.TrustDetailsMapper
-import models.Status.Completed
-import models.{RegistrationSubmission, Status, TrustDetailsType}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary.arbitrary
+import models.{RegistrationSubmission, TrustDetailsType, TrusteesBasedInTheUK, UserAnswers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.register.trust_details.{TrusteesBasedInTheUKPage, WhenTrustSetupPage}
 import play.api.libs.json.{JsNull, Json}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.RegistrationProgress
-import utils.print.TrustDetailsPrintHelper
 import viewmodels.{AnswerRow, AnswerSection}
 
 import java.time.LocalDate
-import scala.concurrent.Future
 
 class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
 
-  val mockRegistrationProgress: RegistrationProgress = mock[RegistrationProgress]
-  val mockMapper: TrustDetailsMapper = mock[TrustDetailsMapper]
-  val mockPrintHelper: TrustDetailsPrintHelper = mock[TrustDetailsPrintHelper]
-  val factory: SubmissionSetFactory = new SubmissionSetFactory(mockRegistrationProgress, mockMapper, mockPrintHelper)
+  val factory: SubmissionSetFactory = injector.instanceOf[SubmissionSetFactory]
+
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "Submission set factory" must {
 
-    "return no answer sections if not completed" in {
-
-      forAll(arbitrary[Option[Status]].suchThat(!_.contains(Completed))) { status =>
-
-        when(mockRegistrationProgress.trustDetailsStatus(any())(any(), any())).thenReturn(Future.successful(status))
-
-        val userAnswers = emptyUserAnswers
-
-        whenReady(factory.createFrom(userAnswers)) {
-          _ mustBe RegistrationSubmission.DataSet(
-            data = Json.toJson(userAnswers),
-            status = status,
-            registrationPieces = List(RegistrationSubmission.MappedPiece("trust/details", JsNull)),
-            answerSections = List.empty
-          )
-        }
-      }
-    }
-
-    "return answer sections if completed" in {
-
-      val status = Some(Completed)
-
-      val trustDetails = TrustDetailsType(LocalDate.parse("2000-01-01"), None, None, None, None, None, None, None)
-
-      val answerSection = AnswerSection(
-        rows = Seq(AnswerRow("Label", Html("Answer"), None))
-      )
+    "return no answer sections if there are no answers" in {
+      val userAnswers = emptyUserAnswers
 
       val convertedAnswerSection = RegistrationSubmission.AnswerSection(
         headingKey = None,
-        rows = Seq(RegistrationSubmission.AnswerRow("Label", "Answer", "")),
-        sectionKey = None
+        rows = Nil,
+        sectionKey = Some("answerPage.section.trustDetails.heading")
       )
-
-      when(mockRegistrationProgress.trustDetailsStatus(any())(any(), any())).thenReturn(Future.successful(status))
-      when(mockMapper.build(any())).thenReturn(Some(trustDetails))
-      when(mockPrintHelper.printSection(any())(any())).thenReturn(answerSection)
-
-      val userAnswers = emptyUserAnswers
 
       whenReady(factory.createFrom(userAnswers)) {
         _ mustBe RegistrationSubmission.DataSet(
           data = Json.toJson(userAnswers),
-          status = status,
-          registrationPieces = List(RegistrationSubmission.MappedPiece("trust/details", Json.toJson(trustDetails))),
+          registrationPieces = List(RegistrationSubmission.MappedPiece("trust/details", JsNull)),
           answerSections = List(convertedAnswerSection)
         )
+      }
+    }
+
+    "return answer sections if there are answers" in {
+
+      val expectedMappedEtmpData = TrustDetailsType(
+        startDate = LocalDate.parse("2000-01-01"),
+        lawCountry = None,
+        administrationCountry = None,
+        residentialStatus = None,
+        trustUKProperty = None,
+        trustRecorded = None,
+        trustUKRelation = None,
+        trustUKResident = Some(true)
+      )
+
+      val convertedAnswerSection = RegistrationSubmission.AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          RegistrationSubmission.AnswerRow("whenTrustSetupDate.checkYourAnswersLabel", "1 January 2000", ""),
+          RegistrationSubmission.AnswerRow("trusteesBasedInTheUK.checkYourAnswersLabel", "All of the trustees are based in the UK", ""),
+        ),
+        sectionKey = Some("answerPage.section.trustDetails.heading")
+      )
+
+      val userAnswers = UserAnswers(draftId, Json.obj(), internalAuthId = userInternalId, isTaxable = false)
+        .set(WhenTrustSetupPage, LocalDate.parse("2000-01-01")).success.value
+        .set(TrusteesBasedInTheUKPage, TrusteesBasedInTheUK.UKBasedTrustees).success.value
+
+      val expectedDataSet = RegistrationSubmission.DataSet(
+        data = Json.toJson(userAnswers),
+        registrationPieces = List(
+          RegistrationSubmission.MappedPiece(
+            "trust/details",
+            Json.toJson(expectedMappedEtmpData)
+          )),
+        answerSections = List(convertedAnswerSection)
+      )
+
+      whenReady(factory.createFrom(userAnswers)) { x =>
+        x mustBe expectedDataSet
       }
     }
 

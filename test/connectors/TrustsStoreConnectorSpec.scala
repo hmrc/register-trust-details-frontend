@@ -18,11 +18,10 @@ package connectors
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
+import models.Task
 import models.TaskStatus.Completed
-import models.{FeatureResponse, Task}
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
-import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier

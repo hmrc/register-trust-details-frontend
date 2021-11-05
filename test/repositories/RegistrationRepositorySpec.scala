@@ -18,7 +18,6 @@ package repositories
 
 import base.SpecBase
 import connectors.SubmissionDraftConnector
-import models.Status.InProgress
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{verify, when}
@@ -107,7 +106,6 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
 
         val submissionSet = RegistrationSubmission.DataSet(
           Json.obj(),
-          Some(InProgress),
           List.empty,
           List.empty
         )
