@@ -34,18 +34,17 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
       WhenTrustSetupPage.path.read[LocalDate] and
         CountryGoverningTrustPage.path.readNullable[String] and
         administrationCountryReads(userAnswers) and
-        residentialStatusReads(userAnswers)and
+        residentialStatusReads(userAnswers) and
         TrustOwnsUkPropertyOrLandPage.path.readNullable[Boolean] and
         TrustListedOnEeaRegisterPage.path.readNullable[Boolean] and
         TrustHasBusinessRelationshipInUkPage.path.readNullable[Boolean] and
-        trustUkResidentReads(userAnswers)
+        trustUkResidentReads
       )(TrustDetailsType.apply _)
 
     userAnswers.data.validate[TrustDetailsType](reads) match {
       case JsSuccess(value, _) =>
         Some(value)
-      case JsError(errors) =>
-        logger.error(s"Failed to rehydrate TrustDetailsType from UserAnswers due to $errors")
+      case JsError(_) =>
         None
     }
   }
@@ -60,8 +59,11 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
     }
   }
 
-  private def trustUkResidentReads(ua: UserAnswers): Reads[Option[Boolean]] = {
-      basedInUkReads[Boolean](Reads(_ => JsSuccess(Some(true))), Reads(_ => JsSuccess(Some(false))))
+  private def trustUkResidentReads: Reads[Option[Boolean]] = {
+      basedInUkReads[Boolean](
+        ukReads     = Reads(_ => JsSuccess(Some(true))),
+        nonUkReads  = Reads(_ => JsSuccess(Some(false)))
+      )
   }
 
   private def residentialStatusReads(ua: UserAnswers): Reads[Option[ResidentialStatusType]] = {

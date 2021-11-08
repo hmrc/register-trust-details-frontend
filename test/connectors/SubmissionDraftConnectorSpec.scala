@@ -36,7 +36,6 @@ import java.time.LocalDateTime
 
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.Status.InProgress
 import models.{RegistrationSubmission, SubmissionDraftResponse}
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
@@ -84,9 +83,9 @@ class SubmissionDraftConnectorSpec extends SpecBase
 
         val submissionDraftSetData = RegistrationSubmission.DataSet(
           sectionData,
-          Some(InProgress),
           List.empty,
-          List.empty)
+          List.empty
+        )
 
         server.stubFor(
           post(urlEqualTo(setSubmissionUrl))
