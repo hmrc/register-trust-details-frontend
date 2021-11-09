@@ -18,20 +18,23 @@ package repositories
 
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
-import models.{ReadOnlyUserAnswers, ReadableUserAnswers, UserAnswers}
-import play.api.http
+import models.{ReadOnlyUserAnswers, ReadableUserAnswers, TaskStatus, UserAnswers}
+import pages.register.trust_details.WhenTrustSetupPage
 import play.api.i18n.Messages
 import play.api.libs.json._
+import play.api.{Logging, http}
+import services.TrustsStoreService
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.Session
 
-import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: SubmissionDraftConnector,
                                                config: FrontendAppConfig,
-                                               submissionSetFactory: SubmissionSetFactory
-                                              )(implicit ec: ExecutionContext) extends RegistrationsRepository {
+                                               submissionSetFactory: SubmissionSetFactory,
+                                               trustStoreService: TrustsStoreService
+                                              )(implicit ec: ExecutionContext) extends RegistrationsRepository with Logging {
 
   private val userAnswersSection = config.repositoryKey
   private val mainAnswersSection = "main"
@@ -69,11 +72,41 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
     }
   }
 
-  override def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
-    submissionDraftConnector.getTaxLiabilityStartDate(draftId)
+  override def modifyTaxLiabilityState(userAnswers: UserAnswers)
+                                      (implicit hc: HeaderCarrier): Future[Unit] = {
 
-  override def getTrustSetupDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
-    submissionDraftConnector.getTrustStartDate(draftId)
+    userAnswers.get(WhenTrustSetupPage) match {
+      case Some(trustStartDate) =>
+        submissionDraftConnector.getTaxLiabilityStartDate(userAnswers.draftId) flatMap {
+          case Some(date) =>
+            if (trustStartDate.isEqual(date)) {
+              logger.info(s"[.modifyTaxLiabilityState][${Session.id(hc)}] tax liability does not need reset")
+              Future.successful(())
+            } else {
+              resetTaxLiability(userAnswers)
+            }
+          case None =>
+            logger.info(s"[.modifyTaxLiabilityState][${Session.id(hc)}] tax liability has not been answered, nothing to reset")
+            Future.successful(())
+        }
+      case None =>
+        logger.info(s"[.modifyTaxLiabilityState][${Session.id(hc)}] no trust start date, nothing to reset")
+        Future.successful(())
+    }
+  }
+
+  private def resetTaxLiability(userAnswers: UserAnswers)
+                               (implicit hc: HeaderCarrier): Future[Unit] = {
+    val updateStatus = trustStoreService.updateTaxLiabilityTaskStatus(userAnswers.draftId, TaskStatus.InProgress)
+    val reset = submissionDraftConnector.resetTaxLiability(userAnswers.draftId)
+    for {
+      _ <- updateStatus
+      _ <- reset
+    } yield {
+      logger.info(s"[.resetTaxLiability][${Session.id(hc)}] tax liability has been reset")
+      ()
+    }
+  }
 }
 
 trait RegistrationsRepository {
@@ -84,7 +117,5 @@ trait RegistrationsRepository {
 
   def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]]
 
-  def getTrustSetupDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]]
-
-  def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]]
+  def modifyTaxLiabilityState(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Unit]
 }

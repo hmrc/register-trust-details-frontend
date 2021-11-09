@@ -19,15 +19,19 @@ package repositories
 import base.SpecBase
 import connectors.SubmissionDraftConnector
 import models._
+import org.mockito.Matchers
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatest.MustMatchers
 import org.scalatestplus.mockito.MockitoSugar
+import pages.register.trust_details.WhenTrustSetupPage
 import play.api.http
+import play.api.http.Status.OK
 import play.api.libs.json.Json
+import services.TrustsStoreService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
@@ -35,9 +39,11 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
 
   private val unusedSubmissionSetFactory = mock[SubmissionSetFactory]
 
-  private def createRepository(connector: SubmissionDraftConnector, submissionSetFactory: SubmissionSetFactory) = {
-    new DefaultRegistrationsRepository(connector, frontendAppConfig, submissionSetFactory)
-  }
+  private def createRepository(connector: SubmissionDraftConnector,
+                               submissionSetFactory: SubmissionSetFactory,
+                               trustsStoreService: TrustsStoreService
+                              ) =
+    new DefaultRegistrationsRepository(connector, frontendAppConfig, submissionSetFactory, trustsStoreService)
 
   "RegistrationRepository" when {
     "getting user answers" must {
@@ -49,8 +55,9 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
         val userAnswers = UserAnswers(draftId = draftId, internalAuthId = "internalAuthId")
 
         val mockConnector = mock[SubmissionDraftConnector]
+        val mockTrustStoreService = mock[TrustsStoreService]
 
-        val repository = createRepository(mockConnector, unusedSubmissionSetFactory)
+        val repository = createRepository(mockConnector, unusedSubmissionSetFactory, mockTrustStoreService)
 
         val response = SubmissionDraftResponse(LocalDateTime.now, Json.toJson(userAnswers), None)
 
@@ -76,8 +83,9 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
             |""".stripMargin)
 
         val mockConnector = mock[SubmissionDraftConnector]
+        val mockTrustStoreService = mock[TrustsStoreService]
 
-        val repository = createRepository(mockConnector, unusedSubmissionSetFactory)
+        val repository = createRepository(mockConnector, unusedSubmissionSetFactory, mockTrustStoreService)
 
         val response = SubmissionDraftResponse(LocalDateTime.now, Json.toJson(dummyData), None)
 
@@ -103,6 +111,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
         val userAnswers = UserAnswers(draftId = draftId, internalAuthId = "internalAuthId")
 
         val mockConnector = mock[SubmissionDraftConnector]
+        val mockTrustStoreService = mock[TrustsStoreService]
 
         val submissionSet = RegistrationSubmission.DataSet(
           Json.obj(),
@@ -113,7 +122,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
         val mockSubmissionSetFactory = mock[SubmissionSetFactory]
         when(mockSubmissionSetFactory.createFrom(any())(any(), any(), any())).thenReturn(Future.successful(submissionSet))
 
-        val repository = createRepository(mockConnector, mockSubmissionSetFactory)
+        val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
         when(mockConnector.setDraftSectionSet(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(http.Status.OK, "")))
 
@@ -122,6 +131,116 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
         result mustBe true
         verify(mockConnector).setDraftSectionSet(draftId, frontendAppConfig.repositoryKey, submissionSet)(hc, executionContext)
       }
+    }
+
+    ".modifyTaxLiabilityState" must {
+
+      "reset and set tax-liability to in-progress" when {
+
+        "start date has been answered and then modified" in {
+          val mockConnector = mock[SubmissionDraftConnector]
+          val mockTrustStoreService = mock[TrustsStoreService]
+          val mockSubmissionSetFactory = mock[SubmissionSetFactory]
+
+          val userAnswers = emptyUserAnswers
+            .set(WhenTrustSetupPage, LocalDate.of(2015, 11, 5)).success.value
+
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+
+          val repository = createRepository(mockConnector, mockSubmissionSetFactory,mockTrustStoreService)
+
+          when(mockConnector.getTaxLiabilityStartDate(any())(any(), any()))
+            .thenReturn(Future.successful(Some(LocalDate.of(2020, 1, 1))))
+
+          when(mockConnector.resetTaxLiability(any())(any(), any()))
+            .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+
+          when(mockTrustStoreService.updateTaxLiabilityTaskStatus(any(), any())(any(), any()))
+            .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+
+          Await.result(
+            repository.modifyTaxLiabilityState(userAnswers),
+            Duration.Inf
+          )
+
+          verify(mockConnector, times(1)).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, times(1)).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+        }
+
+      }
+
+      "not modify state" when {
+
+        "start date has not been modified" in {
+          val mockConnector = mock[SubmissionDraftConnector]
+          val mockTrustStoreService = mock[TrustsStoreService]
+          val mockSubmissionSetFactory = mock[SubmissionSetFactory]
+
+          val userAnswers = emptyUserAnswers
+            .set(WhenTrustSetupPage, LocalDate.of(2020, 1, 1)).success.value
+
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+
+          val repository = createRepository(mockConnector, mockSubmissionSetFactory,mockTrustStoreService)
+
+          when(mockConnector.getTaxLiabilityStartDate(any())(any(), any()))
+            .thenReturn(Future.successful(Some(LocalDate.of(2020, 1, 1))))
+
+          Await.result(
+            repository.modifyTaxLiabilityState(userAnswers),
+            Duration.Inf
+          )
+
+          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, never()).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+        }
+
+        "no start date in tax liability" in {
+          val mockConnector = mock[SubmissionDraftConnector]
+          val mockTrustStoreService = mock[TrustsStoreService]
+          val mockSubmissionSetFactory = mock[SubmissionSetFactory]
+
+          val userAnswers = emptyUserAnswers
+            .set(WhenTrustSetupPage, LocalDate.of(2020, 1, 1)).success.value
+
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+
+          val repository = createRepository(mockConnector, mockSubmissionSetFactory,mockTrustStoreService)
+
+          when(mockConnector.getTaxLiabilityStartDate(any())(any(), any()))
+            .thenReturn(Future.successful(None))
+
+          Await.result(
+            repository.modifyTaxLiabilityState(userAnswers),
+            Duration.Inf
+          )
+
+          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, never()).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+        }
+
+        "no start date in user answers" in {
+          val mockConnector = mock[SubmissionDraftConnector]
+          val mockTrustStoreService = mock[TrustsStoreService]
+          val mockSubmissionSetFactory = mock[SubmissionSetFactory]
+
+          val userAnswers = emptyUserAnswers
+
+          implicit val hc: HeaderCarrier = HeaderCarrier()
+
+          val repository = createRepository(mockConnector, mockSubmissionSetFactory,mockTrustStoreService)
+
+          Await.result(
+            repository.modifyTaxLiabilityState(userAnswers),
+            Duration.Inf
+          )
+
+          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, never()).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+        }
+
+      }
+
     }
   }
 }

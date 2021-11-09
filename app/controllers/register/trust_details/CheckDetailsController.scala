@@ -58,6 +58,7 @@ class CheckDetailsController @Inject()(
       for {
         _ <- trustsStoreService.updateTaskStatus(draftId, Completed)
         _ <- repository.set(request.userAnswers)
+        _ <- repository.modifyTaxLiabilityState(request.userAnswers)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
   }
 }

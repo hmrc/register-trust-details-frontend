@@ -30,6 +30,12 @@ class TrustsStoreService @Inject()(trustsStoreConnector: TrustsStoreConnector) {
     trustsStoreConnector.updateTaskStatus(draftId, taskStatus)
   }
 
+  def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    trustsStoreConnector.updateTaxLiabilityTaskStatus(draftId, taskStatus)
+  }
+
+
   def getTaskStatus(draftId: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TaskStatus] = {
     trustsStoreConnector.getTaskStatus(draftId).map(_.trustDetails)

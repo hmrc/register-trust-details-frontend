@@ -49,6 +49,9 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+    when(registrationsRepository.modifyTaxLiabilityState(any())(any()))
+      .thenReturn(Future.successful(()))
   }
 
   "CheckDetails Controller" must {

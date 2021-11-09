@@ -31,7 +31,7 @@ class TrustsStoreServiceSpec extends SpecBase {
 
   val mockConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
-  val featureFlagService = new TrustsStoreService(mockConnector)
+  val trustStoreService = new TrustsStoreService(mockConnector)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -43,11 +43,28 @@ class TrustsStoreServiceSpec extends SpecBase {
       when(mockConnector.updateTaskStatus(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val result = featureFlagService.updateTaskStatus(draftId, Completed)
+      val result = trustStoreService.updateTaskStatus(draftId, Completed)
 
       whenReady(result) { res =>
         res.status mustBe OK
         verify(mockConnector).updateTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
+      }
+    }
+  }
+
+  ".updateTaxLiabilityTaskStatus" must {
+    "call trusts store connector" in {
+
+      val draftId = "draftId"
+
+      when(mockConnector.updateTaxLiabilityTaskStatus(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val result = trustStoreService.updateTaxLiabilityTaskStatus(draftId, Completed)
+
+      whenReady(result) { res =>
+        res.status mustBe OK
+        verify(mockConnector).updateTaxLiabilityTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
       }
     }
   }
@@ -60,7 +77,7 @@ class TrustsStoreServiceSpec extends SpecBase {
       when(mockConnector.getTaskStatus(any())(any(), any()))
         .thenReturn(Future.successful(Task(Completed)))
 
-      val result = featureFlagService.getTaskStatus(draftId)
+      val result = trustStoreService.getTaskStatus(draftId)
 
       whenReady(result) { res =>
         res mustBe Completed
