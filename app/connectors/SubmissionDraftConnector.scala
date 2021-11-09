@@ -17,12 +17,14 @@
 package connectors
 
 import config.FrontendAppConfig
+
 import javax.inject.Inject
 import models.{RegistrationSubmission, SubmissionDraftResponse}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
@@ -43,4 +45,21 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppC
       case _ => true
     }
   }
+
+  def getTrustStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
+    getStartDate(s"$submissionsBaseUrl/$draftId/when-trust-setup")
+
+  def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
+    getStartDate(s"$submissionsBaseUrl/$draftId/tax-liability/when-trust-setup")
+
+  private def getStartDate(url: String)
+                          (implicit hc: HeaderCarrier,
+                           ec: ExecutionContext
+                          ): Future[Option[LocalDate]] =
+    http.GET[HttpResponse](url).map {
+      response =>
+        (response.json \ "startDate").asOpt[LocalDate]
+    }.recover {
+      case _ => None
+    }
 }

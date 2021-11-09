@@ -32,8 +32,7 @@ package connectors
  * limitations under the License.
  */
 
-import java.time.LocalDateTime
-
+import java.time.{LocalDate, LocalDateTime}
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{RegistrationSubmission, SubmissionDraftResponse}
@@ -178,6 +177,76 @@ class SubmissionDraftConnectorSpec extends SpecBase
 
         val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
         result.booleanValue() mustBe true
+      }
+    }
+
+    ".getTrustStartDte" must {
+
+      "return start date" in {
+
+        val date = LocalDate.of(2010, 10, 11)
+
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/when-trust-setup"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(Json.obj(
+                  "startDate" -> date
+                ).toString())
+            )
+        )
+
+        val result = Await.result(connector.getTrustStartDate(testDraftId), Duration.Inf)
+        result.value mustBe LocalDate.of(2010, 10, 11)
+      }
+
+      "recover to None" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/when-trust-setup"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.NOT_FOUND)
+            )
+        )
+
+        val result = Await.result(connector.getTrustStartDate(testDraftId), Duration.Inf)
+        result must not be defined
+      }
+    }
+
+    ".getTaxLiabilityStartDte" must {
+
+      "return start date" in {
+
+        val date = LocalDate.of(2010, 10, 11)
+
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/tax-liability/when-trust-setup"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(Json.obj(
+                  "startDate" -> date
+                ).toString())
+            )
+        )
+
+        val result = Await.result(connector.getTaxLiabilityStartDate(testDraftId), Duration.Inf)
+        result.value mustBe LocalDate.of(2010, 10, 11)
+      }
+
+      "recover to None" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/tax-liability/when-trust-setup"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.NOT_FOUND)
+            )
+        )
+
+        val result = Await.result(connector.getTaxLiabilityStartDate(testDraftId), Duration.Inf)
+        result must not be defined
       }
     }
   }
