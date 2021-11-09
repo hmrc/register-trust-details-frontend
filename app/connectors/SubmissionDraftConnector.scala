@@ -52,6 +52,9 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppC
   def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
     getStartDate(s"$submissionsBaseUrl/$draftId/tax-liability/when-trust-setup")
 
+  def resetTaxLiability(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    http.DELETE[HttpResponse](s"$submissionsBaseUrl/$draftId/tax-liability")
+
   private def getStartDate(url: String)
                           (implicit hc: HeaderCarrier,
                            ec: ExecutionContext

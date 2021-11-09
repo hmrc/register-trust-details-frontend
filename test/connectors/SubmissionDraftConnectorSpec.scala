@@ -215,6 +215,24 @@ class SubmissionDraftConnectorSpec extends SpecBase
       }
     }
 
+    ".resetTaxLiability" must {
+
+      "return a response" in {
+
+        val date = LocalDate.of(2010, 10, 11)
+
+        server.stubFor(
+          delete(urlEqualTo(s"$submissionsUrl/$testDraftId/tax-liability"))
+            .willReturn(
+              aResponse().withStatus(Status.OK)
+            )
+        )
+
+        val result = Await.result(connector.resetTaxLiability(testDraftId), Duration.Inf)
+        result.status mustBe OK
+      }
+    }
+
     ".getTaxLiabilityStartDte" must {
 
       "return start date" in {
