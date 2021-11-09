@@ -24,6 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,6 +68,12 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
         }
     }
   }
+
+  override def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
+    submissionDraftConnector.getTaxLiabilityStartDate(draftId)
+
+  override def getTrustSetupDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
+    submissionDraftConnector.getTrustStartDate(draftId)
 }
 
 trait RegistrationsRepository {
@@ -76,4 +83,8 @@ trait RegistrationsRepository {
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 
   def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]]
+
+  def getTrustSetupDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]]
+
+  def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier): Future[Option[LocalDate]]
 }
