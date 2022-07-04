@@ -108,7 +108,7 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
         case Some(InternationalAndUKTrustees) =>
           SettlorsBasedInTheUKController.onPageLoad(draftId)
         case _ =>
-          SessionExpiredController.onPageLoad()
+          SessionExpiredController.onPageLoad
       }
   }
 
