@@ -27,7 +27,8 @@ case class TrustDetailsType(startDate: LocalDate,
                             trustUKProperty: Option[Boolean] = None,
                             trustRecorded: Option[Boolean] = None,
                             trustUKRelation: Option[Boolean] = None,
-                            trustUKResident: Option[Boolean] = None)
+                            trustUKResident: Option[Boolean] = None,
+                            schedule3aExempt: Option[Boolean] = None)
 
 object TrustDetailsType {
   implicit val trustDetailsTypeFormat: Format[TrustDetailsType] = Json.format[TrustDetailsType]

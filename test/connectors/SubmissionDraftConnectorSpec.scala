@@ -180,6 +180,50 @@ class SubmissionDraftConnectorSpec extends SpecBase
       }
     }
 
+    "getIsExpressTrust" must {
+
+      "return true if the trust is express" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-express-trust"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(JsBoolean(true).toString)
+            )
+        )
+
+        val result: Boolean = Await.result(connector.getIsExpressTrust(testDraftId), Duration.Inf)
+        result.booleanValue() mustBe true
+      }
+
+      "return false if the trust is not express" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-express-trust"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(JsBoolean(false).toString)
+            )
+        )
+
+        val result: Boolean = Await.result(connector.getIsExpressTrust(testDraftId), Duration.Inf)
+        result.booleanValue() mustBe false
+      }
+
+      "recover to true as default" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-express-trust"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.NOT_FOUND)
+            )
+        )
+
+        val result: Boolean = Await.result(connector.getIsExpressTrust(testDraftId), Duration.Inf)
+        result.booleanValue() mustBe true
+      }
+    }
+
     ".getTrustStartDte" must {
 
       "return start date" in {

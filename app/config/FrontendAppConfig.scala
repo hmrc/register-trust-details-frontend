@@ -60,6 +60,9 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
 
   lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl
 
+  lazy val schedule3aExemptEnabled: Boolean =
+    configuration.get[Boolean]("microservice.services.features.schedule3aExempt.enabled")
+
   private def getInt(path: String): Int = configuration.get[Int](path)
   private def getDate(entry: String): LocalDate =
     LocalDate.of(

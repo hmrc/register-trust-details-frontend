@@ -46,6 +46,11 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppC
     }
   }
 
+  def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
+    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-express-trust").recover {
+      case _ => true
+    }
+  }
   def getTrustStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
     getStartDate(s"$submissionsBaseUrl/$draftId/when-trust-setup")
 

@@ -49,7 +49,8 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
     case TrustListedOnEeaRegisterPage => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
     case TrustHasBusinessRelationshipInUkPage => ua => navigateAwayFromRelationshipInTheUk(ua, draftId)
     case EstablishedUnderScotsLawPage => _ => TrustResidentOffshoreController.onPageLoad(draftId)
-    case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => _ => CheckDetailsController.onPageLoad(draftId)
+    case TrustPreviouslyResidentPage | AgentOtherThanBarristerPage => ua => routeToSchedule3aExempt(ua, draftId)
+    case Schedule3aExemptYesNoPage => _ => CheckDetailsController.onPageLoad(draftId)
     case CheckDetailsPage => _ => Call(GET, config.registrationProgressUrl(draftId))
   }
 
@@ -80,13 +81,13 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
         ua = ua,
         fromPage = TrustResidentOffshorePage,
         yesCall = TrustPreviouslyResidentController.onPageLoad(draftId),
-        noCall = CheckDetailsController.onPageLoad(draftId)
+        noCall = routeToSchedule3aExempt(ua, draftId)
       )
     case RegisteringTrustFor5APage => ua =>
       yesNoNav(
         ua = ua,
         fromPage = RegisteringTrustFor5APage,
-        yesCall = CheckDetailsController.onPageLoad(draftId),
+        yesCall = routeToSchedule3aExempt(ua, draftId),
         noCall = InheritanceTaxActController.onPageLoad(draftId)
       )
     case InheritanceTaxActPage => ua =>
@@ -94,8 +95,23 @@ class TrustDetailsNavigator @Inject()(config: FrontendAppConfig) extends Navigat
         ua = ua,
         fromPage = InheritanceTaxActPage,
         yesCall = AgentOtherThanBarristerController.onPageLoad(draftId),
-        noCall = CheckDetailsController.onPageLoad(draftId)
+        noCall = routeToSchedule3aExempt(ua, draftId)
       )
+  }
+
+  private def routeToSchedule3aExempt(ua: ReadableUserAnswers, draftId: String) : Call = {
+    if (config.schedule3aExemptEnabled) {
+      isExpressAndTaxableTrust(ua, draftId)
+    } else {
+      CheckDetailsController.onPageLoad(draftId)
+    }
+  }
+
+  private def isExpressAndTaxableTrust(ua: ReadableUserAnswers, draftId: String): Call = {
+    (ua.isExpress, ua.isTaxable) match {
+      case (true, true) => Schedule3aExemptYesNoController.onPageLoad(draftId)
+      case (_, _) => CheckDetailsController.onPageLoad(draftId)
+    }
   }
 
   private def otherNavigation(draftId: String): PartialFunction[Page, ReadableUserAnswers => Call] = {

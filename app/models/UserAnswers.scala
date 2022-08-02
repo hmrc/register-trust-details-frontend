@@ -26,6 +26,7 @@ trait ReadableUserAnswers {
 
   val data: JsObject
   val isTaxable: Boolean = true
+  val isExpress: Boolean = true
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
@@ -44,7 +45,8 @@ object ReadOnlyUserAnswers {
 final case class UserAnswers(draftId: String,
                              data: JsObject = Json.obj(),
                              internalAuthId: String,
-                             override val isTaxable: Boolean = true) extends ReadableUserAnswers with Logging {
+                             override val isTaxable: Boolean = true,
+                             override val isExpress: Boolean = true) extends ReadableUserAnswers with Logging {
 
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
@@ -105,7 +107,8 @@ object UserAnswers {
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "internalId").read[String] and
-        (__ \ "isTaxable").readWithDefault[Boolean](true)
+        (__ \ "isTaxable").readWithDefault[Boolean](true) and
+        (__ \ "isExpress").readWithDefault[Boolean](true)
       ) (UserAnswers.apply _)
   }
 
@@ -117,7 +120,8 @@ object UserAnswers {
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "internalId").write[String] and
-        (__ \ "isTaxable").write[Boolean]
+        (__ \ "isTaxable").write[Boolean] and
+        (__ \ "isExpress").write[Boolean]
       ) (unlift(UserAnswers.unapply))
   }
 }
