@@ -70,5 +70,8 @@ POST       /:draftId/trust-listed-on-eea-register                               
 GET        /:draftId/trust-owns-uk-property-or-land                                                 controllers.register.trust_details.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId: String)
 POST       /:draftId/trust-owns-uk-property-or-land                                                 controllers.register.trust_details.TrustOwnsUkPropertyOrLandController.onSubmit(draftId: String)
 
+GET        /:draftId/has-schedule-3a-exemption                                                      controllers.register.trust_details.Schedule3aExemptYesNoController.onPageLoad(draftId: String)
+POST       /:draftId/has-schedule-3a-exemption                                                      controllers.register.trust_details.Schedule3aExemptYesNoController.onSubmit(draftId: String)
+
 GET        /:draftId/check-details                                                                  controllers.register.trust_details.CheckDetailsController.onPageLoad(draftId: String)
 POST       /:draftId/check-details                                                                  controllers.register.trust_details.CheckDetailsController.onSubmit(draftId: String)

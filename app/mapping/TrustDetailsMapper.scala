@@ -38,7 +38,8 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
         TrustOwnsUkPropertyOrLandPage.path.readNullable[Boolean] and
         TrustListedOnEeaRegisterPage.path.readNullable[Boolean] and
         TrustHasBusinessRelationshipInUkPage.path.readNullable[Boolean] and
-        trustUkResidentReads
+        trustUkResidentReads and
+        Schedule3aExemptYesNoPage.path.readNullable[Boolean]
       )(TrustDetailsType.apply _)
 
     userAnswers.data.validate[TrustDetailsType](reads) match {

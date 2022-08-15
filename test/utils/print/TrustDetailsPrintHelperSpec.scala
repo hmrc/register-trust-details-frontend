@@ -58,6 +58,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           .set(RegisteringTrustFor5APage, true).success.value
           .set(InheritanceTaxActPage, false).success.value
           .set(AgentOtherThanBarristerPage, true).success.value
+          .set(Schedule3aExemptYesNoPage, true).success.value
 
         val rows = Seq(
           AnswerRow(
@@ -144,6 +145,11 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             "agentOtherThanBarristerYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
+          ),
+          AnswerRow(
+            "schedule3aExemptYesNo.checkYourAnswersLabel",
+            HtmlFormat.escape("Yes"),
+            Some(routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
           )
         )
 

@@ -17,6 +17,7 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import controllers.register.trust_details.routes
 import generators.Generators
 import models.TrusteesBasedInTheUK._
@@ -25,10 +26,13 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details.{AgentOtherThanBarristerPage, _}
 import play.api.libs.json.JsBoolean
+import org.mockito.Mockito.when
 
 import java.time.LocalDate
 
 class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators  {
+
+  private val feAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   private val navigator: TrustDetailsNavigator = injector.instanceOf[TrustDetailsNavigator]
 
@@ -38,7 +42,7 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
     "in taxable mode" must {
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true)
+      val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isExpress = true)
 
       "TrustName -> WhenTrustSetup" in {
         val answers = baseAnswers.setAtPath(TrustHaveAUTRPage.path, JsBoolean(false)).success.value
@@ -146,11 +150,86 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           .mustBe(routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId))
       }
 
-      "RegisteringTrustFor5A -> Yes -> CheckDetails" in {
-        val answers = baseAnswers.set(RegisteringTrustFor5APage, true).success.value
+      "Schedule3aExempt toggle is off" when {
+        "RegisteringTrustFor5A -> Yes -> CheckDetails" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(false)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+            val answers = baseAnswers.set(RegisteringTrustFor5APage, true).success.value
 
-        navigator.nextPage(RegisteringTrustFor5APage, fakeDraftId, answers)
-          .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
+            nav.nextPage(RegisteringTrustFor5APage, fakeDraftId, answers)
+              .mustBe(routes.CheckDetailsController.onPageLoad(fakeDraftId))
+          }
+        "InheritanceTaxAct -> No -> CheckDetails" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(false)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(InheritanceTaxActPage, false).success.value
+
+          nav.nextPage(InheritanceTaxActPage, fakeDraftId, answers)
+            .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
+        }
+        "AgentOtherThanBarrister -> CheckDetails" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(false)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          nav.nextPage(AgentOtherThanBarristerPage, fakeDraftId, emptyUserAnswers)
+            .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
+        }
+        "TrustResidentOffshore -> No -> CheckDetails" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(false)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(TrustResidentOffshorePage, false).success.value
+
+          nav.nextPage(TrustResidentOffshorePage, fakeDraftId, answers)
+            .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
+        }
+        "TrustPreviouslyResident -> CheckDetails" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(false)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(TrustPreviouslyResidentPage, "FR").success.value
+
+          nav.nextPage(TrustPreviouslyResidentPage, fakeDraftId, answers)
+            .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
+        }
+      }
+
+      "Schedule3aExempt toggle is on" when {
+        "RegisteringTrustFor5A -> Yes -> Schedule3aExempt" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(true)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(RegisteringTrustFor5APage, true).success.value
+
+          nav.nextPage(RegisteringTrustFor5APage, fakeDraftId, answers)
+            .mustBe(routes.Schedule3aExemptYesNoController.onPageLoad(fakeDraftId))
+        }
+        "InheritanceTaxAct -> No -> Schedule3aExempt" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(true)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(InheritanceTaxActPage, false).success.value
+
+          nav.nextPage(InheritanceTaxActPage, fakeDraftId, answers)
+            .mustBe(routes.Schedule3aExemptYesNoController.onPageLoad(draftId))
+        }
+        "AgentOtherThanBarrister -> Schedule3aExempt" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(true)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          nav.nextPage(AgentOtherThanBarristerPage, fakeDraftId, emptyUserAnswers)
+            .mustBe(routes.Schedule3aExemptYesNoController.onPageLoad(draftId))
+        }
+        "TrustResidentOffshore -> No -> Schedule3aExempt" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(true)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(TrustResidentOffshorePage, false).success.value
+
+          nav.nextPage(TrustResidentOffshorePage, fakeDraftId, answers)
+            .mustBe(routes.Schedule3aExemptYesNoController.onPageLoad(draftId))
+        }
+        "TrustPreviouslyResident -> Schedule3aExempt" in {
+          when(feAppConfig.schedule3aExemptEnabled).thenReturn(true)
+          val nav = new TrustDetailsNavigator(feAppConfig)
+          val answers = baseAnswers.set(TrustPreviouslyResidentPage, "FR").success.value
+
+          nav.nextPage(TrustPreviouslyResidentPage, fakeDraftId, answers)
+            .mustBe(routes.Schedule3aExemptYesNoController.onPageLoad(draftId))
+        }
       }
 
       "RegisteringTrustFor5A -> No -> InheritanceTaxAct" in {
@@ -167,18 +246,6 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
           .mustBe(routes.AgentOtherThanBarristerController.onPageLoad(fakeDraftId))
       }
 
-      "InheritanceTaxAct -> No -> CheckDetails" in {
-        val answers = baseAnswers.set(InheritanceTaxActPage, false).success.value
-
-        navigator.nextPage(InheritanceTaxActPage, fakeDraftId, answers)
-          .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
-      }
-
-      "AgentOtherThanBarrister -> CheckDetails" in {
-        navigator.nextPage(AgentOtherThanBarristerPage, fakeDraftId, emptyUserAnswers)
-          .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
-      }
-
       "EstablishedUnderScotsLaw -> TrustResidentOffshore" in {
         navigator.nextPage(EstablishedUnderScotsLawPage, fakeDraftId, emptyUserAnswers)
           .mustBe(routes.TrustResidentOffshoreController.onPageLoad(fakeDraftId))
@@ -189,20 +256,6 @@ class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks w
 
         navigator.nextPage(TrustResidentOffshorePage, fakeDraftId, answers)
           .mustBe(routes.TrustPreviouslyResidentController.onPageLoad(fakeDraftId))
-      }
-
-      "TrustResidentOffshore -> No -> CheckDetails" in {
-        val answers = baseAnswers.set(TrustResidentOffshorePage, false).success.value
-
-        navigator.nextPage(TrustResidentOffshorePage, fakeDraftId, answers)
-          .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
-      }
-
-      "TrustPreviouslyResident -> CheckDetails" in {
-        val answers = baseAnswers.set(TrustPreviouslyResidentPage, "FR").success.value
-
-        navigator.nextPage(TrustPreviouslyResidentPage, fakeDraftId, answers)
-          .mustBe(routes.CheckDetailsController.onPageLoad(draftId))
       }
 
       "CheckDetails -> RegistrationProgress" in {

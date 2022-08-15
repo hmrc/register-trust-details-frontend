@@ -36,9 +36,9 @@ class TrustDetailsMapperSpec extends SpecBase {
 
     "build trust details from user answers" when {
 
-        "taxable" when {
+        "taxable not express" when {
 
-          val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true)
+          val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isExpress = false)
             .set(TrustNamePage, name).success.value
             .set(WhenTrustSetupPage, date).success.value
 
@@ -219,6 +219,82 @@ class TrustDetailsMapperSpec extends SpecBase {
             )
           }
         }
+
+        "taxable and express" when {
+
+        val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isExpress = true)
+          .set(TrustNamePage, name).success.value
+          .set(WhenTrustSetupPage, date).success.value
+
+        "UK governed, UK administered, owns UK property/land, not recorded on another register, all trustees UK based and never based offshore, Schedule 3a Exempt" in {
+
+          val userAnswers: UserAnswers = baseAnswers
+            .set(GovernedInsideTheUKPage, true).success.value
+            .set(AdministrationInsideUKPage, true).success.value
+            .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+            .set(TrustListedOnEeaRegisterPage, false).success.value
+            .set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
+            .set(EstablishedUnderScotsLawPage, true).success.value
+            .set(TrustResidentOffshorePage, false).success.value
+            .set(Schedule3aExemptYesNoPage, true).success.value
+
+          val result = mapper.build(userAnswers).get
+
+          result mustBe TrustDetailsType(
+            startDate = date,
+            lawCountry = None,
+            administrationCountry = Some(GB),
+            residentialStatus = Some(ResidentialStatusType(
+              uk = Some(UkType(
+                scottishLaw = true,
+                preOffShore = None
+              )),
+              nonUK = None
+            )),
+            trustUKProperty = Some(true),
+            trustRecorded = Some(false),
+            trustUKRelation = None,
+            trustUKResident = Some(true),
+            schedule3aExempt = Some(true)
+          )
+        }
+
+        "UK governed, UK administered, owns UK property/land, not recorded on another register, some trustees UK based, " +
+          "some/all settlors UK based and previously based offshore, not Schedule 3a Exempt" in {
+
+          val userAnswers: UserAnswers = baseAnswers
+            .set(GovernedInsideTheUKPage, true).success.value
+            .set(AdministrationInsideUKPage, true).success.value
+            .set(TrustOwnsUkPropertyOrLandPage, true).success.value
+            .set(TrustListedOnEeaRegisterPage, false).success.value
+            .set(TrusteesBasedInTheUKPage, InternationalAndUKTrustees).success.value
+            .set(SettlorsBasedInTheUKPage, true).success.value
+            .set(EstablishedUnderScotsLawPage, false).success.value
+            .set(TrustResidentOffshorePage, true).success.value
+            .set(TrustPreviouslyResidentPage, country).success.value
+            .set(Schedule3aExemptYesNoPage, false).success.value
+
+          val result = mapper.build(userAnswers).get
+
+          result mustBe TrustDetailsType(
+            startDate = date,
+            lawCountry = None,
+            administrationCountry = Some(GB),
+            residentialStatus = Some(ResidentialStatusType(
+              uk = Some(UkType(
+                scottishLaw = false,
+                preOffShore = Some(country)
+              )),
+              nonUK = None
+            )),
+            trustUKProperty = Some(true),
+            trustRecorded = Some(false),
+            trustUKRelation = None,
+            trustUKResident = Some(true),
+            schedule3aExempt = Some(false)
+          )
+        }
+      }
 
         "non-taxable" when {
 

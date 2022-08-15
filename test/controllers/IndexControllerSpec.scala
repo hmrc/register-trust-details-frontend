@@ -142,7 +142,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         }
       }
 
-      "update value of isTaxable to true in user answers" in {
+      "update value of isTaxable to true, isExpress to true in user answers" in {
 
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -152,6 +152,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
         when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
+        when(submissionDraftConnector.getIsExpressTrust(any())(any(), any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -160,6 +161,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
           uaCaptor.getValue.isTaxable mustBe true
+          uaCaptor.getValue.isExpress mustBe true
 
           val inOrder = Mockito.inOrder(trustsStoreService)
           inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
@@ -169,7 +171,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         }
       }
 
-      "update value of isTaxable to false in user answers" in {
+      "update value of isTaxable to false, isExpress to false in user answers" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
@@ -178,6 +180,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
         when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
         when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+        when(submissionDraftConnector.getIsExpressTrust(any())(any(), any())).thenReturn(Future.successful(false))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -186,6 +189,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
           uaCaptor.getValue.isTaxable mustBe false
+          uaCaptor.getValue.isExpress mustBe false
 
           val inOrder = Mockito.inOrder(trustsStoreService)
           inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())

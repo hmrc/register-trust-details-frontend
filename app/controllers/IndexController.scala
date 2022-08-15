@@ -64,10 +64,11 @@ class IndexController @Inject()(
 
     for {
       isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
+      isExpress <- submissionDraftConnector.getIsExpressTrust(draftId)
       userAnswers <- repository.get(draftId)
       result <- userAnswers match {
-        case Some(value) => redirect(value.copy(isTaxable = isTaxable))
-        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, isTaxable))
+        case Some(value) => redirect(value.copy(isTaxable = isTaxable, isExpress = isExpress))
+        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, isTaxable, isExpress))
       }
       _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
     } yield result

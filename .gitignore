@@ -21,6 +21,8 @@ precompiled
 /.project
 project/project
 project/target
+project/.bloop
+project/metals.sbt
 /RUNNING_PID
 server.pid
 /.settings
@@ -34,3 +36,5 @@ bin
 /*.ipr
 /.classpath
 *.iws
+.metals
+.vscode

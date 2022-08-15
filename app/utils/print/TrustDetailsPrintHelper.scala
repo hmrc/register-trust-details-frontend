@@ -61,7 +61,8 @@ class TrustDetailsPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) 
       bound.yesNoQuestion(TrustHasBusinessRelationshipInUkPage, "trustHasBusinessRelationshipInUkYesNo", routes.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId).url),
       bound.yesNoQuestion(RegisteringTrustFor5APage, "registeringTrustFor5AYesNo", routes.RegisteringTrustFor5AController.onPageLoad(draftId).url),
       bound.yesNoQuestion(InheritanceTaxActPage, "inheritanceTaxActYesNo", routes.InheritanceTaxActController.onPageLoad(draftId).url),
-      bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarristerYesNo", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url)
+      bound.yesNoQuestion(AgentOtherThanBarristerPage, "agentOtherThanBarristerYesNo", routes.AgentOtherThanBarristerController.onPageLoad(draftId).url),
+      bound.yesNoQuestion(Schedule3aExemptYesNoPage, "schedule3aExemptYesNo", routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
     ).flatten
 
   }
