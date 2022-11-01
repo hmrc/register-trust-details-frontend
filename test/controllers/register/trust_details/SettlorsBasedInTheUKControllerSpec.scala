@@ -19,6 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.SettlorsBasedInTheUKPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.SettlorsBasedInTheUKView
@@ -26,9 +27,9 @@ import views.html.register.trust_details.SettlorsBasedInTheUKView
 class SettlorsBasedInTheUKControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
 
-  lazy val settlorsBasedInTheUKRoute = routes.SettlorsBasedInTheUKController.onPageLoad( fakeDraftId).url
+  lazy val settlorsBasedInTheUKRoute: String = routes.SettlorsBasedInTheUKController.onPageLoad( fakeDraftId).url
 
   "SettlorsBasedInTheUK Controller" must {
 

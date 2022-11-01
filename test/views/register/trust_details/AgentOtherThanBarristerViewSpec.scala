@@ -26,7 +26,7 @@ class AgentOtherThanBarristerViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "agentOtherThanBarristerYesNo"
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "AgentOtherThanBarrister view" must {
 

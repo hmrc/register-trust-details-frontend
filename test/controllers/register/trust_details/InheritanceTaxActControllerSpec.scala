@@ -19,16 +19,17 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.InheritanceTaxActPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.InheritanceTaxActView
 
 class InheritanceTaxActControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("inheritanceTaxActYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("inheritanceTaxActYesNo")
 
 
-  lazy val inheritanceTaxActRoute = routes.InheritanceTaxActController.onPageLoad(fakeDraftId).url
+  lazy val inheritanceTaxActRoute: String = routes.InheritanceTaxActController.onPageLoad(fakeDraftId).url
 
   "InheritanceTaxAct Controller" must {
 

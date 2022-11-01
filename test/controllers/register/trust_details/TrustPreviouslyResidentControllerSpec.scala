@@ -19,6 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.TrustPreviouslyResidentFormProvider
 import pages.register.trust_details.TrustPreviouslyResidentPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.InputOption
@@ -28,9 +29,9 @@ import views.html.register.trust_details.TrustPreviouslyResidentView
 class TrustPreviouslyResidentControllerSpec extends SpecBase {
 
   val formProvider = new TrustPreviouslyResidentFormProvider()
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
-  lazy val trustPreviouslyResidentRoute = routes.TrustPreviouslyResidentController.onPageLoad(fakeDraftId).url
+  lazy val trustPreviouslyResidentRoute: String = routes.TrustPreviouslyResidentController.onPageLoad(fakeDraftId).url
 
   "TrustPreviouslyResident Controller" must {
 

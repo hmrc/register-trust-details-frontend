@@ -19,9 +19,8 @@ package controllers.register.trust_details
 import base.SpecBase
 import models.TaskStatus.Completed
 import models.UserAnswers
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
-import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest

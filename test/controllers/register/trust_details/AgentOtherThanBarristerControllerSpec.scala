@@ -19,15 +19,16 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.AgentOtherThanBarristerPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.AgentOtherThanBarristerView
 
 class AgentOtherThanBarristerControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("agentOtherThanBarristerYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("agentOtherThanBarristerYesNo")
 
-  lazy val agentOtherThanBarristerRoute = routes.AgentOtherThanBarristerController.onPageLoad(fakeDraftId).url
+  lazy val agentOtherThanBarristerRoute: String = routes.AgentOtherThanBarristerController.onPageLoad(fakeDraftId).url
 
   "AgentOtherThanBarrister Controller" must {
 

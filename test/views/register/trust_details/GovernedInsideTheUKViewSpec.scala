@@ -26,7 +26,7 @@ class GovernedInsideTheUKViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "governedInsideTheUKYesNo"
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "GovernedInsideTheUK view" must {
 

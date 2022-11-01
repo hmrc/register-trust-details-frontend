@@ -26,7 +26,7 @@ class TrustResidentOffshoreViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "trustResidentOffshoreYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("trustResidentOffshoreYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustResidentOffshoreYesNo")
 
   "TrustResidentOffshore view" must {
 

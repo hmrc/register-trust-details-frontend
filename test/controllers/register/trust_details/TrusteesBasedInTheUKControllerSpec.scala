@@ -20,16 +20,17 @@ import base.SpecBase
 import forms.TrusteesBasedInTheUKFormProvider
 import models.TrusteesBasedInTheUK
 import pages.register.trust_details.TrusteesBasedInTheUKPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.TrusteesBasedInTheUKView
 
 class TrusteesBasedInTheUKControllerSpec extends SpecBase {
 
-  lazy val trusteesBasedInTheUKRoute = routes.TrusteesBasedInTheUKController.onPageLoad( fakeDraftId).url
+  lazy val trusteesBasedInTheUKRoute: String = routes.TrusteesBasedInTheUKController.onPageLoad( fakeDraftId).url
 
   val formProvider = new TrusteesBasedInTheUKFormProvider()
-  val form = formProvider()
+  val form: Form[TrusteesBasedInTheUK] = formProvider()
 
   "TrusteesBasedInTheUK Controller" must {
 

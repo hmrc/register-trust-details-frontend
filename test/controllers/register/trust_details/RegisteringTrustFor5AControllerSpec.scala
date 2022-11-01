@@ -19,16 +19,17 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.RegisteringTrustFor5APage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.RegisteringTrustFor5AView
 
 class RegisteringTrustFor5AControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("registeringTrustFor5AYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("registeringTrustFor5AYesNo")
 
 
-  lazy val registeringTrustFor5ARoute = routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId).url
+  lazy val registeringTrustFor5ARoute: String = routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId).url
 
   "RegisteringTrustFor5A Controller" must {
 

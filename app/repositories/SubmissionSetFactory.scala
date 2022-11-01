@@ -20,18 +20,17 @@ import mapping.TrustDetailsMapper
 import models._
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.print.TrustDetailsPrintHelper
 import viewmodels.{AnswerRow, AnswerSection}
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class SubmissionSetFactory @Inject()(trustDetailsMapper: TrustDetailsMapper,
                                      trustDetailsPrintHelper: TrustDetailsPrintHelper) {
 
   def createFrom(userAnswers: UserAnswers)
-                (implicit hc: HeaderCarrier, ec: ExecutionContext, messages: Messages): Future[RegistrationSubmission.DataSet] = {
+                (implicit messages: Messages): Future[RegistrationSubmission.DataSet] = {
 
     Future.successful {
       RegistrationSubmission.DataSet(

@@ -26,7 +26,7 @@ class RegisteringTrustFor5AViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "registeringTrustFor5AYesNo"
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "RegisteringTrustFor5A view" must {
 

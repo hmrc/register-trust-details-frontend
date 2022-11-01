@@ -20,12 +20,12 @@ import base.SpecBase
 import forms.TrustNameFormProvider
 import generators.Generators
 import models.{ReadOnlyUserAnswers, UserAnswers}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.trust_details.TrustNamePage
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,11 +36,11 @@ import scala.concurrent.Future
 class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators with ScalaCheckPropertyChecks {
 
   val formProvider = new TrustNameFormProvider()
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
-  lazy val trustNameRoute = routes.TrustNameController.onPageLoad(fakeDraftId).url
+  lazy val trustNameRoute: String = routes.TrustNameController.onPageLoad(fakeDraftId).url
 
-  def readOnlyAnswers(trustHaveAUTR: Boolean) = ReadOnlyUserAnswers(Json.obj(
+  def readOnlyAnswers(trustHaveAUTR: Boolean): ReadOnlyUserAnswers = ReadOnlyUserAnswers(Json.obj(
     "trustHaveAUTR" -> trustHaveAUTR
   ))
 
@@ -67,7 +67,7 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form,  fakeDraftId, true)(request, messages).toString
+              view(form,  fakeDraftId, hintTextShown = true)(request, messages).toString
 
             application.stop()
 
@@ -96,7 +96,7 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form.fill("This Name"),  fakeDraftId, true)(request, messages).toString
+              view(form.fill("This Name"),  fakeDraftId, hintTextShown = true)(request, messages).toString
 
             application.stop()
         }
@@ -125,7 +125,7 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
             status(result) mustEqual BAD_REQUEST
 
             contentAsString(result) mustEqual
-              view(boundForm,  fakeDraftId, true)(request, messages).toString
+              view(boundForm,  fakeDraftId, hintTextShown = true)(request, messages).toString
 
             application.stop()
         }
@@ -154,7 +154,7 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form,  fakeDraftId, false)(request, messages).toString
+              view(form,  fakeDraftId, hintTextShown = false)(request, messages).toString
 
             application.stop()
         }
@@ -181,7 +181,7 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form.fill("This Name"),  fakeDraftId, false)(request, messages).toString
+              view(form.fill("This Name"),  fakeDraftId, hintTextShown = false)(request, messages).toString
 
             application.stop()
         }
@@ -210,7 +210,7 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
             status(result) mustEqual BAD_REQUEST
 
             contentAsString(result) mustEqual
-              view(boundForm,  fakeDraftId, false)(request, messages).toString
+              view(boundForm,  fakeDraftId, hintTextShown = false)(request, messages).toString
 
             application.stop()
         }

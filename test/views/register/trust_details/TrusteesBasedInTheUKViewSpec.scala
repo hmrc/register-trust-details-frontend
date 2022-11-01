@@ -29,7 +29,7 @@ class TrusteesBasedInTheUKViewSpec extends ViewBehaviours {
 
   val form = new TrusteesBasedInTheUKFormProvider()()
 
-  val view = viewFor[TrusteesBasedInTheUKView](Some(emptyUserAnswers))
+  val view: TrusteesBasedInTheUKView = viewFor[TrusteesBasedInTheUKView](Some(emptyUserAnswers))
 
   def applyView(form: Form[_]): HtmlFormat.Appendable =
     view.apply(form, fakeDraftId)(fakeRequest, messages)
@@ -50,7 +50,7 @@ class TrusteesBasedInTheUKViewSpec extends ViewBehaviours {
         val doc = asDocument(applyView(form))
 
         for (option <- TrusteesBasedInTheUK.options) {
-          assertContainsRadioButton(doc, option.id, "value", option.value, false)
+          assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = false)
         }
       }
     }
@@ -63,10 +63,10 @@ class TrusteesBasedInTheUKViewSpec extends ViewBehaviours {
 
           val doc = asDocument(applyView(form.bind(Map("value" -> s"${option.value}"))))
 
-          assertContainsRadioButton(doc, option.id, "value", option.value, true)
+          assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = true)
 
           for (unselectedOption <- TrusteesBasedInTheUK.options.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, false)
+            assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, isChecked = false)
           }
         }
       }

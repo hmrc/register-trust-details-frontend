@@ -26,7 +26,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details.{AgentOtherThanBarristerPage, _}
 import play.api.libs.json.JsBoolean
-import org.mockito.Mockito.when
 
 import java.time.LocalDate
 

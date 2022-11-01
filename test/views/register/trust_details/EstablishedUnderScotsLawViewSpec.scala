@@ -26,7 +26,7 @@ class EstablishedUnderScotsLawViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "establishedUnderScotsLawYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("establishedUnderScotsLawYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("establishedUnderScotsLawYesNo")
 
   "EstablishedUnderScotsLaw view" must {
 

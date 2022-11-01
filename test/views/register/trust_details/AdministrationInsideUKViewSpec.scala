@@ -26,7 +26,7 @@ class AdministrationInsideUKViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "administrationInsideUKYesNo"
 
-  val form = new YesNoFormProvider().withPrefix("administrationInsideUKYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("administrationInsideUKYesNo")
 
   "AdministrationInsideUK view" must {
 

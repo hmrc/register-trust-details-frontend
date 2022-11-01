@@ -19,15 +19,16 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.EstablishedUnderScotsLawPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.EstablishedUnderScotsLawView
 
 class EstablishedUnderScotsLawControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("establishedUnderScotsLawYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("establishedUnderScotsLawYesNo")
 
-  lazy val establishedUnderScotsLawRoute = routes.EstablishedUnderScotsLawController.onPageLoad(fakeDraftId).url
+  lazy val establishedUnderScotsLawRoute: String = routes.EstablishedUnderScotsLawController.onPageLoad(fakeDraftId).url
 
   "EstablishedUnderScotsLaw Controller" must {
 
