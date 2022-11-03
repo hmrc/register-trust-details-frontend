@@ -17,14 +17,13 @@
 package controllers.register.trust_details
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import forms.WhenTrustSetupFormProvider
 import models.ReadOnlyUserAnswers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.register.trust_details.WhenTrustSetupPage
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,11 +34,11 @@ import scala.concurrent.Future
 class WhenTrustSetupControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new WhenTrustSetupFormProvider(frontendAppConfig)
-  val form = formProvider.withConfig()
+  val form: Form[LocalDate] = formProvider.withConfig()
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  val validAnswer: LocalDate = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val whenTrustSetupRoute = routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
+  lazy val whenTrustSetupRoute: String = routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
 
   "WhenTrustSetup Controller" must {
 

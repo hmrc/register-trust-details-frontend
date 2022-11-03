@@ -19,11 +19,8 @@ package repositories
 import base.SpecBase
 import connectors.SubmissionDraftConnector
 import models._
-import org.mockito.Matchers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{never, times, verify, when}
-import org.scalatest.MustMatchers
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.MockitoSugar
 import pages.register.trust_details.WhenTrustSetupPage
 import play.api.http
 import play.api.http.Status.OK
@@ -35,7 +32,7 @@ import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-class RegistrationRepositorySpec extends SpecBase with MustMatchers with MockitoSugar {
+class RegistrationRepositorySpec extends SpecBase with MockitoSugar {
 
   private val unusedSubmissionSetFactory = mock[SubmissionSetFactory]
 
@@ -120,7 +117,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
         )
 
         val mockSubmissionSetFactory = mock[SubmissionSetFactory]
-        when(mockSubmissionSetFactory.createFrom(any())(any(), any(), any())).thenReturn(Future.successful(submissionSet))
+        when(mockSubmissionSetFactory.createFrom(any())(any())).thenReturn(Future.successful(submissionSet))
 
         val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
@@ -164,7 +161,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
           )
 
           verify(mockConnector, times(1)).resetTaxLiability(any())(any(), any())
-          verify(mockTrustStoreService, times(1)).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+          verify(mockTrustStoreService, times(1)).updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
         }
 
       }
@@ -191,8 +188,8 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
             Duration.Inf
           )
 
-          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
-          verify(mockTrustStoreService, never()).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+          verify(mockConnector, never).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, never).updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
         }
 
         "no start date in tax liability" in {
@@ -215,8 +212,8 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
             Duration.Inf
           )
 
-          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
-          verify(mockTrustStoreService, never()).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+          verify(mockConnector, never).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, never).updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
         }
 
         "no start date in user answers" in {
@@ -235,8 +232,8 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
             Duration.Inf
           )
 
-          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
-          verify(mockTrustStoreService, never()).updateTaxLiabilityTaskStatus(any(), Matchers.eq(TaskStatus.InProgress))(any(), any())
+          verify(mockConnector, never).resetTaxLiability(any())(any(), any())
+          verify(mockTrustStoreService, never).updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
         }
 
       }

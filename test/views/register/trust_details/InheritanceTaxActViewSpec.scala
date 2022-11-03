@@ -26,7 +26,7 @@ class InheritanceTaxActViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "inheritanceTaxActYesNo"
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "InheritanceTaxAct view" must {
 

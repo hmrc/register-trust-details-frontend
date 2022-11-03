@@ -19,6 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.AdministrationInsideUKPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.AdministrationInsideUKView
@@ -26,9 +27,9 @@ import views.html.register.trust_details.AdministrationInsideUKView
 class AdministrationInsideUKControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("administrationInsideUKYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("administrationInsideUKYesNo")
 
-  lazy val administrationInsideUKRoute = routes.AdministrationInsideUKController.onPageLoad(fakeDraftId).url
+  lazy val administrationInsideUKRoute: String = routes.AdministrationInsideUKController.onPageLoad(fakeDraftId).url
 
   "AdministrationInsideUK Controller" must {
 

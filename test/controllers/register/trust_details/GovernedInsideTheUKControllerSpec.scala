@@ -19,15 +19,16 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.GovernedInsideTheUKPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.GovernedInsideTheUKView
 
 class GovernedInsideTheUKControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("governedInsideTheUKYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("governedInsideTheUKYesNo")
 
-  lazy val governedInsideTheUKRoute = routes.GovernedInsideTheUKController.onPageLoad(fakeDraftId).url
+  lazy val governedInsideTheUKRoute: String = routes.GovernedInsideTheUKController.onPageLoad(fakeDraftId).url
 
   "GovernedInsideTheUK Controller" must {
 

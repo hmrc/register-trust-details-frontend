@@ -21,8 +21,7 @@ import connectors.SubmissionDraftConnector
 import models.TaskStatus._
 import models.UserAnswers
 import models.registration.Matched.Success
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import pages.register.ExistingTrustMatched
@@ -157,7 +156,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
         route(application, request).value.map { _ =>
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
           uaCaptor.getValue.isTaxable mustBe true
@@ -185,7 +184,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
         route(application, request).value.map { _ =>
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
 
           uaCaptor.getValue.isTaxable mustBe false

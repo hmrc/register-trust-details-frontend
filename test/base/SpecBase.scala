@@ -20,8 +20,9 @@ import controllers.actions.register._
 import controllers.actions.{FakeDraftIdRetrievalActionProvider, FakeIdentifyForRegistration}
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
-import org.scalatest.TryValues
+import org.scalatest.{OptionValues, TryValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.inject.bind
@@ -37,7 +38,9 @@ trait SpecBase extends PlaySpec
   with ScalaFutures
   with IntegrationPatience
   with Mocked
-  with FakeTrustsApp {
+  with FakeTrustsApp
+  with Matchers
+  with OptionValues {
 
   final val ENGLISH = "en"
   final val WELSH = "cy"

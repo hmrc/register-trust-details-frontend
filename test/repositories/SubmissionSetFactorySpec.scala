@@ -22,9 +22,7 @@ import models.{RegistrationSubmission, TrustDetailsType, TrusteesBasedInTheUK, U
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.trust_details.{TrusteesBasedInTheUKPage, WhenTrustSetupPage}
 import play.api.libs.json.{JsNull, Json}
-import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
-import viewmodels.{AnswerRow, AnswerSection}
 
 import java.time.LocalDate
 
@@ -71,7 +69,7 @@ class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks wi
         headingKey = None,
         rows = Seq(
           RegistrationSubmission.AnswerRow("whenTrustSetupDate.checkYourAnswersLabel", "1 January 2000", ""),
-          RegistrationSubmission.AnswerRow("trusteesBasedInTheUK.checkYourAnswersLabel", "All of the trustees are based in the UK", ""),
+          RegistrationSubmission.AnswerRow("trusteesBasedInTheUK.checkYourAnswersLabel", "All of the trustees are based in the UK", "")
         ),
         sectionKey = Some("answerPage.section.trustDetails.heading")
       )

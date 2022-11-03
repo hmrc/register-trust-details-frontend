@@ -36,7 +36,6 @@ import java.time.{LocalDate, LocalDateTime}
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{RegistrationSubmission, SubmissionDraftResponse}
-import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -48,8 +47,7 @@ import utils.WireMockHelper
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-class SubmissionDraftConnectorSpec extends SpecBase
-  with MustMatchers with OptionValues with WireMockHelper {
+class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
@@ -262,8 +260,6 @@ class SubmissionDraftConnectorSpec extends SpecBase
     ".resetTaxLiability" must {
 
       "return a response" in {
-
-        val date = LocalDate.of(2010, 10, 11)
 
         server.stubFor(
           delete(urlEqualTo(s"$submissionsUrl/$testDraftId/tax-liability"))

@@ -16,10 +16,10 @@
 
 package utils
 
-import viewmodels.{AnswerRow, AnswerSection, RepeaterAnswerSection, Section}
+import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
-import play.api.i18n.Messages
+import viewmodels.{AnswerRow, AnswerSection, RepeaterAnswerSection, Section}
 
 object SectionFormatter {
 
@@ -32,17 +32,16 @@ object SectionFormatter {
 
   private def formatAnswerSection(section: AnswerSection)(implicit messages: Messages): Seq[SummaryListRow] = {
     section.rows.zipWithIndex.map {
-      case (row:AnswerRow, i: Int) => {
+      case (row: AnswerRow, i: Int) =>
         SummaryListRow(
           key = Key(classes = "govuk-!-width-two-thirds", content = Text(messages(row.label, row.labelArg))),
           value = Value(HtmlContent(row.answer)),
-          actions = Option(Actions(items = Seq(ActionItem(href=row.changeUrl.getOrElse(""),
-            classes = s"change-link-${i}",
+          actions = Option(Actions(items = Seq(ActionItem(href = row.changeUrl.getOrElse(""),
+            classes = s"change-link-$i",
             visuallyHiddenText = Some(messages(row.label, row.labelArg)),
             content = Text(messages("site.edit")))))
           )
         )
-      }
     }
 
   }

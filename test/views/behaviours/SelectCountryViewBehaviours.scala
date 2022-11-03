@@ -27,7 +27,7 @@ trait SelectCountryViewBehaviours extends QuestionViewBehaviours[String] {
   def selectCountryPage(form: Form[String],
                  createView: Form[String] => HtmlFormat.Appendable,
                  messageKeyPrefix: String,
-                 expectedHintKey: Option[String] = None) = {
+                 expectedHintKey: Option[String] = None): Unit = {
 
     "behave like a page with a string value field" when {
 

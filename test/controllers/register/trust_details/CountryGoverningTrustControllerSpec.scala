@@ -19,6 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.CountryGoverningTrustFormProvider
 import pages.register.trust_details.CountryGoverningTrustPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.InputOption
@@ -28,9 +29,9 @@ import views.html.register.trust_details.CountryGoverningTrustView
 class CountryGoverningTrustControllerSpec extends SpecBase {
 
   val formProvider = new CountryGoverningTrustFormProvider()
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
-  lazy val countryGoverningTrustRoute = routes.CountryGoverningTrustController.onPageLoad(fakeDraftId).url
+  lazy val countryGoverningTrustRoute: String = routes.CountryGoverningTrustController.onPageLoad(fakeDraftId).url
 
   "CountryGoverningTrust Controller" must {
 

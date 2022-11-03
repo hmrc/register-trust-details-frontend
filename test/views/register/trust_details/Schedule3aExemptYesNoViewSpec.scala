@@ -26,7 +26,7 @@ class Schedule3aExemptYesNoViewSpec extends Schedule3aExemptYesNoViewBehaviours 
 
   val messageKeyPrefix = "schedule3aExemptYesNo"
 
-  val form = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
   "schedule3aExemptYesNoView" must {
 

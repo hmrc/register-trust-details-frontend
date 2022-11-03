@@ -42,12 +42,7 @@ class TrustNameViewSpec extends StringViewBehaviours {
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like stringPage(form,
-        applyView,
-        messageKeyPrefix,
-        Some(hintKey),
-        controllers.register.trust_details.routes.TrustNameController.onSubmit(draftId).url
-      )
+      behave like stringPage(form, applyView, messageKeyPrefix, Some(hintKey))
 
       behave like pageWithASubmitButton(applyView(form))
     }
@@ -63,13 +58,7 @@ class TrustNameViewSpec extends StringViewBehaviours {
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like stringPage(
-        form,
-        applyView,
-        messageKeyPrefix,
-        None,
-        controllers.register.trust_details.routes.TrustNameController.onSubmit(draftId).url
-      )
+      behave like stringPage(form, applyView, messageKeyPrefix, None)
 
       behave like pageWithASubmitButton(applyView(form))
     }

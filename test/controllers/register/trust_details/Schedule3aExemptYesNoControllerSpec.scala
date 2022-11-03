@@ -19,16 +19,17 @@ package controllers.register.trust_details
 import base.SpecBase
 import forms.YesNoFormProvider
 import pages.register.trust_details.Schedule3aExemptYesNoPage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.Schedule3aExemptYesNoView
 
 class Schedule3aExemptYesNoControllerSpec extends SpecBase {
 
-  val form = new YesNoFormProvider().withPrefix("schedule3aExemptYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("schedule3aExemptYesNo")
 
 
-  lazy val schedule3aExemptYesNoRoute = routes.Schedule3aExemptYesNoController.onPageLoad(fakeDraftId).url
+  lazy val schedule3aExemptYesNoRoute: String = routes.Schedule3aExemptYesNoController.onPageLoad(fakeDraftId).url
 
   "Schedule3aExemptYesNoController" must {
 
