@@ -154,7 +154,7 @@ trait ViewBehaviours extends ViewSpecBase {
       "have a back link" in {
 
         val doc = asDocument(view)
-        assertRenderedById(doc, "back-link")
+        assertRenderedByClass(doc, "back-link")
       }
     }
   }
@@ -168,7 +168,7 @@ trait ViewBehaviours extends ViewSpecBase {
         val doc = asDocument(view)
         val element = doc.getElementById(id)
 
-        assertRenderedById(doc, id)
+        assertRenderedByClass(doc, id)
         assertAttributeValueForElement(element, "href", url)
       }
     }
@@ -179,7 +179,7 @@ trait ViewBehaviours extends ViewSpecBase {
     "behave like a page with a submit button" must {
       "have a submit button" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "submit")
+        assertRenderedByClass(doc, "submit")
       }
     }
   }
