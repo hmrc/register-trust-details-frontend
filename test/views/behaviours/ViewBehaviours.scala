@@ -154,7 +154,7 @@ trait ViewBehaviours extends ViewSpecBase {
       "have a back link" in {
 
         val doc = asDocument(view)
-        assertRenderedByClass(doc, "back-link")
+        assertRenderedByClass(doc, "govuk-back-link")
       }
     }
   }
@@ -179,7 +179,7 @@ trait ViewBehaviours extends ViewSpecBase {
     "behave like a page with a submit button" must {
       "have a submit button" in {
         val doc = asDocument(view)
-        assertRenderedByClass(doc, "submit")
+        assertRenderedById(doc, "submit")
       }
     }
   }

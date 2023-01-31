@@ -39,7 +39,7 @@ trait IntViewBehaviours extends QuestionViewBehaviours[Int] {
         "contain an input for the value" in {
 
           val doc = asDocument(createView(form))
-          assertRenderedByClass(doc, "value")
+          assertRenderedById(doc, "value")
         }
       }
 
@@ -57,7 +57,7 @@ trait IntViewBehaviours extends QuestionViewBehaviours[Int] {
         "show an error summary" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertRenderedByClass(doc, "error-summary-title")
+          assertRenderedByClass(doc, "govuk-error-summary")
         }
 
         "show an error associated with the value field" in {
