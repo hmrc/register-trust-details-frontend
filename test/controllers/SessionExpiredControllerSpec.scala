@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import play.api.routing.Router.empty.routes
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.SessionExpiredView
