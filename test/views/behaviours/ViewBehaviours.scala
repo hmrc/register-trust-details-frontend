@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -154,7 +154,7 @@ trait ViewBehaviours extends ViewSpecBase {
       "have a back link" in {
 
         val doc = asDocument(view)
-        assertRenderedById(doc, "back-link")
+        assertRenderedByClass(doc, "govuk-back-link")
       }
     }
   }
@@ -168,7 +168,7 @@ trait ViewBehaviours extends ViewSpecBase {
         val doc = asDocument(view)
         val element = doc.getElementById(id)
 
-        assertRenderedById(doc, id)
+        assertRenderedByClass(doc, id)
         assertAttributeValueForElement(element, "href", url)
       }
     }

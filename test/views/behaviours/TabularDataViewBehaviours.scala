@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,12 +74,12 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
 
       "render a h2" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list-heading--inprogress")
+        assertRenderedByClass(doc, "data-list-heading--inprogress")
       }
 
       "render an add to list" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list--inprogress")
+        assertRenderedByClass(doc, "data-list--inprogress")
         assertNotRenderedById(doc, "data-list--complete")
         assertNotRenderedById(doc, "data-list-heading--complete")
       }
@@ -97,12 +97,12 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
 
       "render a h2" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list-heading--complete")
+        assertRenderedByClass(doc, "data-list-heading--complete")
       }
 
       "render an add to list" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list--complete")
+        assertRenderedByClass(doc, "data-list--complete")
         assertNotRenderedById(doc, "data-list--inprogress")
         assertNotRenderedById(doc, "data-list-heading--inprogress")
       }
@@ -122,14 +122,14 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
 
       "render a h2" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list-heading--inprogress")
-        assertRenderedById(doc, "data-list-heading--complete")
+        assertRenderedByClass(doc, "data-list-heading--inprogress")
+        assertRenderedByClass(doc, "data-list-heading--complete")
       }
 
       "render an add to list" in {
         val doc = asDocument(view)
-        assertRenderedById(doc, "data-list--inprogress")
-        assertRenderedById(doc, "data-list--complete")
+        assertRenderedByClass(doc, "data-list--inprogress")
+        assertRenderedByClass(doc, "data-list--complete")
       }
 
       "render a row for each data item" in {
