@@ -32,7 +32,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = AgentOtherThanBarristerController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = AgentOtherThanBarristerController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

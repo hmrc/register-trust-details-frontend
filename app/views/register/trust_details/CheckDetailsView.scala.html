@@ -36,7 +36,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = CheckDetailsController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = CheckDetailsController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @heading("trustDetailsAnswerPage.heading")
 

@@ -60,7 +60,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = TrustHasBusinessRelationshipInUkController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = TrustHasBusinessRelationshipInUkController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -32,7 +32,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = RegisteringTrustFor5AController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = RegisteringTrustFor5AController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -32,7 +32,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = EstablishedUnderScotsLawController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = EstablishedUnderScotsLawController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
