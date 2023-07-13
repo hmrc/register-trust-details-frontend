@@ -32,7 +32,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = TrustResidentOffshoreController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = TrustResidentOffshoreController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

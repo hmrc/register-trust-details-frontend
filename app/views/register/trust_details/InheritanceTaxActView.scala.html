@@ -32,7 +32,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = InheritanceTaxActController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = InheritanceTaxActController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

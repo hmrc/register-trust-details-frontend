@@ -44,7 +44,7 @@ class CountryAdministeringTrustController @Inject()(
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
@@ -54,7 +54,7 @@ class CountryAdministeringTrustController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, draftId))
+      Ok(view(preparedForm, countryOptions.options(), draftId))
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
@@ -62,7 +62,7 @@ class CountryAdministeringTrustController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, draftId))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), draftId))),
 
         value => {
           for {

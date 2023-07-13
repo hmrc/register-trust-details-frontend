@@ -48,7 +48,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = TrustListedOnEeaRegisterController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = TrustListedOnEeaRegisterController.onSubmit(draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
