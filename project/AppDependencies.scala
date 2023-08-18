@@ -3,11 +3,11 @@ import play.core.PlayVersion
 
 object AppDependencies {
 
-  val bootstrapVersion = "7.19.0"
+  val bootstrapVersion = "7.21.0"
 
   private lazy val compile = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"             %% "play-frontend-hmrc"             % "7.14.0-play-28",
+    "uk.gov.hmrc"             %% "play-frontend-hmrc"             % "7.19.0-play-28",
     "uk.gov.hmrc"             %% "domain"                         % "8.3.0-play-28",
     "uk.gov.hmrc"             %% "play-conditional-form-mapping"  % "1.13.0-play-28",
     "uk.gov.hmrc"             %% "bootstrap-frontend-play-28"     % bootstrapVersion
