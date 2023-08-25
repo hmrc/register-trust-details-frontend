@@ -5,15 +5,40 @@ This service is responsible for collecting details about the trust a user is try
 
 To run locally using the micro-service provided by the service manager:
 
-***sm2 --start TRUSTS_ALL -r***
+```
+sm2 --start TRUSTS_ALL
+```
 
 or
 
-***sm2 --start REGISTER_TRUST_ALL -r***
+```
+sm2 --start REGISTER_TRUST_ALL
+```
+---
+## Testing the service
+Run unit and integration tests before raising a PR to ensure your code changes pass the Jenkins pipeline. This runs all the unit tests and integration tests with scalastyle and checks for dependency updates:
+
+```
+./run_all_tests.sh
+```
+
+### UI Tests
+Start up service in SM2 as shown above then:
+
+```
+./run_local_register_trust_details.sh
+```
+from trusts-acceptance-tests repository.
+
+---
 
 If you want to run your local copy, then stop the frontend ran by the service manager and run your local code by using the following (port number is 8842 but is defaulted to that in build.sbt):
 
-***sbt run***
+```
+sbt run
+```
+
+---
 
 ### License
 
