@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import models.TaskStatus._
 import models.UserAnswers
 import models.registration.Matched.Success
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import pages.register.ExistingTrustMatched
@@ -36,11 +37,12 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val trustsStoreService: TrustsStoreService = mock[TrustsStoreService]
-  private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
+  private val trustsStoreService: TrustsStoreService = Mockito.mock(classOf[TrustsStoreService])
+  private val submissionDraftConnector: SubmissionDraftConnector = Mockito.mock(classOf[SubmissionDraftConnector])
 
   override def beforeEach(): Unit = {
-    reset(registrationsRepository, trustsStoreService)
+    reset(registrationsRepository)
+    reset(trustsStoreService)
 
     when(registrationsRepository.set(any())(any(), any()))
       .thenReturn(Future.successful(true))

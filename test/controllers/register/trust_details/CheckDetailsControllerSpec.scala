@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import models.TaskStatus.Completed
 import models.UserAnswers
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -38,10 +39,11 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
 
-  val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
+  val mockTrustsStoreService: TrustsStoreService = Mockito.mock(classOf[TrustsStoreService])
 
   override def beforeEach(): Unit = {
-    reset(registrationsRepository, mockTrustsStoreService)
+    reset(registrationsRepository)
+    reset(mockTrustsStoreService)
 
     when(registrationsRepository.set(any())(any(), any()))
       .thenReturn(Future.successful(true))

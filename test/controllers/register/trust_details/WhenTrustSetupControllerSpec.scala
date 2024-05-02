@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import base.SpecBase
 import forms.WhenTrustSetupFormProvider
 import models.ReadOnlyUserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import pages.register.trust_details.WhenTrustSetupPage
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -31,7 +31,7 @@ import views.html.register.trust_details.WhenTrustSetupView
 
 import scala.concurrent.Future
 
-class WhenTrustSetupControllerSpec extends SpecBase with MockitoSugar {
+class WhenTrustSetupControllerSpec extends SpecBase {
 
   val formProvider = new WhenTrustSetupFormProvider(frontendAppConfig)
   val form: Form[LocalDate] = formProvider.withConfig()

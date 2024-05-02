@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,16 @@ package base
 
 import models.ReadOnlyUserAnswers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import play.api.libs.json.Json
 import repositories.RegistrationsRepository
 
 import scala.concurrent.Future
 
-trait Mocked extends MockitoSugar {
+trait Mocked {
 
-  val registrationsRepository : RegistrationsRepository = mock[RegistrationsRepository]
+  val registrationsRepository: RegistrationsRepository = Mockito.mock(classOf[RegistrationsRepository])
 
   when(registrationsRepository.get(any())(any()))
     .thenReturn(Future.successful(None))

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package utils
 
 import base.SpecBase
-import play.api.Application
+import play.api.{Application, Logger}
 import play.api.i18n.{Lang, Messages}
 import play.api.inject.guice.GuiceApplicationBuilder
 
@@ -25,11 +25,14 @@ import scala.util.matching.Regex
 
 class MessagesSpec extends SpecBase {
 
+  private val logger = Logger(this.getClass)
+  private val configs = defaultAppConfigurations ++ Seq(
+    "application.langs" -> "en,cy",
+    "features.welsh-language-support" -> true
+  )
+
   override lazy val fakeApplication: Application = new GuiceApplicationBuilder()
-    .configure(
-      Map("application.langs" -> "en,cy", "features.welsh-language-support" -> true)
-    )
-    .build()
+    .configure(configs).build()
 
   override implicit lazy val messages: Messages = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
 
@@ -82,10 +85,10 @@ class MessagesSpec extends SpecBase {
       val missingFromEnglish = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
       missingFromEnglish foreach { key =>
-        println(s"Key which has arguments in English but not in Welsh: $key")
+        logger.info(s"Key which has arguments in English but not in Welsh: $key")
       }
       missingFromWelsh foreach { key =>
-        println(s"Key which has arguments in Welsh but not in English: $key")
+        logger.info(s"Key which has arguments in Welsh but not in English: $key")
       }
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
@@ -102,8 +105,8 @@ class MessagesSpec extends SpecBase {
       }
       mismatchedArgSequences foreach {
         case (key, engArgSeq, welshArgSeq) =>
-          println(
-            s"key which has different arguments or order of arguments between English and Welsh: $key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq")
+          logger.info(s"key which has different arguments or order of arguments between English and Welsh: " +
+            s"$key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq")
       }
       mismatchedArgSequences.size mustBe 0
     }
