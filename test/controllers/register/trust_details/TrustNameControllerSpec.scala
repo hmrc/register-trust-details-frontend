@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import forms.TrustNameFormProvider
 import generators.Generators
 import models.{ReadOnlyUserAnswers, UserAnswers}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import org.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.trust_details.TrustNamePage
 import play.api.data.Form
@@ -33,7 +33,7 @@ import views.html.register.trust_details.TrustNameView
 
 import scala.concurrent.Future
 
-class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators with ScalaCheckPropertyChecks {
+class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   val formProvider = new TrustNameFormProvider()
   val form: Form[String] = formProvider()
@@ -68,9 +68,6 @@ class TrustNameControllerSpec extends SpecBase with MockitoSugar with Generators
 
             contentAsString(result) mustEqual
               view(form,  fakeDraftId, hintTextShown = true)(request, messages).toString
-
-            application.stop()
-
         }
       }
 

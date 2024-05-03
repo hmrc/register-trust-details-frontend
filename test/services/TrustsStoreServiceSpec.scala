@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import connectors.TrustsStoreConnector
 import models.Task
 import models.TaskStatus.Completed
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito
+import org.mockito.Mockito.{verify, when}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -28,7 +30,7 @@ import scala.concurrent.Future
 
 class TrustsStoreServiceSpec extends SpecBase {
 
-  val mockConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
+  val mockConnector: TrustsStoreConnector = Mockito.mock(classOf[TrustsStoreConnector])
 
   val trustStoreService = new TrustsStoreService(mockConnector)
 

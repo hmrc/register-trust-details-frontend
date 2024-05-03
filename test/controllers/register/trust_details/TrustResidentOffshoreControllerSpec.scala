@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,13 @@ package controllers.register.trust_details
 
 import base.SpecBase
 import forms.YesNoFormProvider
-import org.mockito.MockitoSugar
 import pages.register.trust_details.TrustResidentOffshorePage
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.register.trust_details.TrustResidentOffshoreView
 
-class TrustResidentOffshoreControllerSpec extends SpecBase with MockitoSugar {
+class TrustResidentOffshoreControllerSpec extends SpecBase {
 
   val formProvider = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("trustResidentOffshoreYesNo")

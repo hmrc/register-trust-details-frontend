@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import controllers.register.trust_details.routes
 import generators.Generators
 import models.TrusteesBasedInTheUK._
 import models.UserAnswers
+import org.mockito.Mockito
+import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details.{AgentOtherThanBarristerPage, _}
@@ -31,7 +33,7 @@ import java.time.LocalDate
 
 class TrustDetailsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators  {
 
-  private val feAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
+  private val feAppConfig: FrontendAppConfig = Mockito.mock(classOf[FrontendAppConfig])
 
   private val navigator: TrustDetailsNavigator = injector.instanceOf[TrustDetailsNavigator]
 
