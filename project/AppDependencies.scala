@@ -5,7 +5,7 @@ object AppDependencies {
   private val playBootstrapVersion = "8.5.0"
 
   private lazy val compile = Seq(
-    "uk.gov.hmrc"         %% "play-frontend-hmrc-play-30"             % "8.5.0",
+    "uk.gov.hmrc"         %% "play-frontend-hmrc-play-30"             % "9.11.0",
     "uk.gov.hmrc"         %% "domain-play-30"                         % "9.0.0",
     "uk.gov.hmrc"         %% "play-conditional-form-mapping-play-30"  % "2.0.0",
     "uk.gov.hmrc"         %% "bootstrap-frontend-play-30"             % playBootstrapVersion,
