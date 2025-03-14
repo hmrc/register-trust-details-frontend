@@ -4,7 +4,7 @@ import scoverage.ScoverageKeys
 
 lazy val appName: String = "register-trust-details-frontend"
 
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "2.13.15"
 ThisBuild / majorVersion := 0
 
 lazy val root = Project("register-trust-details-frontend", file("."))
