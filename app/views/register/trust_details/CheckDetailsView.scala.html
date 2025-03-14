@@ -29,7 +29,7 @@
 )
 
 
-@(answerSection: Seq[Section], draftId: String)(implicit request: Request[_], messages: Messages)
+@(answerSection: Seq[Section], draftId: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("trustDetailsAnswerPage.title"),
