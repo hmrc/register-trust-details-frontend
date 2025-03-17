@@ -17,7 +17,6 @@
 package handlers
 
 import base.SpecBase
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.i18n.MessagesApi
 import views.html.{ErrorTemplate, PageNotFoundView}
 
@@ -37,16 +36,16 @@ class ErrorHandlerSpec extends SpecBase {
         message = "message"
       )(fakeRequest)
 
-      result.body should include("pageTitle - Trust Details - Register and Maintain a Trust - GOV.UK")
-      result.body should include("message")
+      result.toString should include("pageTitle - Trust Details - Register and Maintain a Trust - GOV.UK")
+      result.toString should include("message")
     }
 
     ".notFoundTemplate" in {
       val result = errorHandler.notFoundTemplate(fakeRequest)
 
-      result.body should include("Page not found")
-      result.body should include("Page not found")
-      result.body should include("If you typed the web address, check it is correct.")
+//      result.toString should include("Page not found")
+      result.toString should include("Page not found")
+      result.toString should include("If you typed the web address, check it is correct.")
     }
 
   }

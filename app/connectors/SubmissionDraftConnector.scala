@@ -20,36 +20,56 @@ import config.FrontendAppConfig
 
 import javax.inject.Inject
 import models.{RegistrationSubmission, SubmissionDraftResponse}
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
+class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) {
 
   val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
   def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
                         (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
+//    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
+    http
+      .post(url"$submissionsBaseUrl/$draftId/set/$section")
+      .withBody(Json.toJson(data))
+      .execute[HttpResponse]
   }
 
   def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
-    http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
+//    http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
+    http
+      .get(url"$submissionsBaseUrl/$draftId/$section")
+      .execute[SubmissionDraftResponse]
   }
 
   def getIsTrustTaxable(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
-    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-trust-taxable").recover {
-      case _ => true
-    }
+//    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-trust-taxable").recover {
+//      case _ => true
+//    }
+    http
+      .get(url"$submissionsBaseUrl/$draftId/is-trust-taxable")
+      .execute[Boolean]
+      .recover {
+        case _ => true
+      }
   }
 
   def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
-    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-express-trust").recover {
-      case _ => true
-    }
+//    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-express-trust").recover {
+//      case _ => true
+//    }
+    http
+      .get(url"$submissionsBaseUrl/$draftId/is-express-trust")
+      .execute[Boolean]
+      .recover {
+        case _ => true
+      }
   }
   def getTrustStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
     getStartDate(s"$submissionsBaseUrl/$draftId/when-trust-setup")
@@ -58,16 +78,28 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppC
     getStartDate(s"$submissionsBaseUrl/$draftId/tax-liability/when-trust-setup")
 
   def resetTaxLiability(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    http.DELETE[HttpResponse](s"$submissionsBaseUrl/$draftId/tax-liability")
+//    http.DELETE[HttpResponse](s"$submissionsBaseUrl/$draftId/tax-liability")
+    http
+      .delete(url"$submissionsBaseUrl/$draftId/tax-liability")
+      .execute[HttpResponse]
 
   private def getStartDate(url: String)
                           (implicit hc: HeaderCarrier,
                            ec: ExecutionContext
                           ): Future[Option[LocalDate]] =
-    http.GET[HttpResponse](url).map {
-      response =>
-        (response.json \ "startDate").asOpt[LocalDate]
-    }.recover {
-      case _ => None
-    }
+//    http.GET[HttpResponse](url).map {
+//      response =>
+//        (response.json \ "startDate").asOpt[LocalDate]
+//    }.recover {
+//      case _ => None
+//    }
+    http
+      .get(url"$url")
+      .execute[HttpResponse]
+      .map {
+        response => (response.json \ "startDate").asOpt[LocalDate]
+      }
+      .recover {
+        case _ => None
+      }
 }
