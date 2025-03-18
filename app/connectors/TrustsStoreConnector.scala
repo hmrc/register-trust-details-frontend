@@ -33,8 +33,6 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
 
   def updateTaskStatus(draftId: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-//    val url: String = s"$baseUrl/register/tasks/update-trust-details/$draftId"
-//    http.POST[TaskStatus, HttpResponse](url, taskStatus)
     http
       .post(url"$baseUrl/register/tasks/update-trust-details/$draftId")
       .withBody(Json.toJson(taskStatus))
@@ -43,8 +41,6 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
 
   def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-//    val url: String = s"$baseUrl/register/tasks/update-tax-liability/$draftId"
-//    http.POST[TaskStatus, HttpResponse](url, taskStatus)
     http
       .post(url"$baseUrl/register/tasks/update-tax-liability/$draftId")
       .withBody(Json.toJson(taskStatus))
@@ -53,8 +49,6 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
 
   def getTaskStatus(draftId: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Task] = {
-//    val url: String = s"$baseUrl/register/tasks/$draftId"
-//    http.GET[Task](url)
     http
       .get(url"$baseUrl/register/tasks/$draftId")
       .execute[Task]

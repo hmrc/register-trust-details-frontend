@@ -34,7 +34,6 @@ class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAp
 
   def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
                         (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-//    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
     http
       .post(url"$submissionsBaseUrl/$draftId/set/$section")
       .withBody(Json.toJson(data))
@@ -42,16 +41,12 @@ class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAp
   }
 
   def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
-//    http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
     http
       .get(url"$submissionsBaseUrl/$draftId/$section")
       .execute[SubmissionDraftResponse]
   }
 
   def getIsTrustTaxable(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
-//    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-trust-taxable").recover {
-//      case _ => true
-//    }
     http
       .get(url"$submissionsBaseUrl/$draftId/is-trust-taxable")
       .execute[Boolean]
@@ -61,9 +56,6 @@ class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAp
   }
 
   def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
-//    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-express-trust").recover {
-//      case _ => true
-//    }
     http
       .get(url"$submissionsBaseUrl/$draftId/is-express-trust")
       .execute[Boolean]
@@ -78,7 +70,6 @@ class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAp
     getStartDate(s"$submissionsBaseUrl/$draftId/tax-liability/when-trust-setup")
 
   def resetTaxLiability(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-//    http.DELETE[HttpResponse](s"$submissionsBaseUrl/$draftId/tax-liability")
     http
       .delete(url"$submissionsBaseUrl/$draftId/tax-liability")
       .execute[HttpResponse]
@@ -87,12 +78,6 @@ class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAp
                           (implicit hc: HeaderCarrier,
                            ec: ExecutionContext
                           ): Future[Option[LocalDate]] =
-//    http.GET[HttpResponse](url).map {
-//      response =>
-//        (response.json \ "startDate").asOpt[LocalDate]
-//    }.recover {
-//      case _ => None
-//    }
     http
       .get(url"$url")
       .execute[HttpResponse]
