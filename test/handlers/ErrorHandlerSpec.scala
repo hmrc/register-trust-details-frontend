@@ -18,7 +18,12 @@ package handlers
 
 import base.SpecBase
 import play.api.i18n.MessagesApi
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import views.html.{ErrorTemplate, PageNotFoundView}
+
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 
 class ErrorHandlerSpec extends SpecBase {
 
@@ -29,25 +34,24 @@ class ErrorHandlerSpec extends SpecBase {
 
   "ErrorHandler" must {
 
-    ".standardErrorTemplate" in {
-      val result = errorHandler.standardErrorTemplate(
+    "standardErrorTemplate" in {
+      implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+
+      val result = Await.result(errorHandler.standardErrorTemplate(
         pageTitle = "pageTitle",
         heading = "heading",
         message = "message"
-      )(fakeRequest)
+      ), Duration.Inf)
 
-      result.toString should include("pageTitle - Trust Details - Register and Maintain a Trust - GOV.UK")
-      result.toString should include("message")
+      result mustBe errorTemplate("pageTitle", "heading", "message")
     }
 
-    ".notFoundTemplate" in {
-      val result = errorHandler.notFoundTemplate(fakeRequest)
+    "notFoundTemplate" in {
+      implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-//      result.toString should include("Page not found")
-      result.toString should include("Page not found")
-      result.toString should include("If you typed the web address, check it is correct.")
+      val result = Await.result(errorHandler.notFoundTemplate(fakeRequest), Duration.Inf)
+
+      result mustBe pageNotFoundView()
     }
-
   }
-
 }
