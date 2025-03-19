@@ -19,33 +19,39 @@ package connectors
 import config.FrontendAppConfig
 import models.Task
 import models.TaskStatus.TaskStatus
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
+class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
 
   private val baseUrl: String = s"${config.trustsStoreUrl}/trusts-store"
 
   def updateTaskStatus(draftId: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$baseUrl/register/tasks/update-trust-details/$draftId"
-    http.POST[TaskStatus, HttpResponse](url, taskStatus)
+    http
+      .post(url"$baseUrl/register/tasks/update-trust-details/$draftId")
+      .withBody(Json.toJson(taskStatus))
+      .execute[HttpResponse]
   }
 
   def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$baseUrl/register/tasks/update-tax-liability/$draftId"
-    http.POST[TaskStatus, HttpResponse](url, taskStatus)
+    http
+      .post(url"$baseUrl/register/tasks/update-tax-liability/$draftId")
+      .withBody(Json.toJson(taskStatus))
+      .execute[HttpResponse]
   }
 
   def getTaskStatus(draftId: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Task] = {
-    val url: String = s"$baseUrl/register/tasks/$draftId"
-    http.GET[Task](url)
+    http
+      .get(url"$baseUrl/register/tasks/$draftId")
+      .execute[Task]
   }
 
 }
-
