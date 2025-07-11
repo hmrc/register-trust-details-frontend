@@ -59,6 +59,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           .set(InheritanceTaxActPage, false).success.value
           .set(AgentOtherThanBarristerPage, true).success.value
           .set(Schedule3aExemptYesNoPage, true).success.value
+          .set(TrustListedOnEeaRegisterPage, true).success.value
 
         val rows = Seq(
           AnswerRow(
@@ -95,11 +96,6 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             "trustOwnsUkPropertyOrLandYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url)
-          ),
-          AnswerRow(
-            "trustListedOnEeaRegisterYesNo.checkYourAnswersLabel",
-            HtmlFormat.escape("Yes"),
-            Some(routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url)
           ),
           AnswerRow(
             "trusteesBasedInTheUK.checkYourAnswersLabel",
@@ -148,6 +144,11 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           ),
           AnswerRow(
             "schedule3aExemptYesNo.checkYourAnswersLabel",
+            HtmlFormat.escape("Yes"),
+            Some(routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
+          ),
+          AnswerRow(
+            "trustListedOnEeaRegisterYesNo.text.question",
             HtmlFormat.escape("Yes"),
             Some(routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
           )

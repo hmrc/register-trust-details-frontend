@@ -30,6 +30,8 @@
 @(form: Form[_], draftId:String)(implicit request: RequestHeader, messages: Messages)
 
 @content = {
+    <p>@messages("trustListedOnEeaRegisterYesNo.paragraph")</p>
+
     <p>@messages("trustListedOnEeaRegisterYesNo.text")</p>
 
     @bulletList(
@@ -41,6 +43,8 @@
             "bullet4"
         )
     )
+
+    <h2 class="govuk-heading-m">@messages("trustListedOnEeaRegisterYesNo.text.question")</h2>
 }
 
 @mainTemplate(
