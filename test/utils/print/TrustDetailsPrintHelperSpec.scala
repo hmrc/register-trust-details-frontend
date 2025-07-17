@@ -98,6 +98,11 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             Some(routes.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId).url)
           ),
           AnswerRow(
+            "trustListedOnEeaRegisterYesNo.checkYourAnswersLabel",
+            HtmlFormat.escape("Yes"),
+            Some(routes.TrustListedOnEeaRegisterController.onPageLoad(draftId).url)
+          ),
+          AnswerRow(
             "trusteesBasedInTheUK.checkYourAnswersLabel",
             HtmlFormat.escape("All of the trustees are based in the UK"),
             Some(routes.TrusteesBasedInTheUKController.onPageLoad(draftId).url)
@@ -112,6 +117,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             HtmlFormat.escape("No"),
             Some(routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url)
           ),
+
           AnswerRow(
             "trustResidentOffshoreYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
@@ -147,11 +153,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             HtmlFormat.escape("Yes"),
             Some(routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
           ),
-          AnswerRow(
-            "trustListedOnEeaRegisterYesNo.text.question",
-            HtmlFormat.escape("Yes"),
-            Some(routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
-          )
+
         )
 
         printHelper.printSection(answers) mustBe AnswerSection(
