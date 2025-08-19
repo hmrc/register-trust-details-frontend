@@ -8,21 +8,6 @@ lazy val appName: String = "register-trust-details-frontend"
 ThisBuild / scalaVersion := "2.13.16"
 ThisBuild / majorVersion := 1
 
-val excludedPackages = Seq(
-  "<empty>",
-  "Reverse.*",
-  ".*assets.*",
-  ".*Routes.*",
-  ".*standardError.*",
-  ".*BuildInfo",
-  ".*pages.Page",
-  ".*models.*",
-  ".*views.*",
-  ".*filters.*",
-  ".*config*.*",
-  ".*testOnlyDoNotUseInAppConf.*"
-)
-
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
@@ -46,7 +31,6 @@ lazy val microservice = (project in file("."))
       "-Wconf:cat=unused-imports&src=views/.*:s"
     ),
     libraryDependencies ++= AppDependencies(),
-    retrieveManaged := true,
     // concatenate js
     Concat.groups := Seq(
       "javascripts/registertrustdetailsfrontend-app.js" ->
