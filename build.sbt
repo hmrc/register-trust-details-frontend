@@ -84,5 +84,3 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(DefaultBuildSettings.itSettings())
-
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
