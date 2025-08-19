@@ -40,10 +40,6 @@ lazy val microservice = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 8842,
-    ScoverageKeys.coverageExcludedFiles := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 93,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:src=routes/.*:s",
@@ -84,3 +80,4 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(DefaultBuildSettings.itSettings())
+  .settings(CodeCoverageSettings())
