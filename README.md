@@ -16,7 +16,7 @@ sm2 --start REGISTER_TRUST_ALL
 ```
 ---
 ## Testing the service
-Run unit and integration tests before raising a PR to ensure your code changes pass the Jenkins pipeline. This runs all the unit tests and integration tests with scalastyle and checks for dependency updates:
+Run unit and integration tests before raising a PR to ensure your code changes pass the Jenkins pipeline. This runs all the unit tests, integration tests and checks for dependency updates:
 
 ```bash
 ./run_all_tests.sh
