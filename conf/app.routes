@@ -64,8 +64,8 @@ POST       /:draftId/trust-created                                              
 GET        /:draftId/trust-has-business-relationship-in-uk                                          controllers.register.trust_details.TrustHasBusinessRelationshipInUkController.onPageLoad(draftId: String)
 POST       /:draftId/trust-has-business-relationship-in-uk                                          controllers.register.trust_details.TrustHasBusinessRelationshipInUkController.onSubmit(draftId: String)
 
-GET        /:draftId/trust-listed-on-eea-register                                                   controllers.register.trust_details.TrustListedOnEeaRegisterController.onPageLoad(draftId: String)
-POST       /:draftId/trust-listed-on-eea-register                                                   controllers.register.trust_details.TrustListedOnEeaRegisterController.onSubmit(draftId: String)
+GET        /:draftId/other-country-register                                                         controllers.register.trust_details.TrustListedOnEeaRegisterController.onPageLoad(draftId: String)
+POST       /:draftId/other-country-register                                                         controllers.register.trust_details.TrustListedOnEeaRegisterController.onSubmit(draftId: String)
 
 GET        /:draftId/trust-owns-uk-property-or-land                                                 controllers.register.trust_details.TrustOwnsUkPropertyOrLandController.onPageLoad(draftId: String)
 POST       /:draftId/trust-owns-uk-property-or-land                                                 controllers.register.trust_details.TrustOwnsUkPropertyOrLandController.onSubmit(draftId: String)
