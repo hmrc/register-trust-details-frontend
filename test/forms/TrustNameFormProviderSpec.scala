@@ -41,7 +41,6 @@ class TrustNameFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    // Deterministic over-length using only allowed characters, so the length error triggers
     "not bind strings longer than 53 characters" in {
       val overMax = "A" * (maxLength + 1)
       val result  = form.bind(Map(fieldName -> overMax))
