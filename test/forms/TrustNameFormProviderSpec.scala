@@ -18,16 +18,18 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+import org.scalatest.matchers.must.Matchers._
+
 
 class TrustNameFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "trustName.error.required"
-  val lengthKey = "trustName.error.length"
-  val maxLength = 53
-  val regexp = "^[A-Za-z0-9 ,.()/&'-]*$"
-  val invalidKey = "trustName.error.invalidCharacters"
+  private val requiredKey = "trustName.error.required"
+  private val lengthKey   = "trustName.error.length"
+  private val maxLength   = 53
+  private val regexp      = "^[A-Za-z0-9 ,.()/&'-]*$"
+  private val invalidKey  = "trustName.error.invalidCharacters"
 
-  val form = new TrustNameFormProvider()()
+  private val form = new TrustNameFormProvider()()
 
   ".value" must {
 
@@ -39,12 +41,12 @@ class TrustNameFormProviderSpec extends StringFieldBehaviours {
       stringsWithMaxLength(maxLength)
     )
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = maxLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-    )
+    // Deterministic over-length using only allowed characters, so the length error triggers
+    "not bind strings longer than 53 characters" in {
+      val overMax = "A" * (maxLength + 1)
+      val result  = form.bind(Map(fieldName -> overMax))
+      result.errors mustBe List(FormError(fieldName, lengthKey, Seq(maxLength)))
+    }
 
     behave like mandatoryField(
       form,
@@ -55,9 +57,9 @@ class TrustNameFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithRegexpWithGenerator(
       form,
       fieldName,
-      regexp = regexp,
-      generator = stringsWithMaxLength(maxLength),
-      error = FormError(fieldName, invalidKey, Seq(regexp))
+      regexp     = regexp,
+      generator  = stringsWithMaxLength(maxLength),
+      error      = FormError(fieldName, invalidKey, Seq(regexp))
     )
 
     behave like nonEmptyField(
