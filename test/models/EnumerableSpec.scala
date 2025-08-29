@@ -28,17 +28,29 @@ object EnumerableSpec {
   case object Baz extends Foo
 
   object Foo {
-
     val values: Set[Foo] = Set(Bar, Baz)
-
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(values.toSeq.map(v => v.toString -> v): _*)
   }
 }
 
-class EnumerableSpec extends AnyWordSpec with Matchers with EitherValues with OptionValues with Enumerable.Implicits {
+class EnumerableSpec
+  extends AnyWordSpec
+    with Matchers
+    with EitherValues
+    with OptionValues
+    with Enumerable.Implicits {
 
   import EnumerableSpec._
+
+  ".withName mapping" must {
+    "return Some for known values and None for unknown" in {
+      val e = implicitly[Enumerable[Foo]]
+      e.withName("Bar").value mustBe Bar
+      e.withName("Baz").value mustBe Baz
+      e.withName("nope") mustBe None
+    }
+  }
 
   ".reads" must {
 
@@ -46,15 +58,22 @@ class EnumerableSpec extends AnyWordSpec with Matchers with EitherValues with Op
       implicitly[Reads[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"bind correctly for: $value" in {
-          Json.fromJson[Foo](JsString(value.toString)).asEither.value mustEqual value
-        }
+    Foo.values.foreach { value =>
+      s"bind correctly for: $value" in {
+        Json.fromJson[Foo](JsString(value.toString)).asEither.value mustEqual value
+      }
     }
 
-    "fail to bind for invalid values" in {
-      Json.fromJson[Foo](JsString("invalid")).asEither.left.value must contain(JsPath -> Seq(JsonValidationError("error.invalid")))
+    "fail to bind for invalid string values" in {
+      Json.fromJson[Foo](JsString("invalid")).asEither.left.value must contain(
+        JsPath -> Seq(JsonValidationError("error.invalid"))
+      )
+    }
+
+    "fail to bind for non-string json" in {
+      Json.fromJson[Foo](JsNumber(123)).asEither.left.value must contain(
+        JsPath -> Seq(JsonValidationError("error.invalid"))
+      )
     }
   }
 
@@ -64,16 +83,14 @@ class EnumerableSpec extends AnyWordSpec with Matchers with EitherValues with Op
       implicitly[Writes[Foo]]
     }
 
-    Foo.values.foreach {
-      value =>
-        s"write $value" in {
-          Json.toJson(value) mustEqual JsString(value.toString)
-        }
+    Foo.values.foreach { value =>
+      s"write $value" in {
+        Json.toJson(value) mustEqual JsString(value.toString)
+      }
     }
   }
 
   ".formats" must {
-
     "be found implicitly" in {
       implicitly[Format[Foo]]
     }
