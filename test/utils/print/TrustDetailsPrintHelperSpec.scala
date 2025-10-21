@@ -117,7 +117,6 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             HtmlFormat.escape("No"),
             Some(routes.EstablishedUnderScotsLawController.onPageLoad(draftId).url)
           ),
-
           AnswerRow(
             "trustResidentOffshoreYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("No"),
@@ -152,8 +151,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
             "schedule3aExemptYesNo.checkYourAnswersLabel",
             HtmlFormat.escape("Yes"),
             Some(routes.Schedule3aExemptYesNoController.onPageLoad(draftId).url)
-          ),
-
+          )
         )
 
         printHelper.printSection(answers) mustBe AnswerSection(
