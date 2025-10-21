@@ -16,12 +16,13 @@
 
 package forms.mappings
 
-import java.time.LocalDate
 import models.Enumerable
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.data.{Form, FormError}
+import play.api.data.Form
+
+import java.time.LocalDate
 
 object MappingsSpec {
 
