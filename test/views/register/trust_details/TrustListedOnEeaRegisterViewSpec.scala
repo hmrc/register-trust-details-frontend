@@ -35,7 +35,9 @@ class TrustListedOnEeaRegisterViewSpec extends YesNoViewBehaviours {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, fakeDraftId)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix, "text", "text.bullet1", "text.bullet2", "text.bullet3", "text.bullet4")
+    val expectedGuidanceKeys = Seq("paragraph", "text", "text.bullet1", "text.bullet2", "text.bullet3", "text.bullet4", "text.question")
+
+    behave like normalPage(applyView(form), messageKeyPrefix, expectedGuidanceKeys: _*)
 
     behave like pageWithBackLink(applyView(form))
 

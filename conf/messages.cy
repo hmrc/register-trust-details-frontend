@@ -112,15 +112,18 @@ trustHasBusinessRelationshipInUkYesNo.bullet6 = asiant tai
 trustHasBusinessRelationshipInUkYesNo.bullet7 = banc neu gymdeithas adeiladu
 trustHasBusinessRelationshipInUkYesNo.bullet8 = sefydliad proffesiynol arall
 
-trustListedOnEeaRegisterYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaeth unrhyw wledydd o fewn yr Ardal Economaidd Ewropeaidd (AEE)?
 trustListedOnEeaRegisterYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth wedi’i rhestru ar gofrestr Ardal Economaidd Ewropeaidd (AEE)
-trustListedOnEeaRegisterYesNo.heading=A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaeth unrhyw wledydd o fewn yr Ardal Economaidd Ewropeaidd (AEE)?
+trustListedOnEeaRegisterYesNo.heading=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
+trustListedOnEeaRegisterYesNo.paragraph = Mae angen i chi roi gwybod i CThEF os yw’r ymddiriedolaeth ar y gofrestr ymddiriedolaethau unrhyw wlad o fewn yr AEE.
 trustListedOnEeaRegisterYesNo.text=Mae’r AEE yn cynnwys:
-trustListedOnEeaRegisterYesNo.text.bullet1=Yr holl wledydd yn yr Undeb Ewropeaidd (UE)
+trustListedOnEeaRegisterYesNo.text.bullet1=yr holl wledydd o fewn yr Undeb Ewropeaidd (UE)
 trustListedOnEeaRegisterYesNo.text.bullet2=Gwlad yr Iâ
 trustListedOnEeaRegisterYesNo.text.bullet3=Liechtenstein
 trustListedOnEeaRegisterYesNo.text.bullet4=Norwy
-trustListedOnEeaRegisterYesNo.title=A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaeth unrhyw wledydd o fewn yr Ardal Economaidd Ewropeaidd (AEE)?
+trustListedOnEeaRegisterYesNo.text.question = A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaethau unrhyw wlad o fewn yr AEE?
+trustListedOnEeaRegisterYesNo.title=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
+trustListedOnEeaRegisterYesNo.checkYourAnswersLabel=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
+
 trustName.checkYourAnswersLabel=Beth yw enw’r ymddiriedolaeth?
 trustName.error.invalidCharacters=Mae’n rhaid i enw’r ymddiriedolaeth gynnwys y llythrennau a i z yn unig
 trustName.error.length=Mae’n rhaid i enw’r ymddiriedolaeth fod yn 53 o gymeriadau neu lai
@@ -128,7 +131,7 @@ trustName.error.required=Nodwch enw’r ymddiriedolaeth
 trustName.heading=Beth yw enw’r ymddiriedolaeth?
 trustName.hint.hasUtr=Mae’n rhaid nodi hyn yn union fel y mae ar hysbysiad i gyflwyno Hunanasesiad (SA316) diweddaraf neu Ffurflen Dreth ddiweddaraf yr ymddiriedolaeth.
 trustName.title=Beth yw enw’r ymddiriedolaeth?
-  
+
 trustOwnsUkPropertyOrLandYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?
 trustOwnsUkPropertyOrLandYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020
 trustOwnsUkPropertyOrLandYesNo.heading=A yw’r ymddiriedolaeth wedi caffael tir neu eiddo yn y DU ers 6 Hydref 2020?

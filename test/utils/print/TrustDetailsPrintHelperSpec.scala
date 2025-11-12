@@ -59,6 +59,7 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
           .set(InheritanceTaxActPage, false).success.value
           .set(AgentOtherThanBarristerPage, true).success.value
           .set(Schedule3aExemptYesNoPage, true).success.value
+          .set(TrustListedOnEeaRegisterPage, true).success.value
 
         val rows = Seq(
           AnswerRow(
