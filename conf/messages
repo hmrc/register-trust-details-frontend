@@ -183,7 +183,7 @@ trustListedOnEeaRegisterYesNo.text.bullet1 = all countries within the European U
 trustListedOnEeaRegisterYesNo.text.bullet2 = Iceland
 trustListedOnEeaRegisterYesNo.text.bullet3 = Liechtenstein
 trustListedOnEeaRegisterYesNo.text.bullet4 = Norway
-trustListedOnEeaRegisterYesNo.text.question = Is the trust registered on the trust register of any countries within the EEA?
+trustListedOnEeaRegisterYesNo.question = Is the trust registered on the trust register of any countries within the EEA?
 
 trustOwnsUkPropertyOrLandYesNo.title = Has the trust acquired land or property in the UK since 6 October 2020?
 trustOwnsUkPropertyOrLandYesNo.heading = Has the trust acquired land or property in the UK since 6 October 2020?
