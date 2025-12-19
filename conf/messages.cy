@@ -120,7 +120,7 @@ trustListedOnEeaRegisterYesNo.text.bullet1=yr holl wledydd o fewn yr Undeb Ewrop
 trustListedOnEeaRegisterYesNo.text.bullet2=Gwlad yr Iâ
 trustListedOnEeaRegisterYesNo.text.bullet3=Liechtenstein
 trustListedOnEeaRegisterYesNo.text.bullet4=Norwy
-trustListedOnEeaRegisterYesNo.text.question = A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaethau unrhyw wlad o fewn yr AEE?
+trustListedOnEeaRegisterYesNo.question = A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaethau unrhyw wlad o fewn yr AEE?
 trustListedOnEeaRegisterYesNo.title=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
 trustListedOnEeaRegisterYesNo.checkYourAnswersLabel=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
 

@@ -43,8 +43,6 @@
             "bullet4"
         )
     )
-
-    <h2 class="govuk-heading-m">@messages("trustListedOnEeaRegisterYesNo.text.question")</h2>
 }
 
 @mainTemplate(
@@ -62,9 +60,9 @@
 
         @inputYesNo(
             field = form("value"),
-            label = messages("trustListedOnEeaRegisterYesNo.heading"),
+            label = messages("trustListedOnEeaRegisterYesNo.question"),
             legendAsHeading = false,
-            legendClass = Some("govuk-visually-hidden")
+            legendClass = Some("govuk-heading-m")
         )
 
         @submitButton()
