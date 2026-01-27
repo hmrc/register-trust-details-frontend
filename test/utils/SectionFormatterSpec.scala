@@ -32,7 +32,7 @@ class SectionFormatterSpec extends SpecBase {
 
       // by using the printHelper we use the application code that will generate the 'check your answers' labels.
       // this is within the class/method: AnswerRowConverter/Bound/question
-      // this is  opposed to artificially constructing a sequence of answer sections with the CYA label in this test
+      // this is opposed to artificially constructing a sequence of answer sections with the CYA label in this test
       val printHelper = app.injector.instanceOf[TrustDetailsPrintHelper]
 
       val answers = emptyUserAnswers
