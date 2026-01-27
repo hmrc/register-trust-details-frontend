@@ -122,7 +122,7 @@ trustListedOnEeaRegisterYesNo.text.bullet3=Liechtenstein
 trustListedOnEeaRegisterYesNo.text.bullet4=Norwy
 trustListedOnEeaRegisterYesNo.question = A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaethau unrhyw wlad o fewn yr AEE?
 trustListedOnEeaRegisterYesNo.title=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
-trustListedOnEeaRegisterYesNo.checkYourAnswersLabel=Ymddiriedolaethau sydd wedi’u cofrestru yn yr Ardal Economaidd Ewropeaidd (AEE)
+trustListedOnEeaRegisterYesNo.checkYourAnswersLabel= A yw’r ymddiriedolaeth wedi’i chofrestru ar gofrestr ymddiriedolaethau unrhyw wlad o fewn yr AEE?
 
 trustName.checkYourAnswersLabel=Beth yw enw’r ymddiriedolaeth?
 trustName.error.invalidCharacters=Mae’n rhaid i enw’r ymddiriedolaeth gynnwys y llythrennau a i z yn unig
