@@ -30,6 +30,8 @@ class TrustPreviouslyResidentFormProvider @Inject() extends Mappings {
             maxLength(100, "trustPreviouslyResident.error.length"),
             regexp(Validation.countryRegex, "trustPreviouslyResident.error.invalidCharacters"),
             nonEmptyString("value", "trustPreviouslyResident.error.required")
-          ))
+          )
+        )
     )
+
 }

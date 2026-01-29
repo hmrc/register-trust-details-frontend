@@ -25,27 +25,22 @@ import utils.countryOptions.CountryOptions
 import java.time.{LocalDate => JavaDate}
 import javax.inject.Inject
 
-class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
-                                       countryOptions: CountryOptions) {
+class CheckAnswersFormatters @Inject() (languageUtils: LanguageUtils, countryOptions: CountryOptions) {
 
-  def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
+  def formatDate(date: JavaDate)(implicit messages: Messages): Html =
     escape(languageUtils.Dates.formatDate(date))
-  }
 
-  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
+  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
     if (answer) {
       escape(messages("site.yes"))
     } else {
       escape(messages("site.no"))
     }
-  }
 
-  def country(code: String)(implicit messages: Messages): Html = {
+  def country(code: String)(implicit messages: Messages): Html =
     escape(countryOptions.options().find(_.value.equals(code)).map(_.label).getOrElse(""))
-  }
 
-  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html =
     escape(messages(s"$key.$answer"))
-  }
 
 }

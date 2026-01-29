@@ -43,4 +43,5 @@ class AgentOtherThanBarristerViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

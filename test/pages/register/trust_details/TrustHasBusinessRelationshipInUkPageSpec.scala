@@ -34,9 +34,15 @@ class TrustHasBusinessRelationshipInUkPageSpec extends PageBehaviours {
       "yes selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(RegisteringTrustFor5APage, false).success.value
-          .set(InheritanceTaxActPage, true).success.value
-          .set(AgentOtherThanBarristerPage, true).success.value
+          .set(RegisteringTrustFor5APage, false)
+          .success
+          .value
+          .set(InheritanceTaxActPage, true)
+          .success
+          .value
+          .set(AgentOtherThanBarristerPage, true)
+          .success
+          .value
 
         val result = userAnswers.set(TrustHasBusinessRelationshipInUkPage, true).success.value
 
@@ -46,4 +52,5 @@ class TrustHasBusinessRelationshipInUkPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

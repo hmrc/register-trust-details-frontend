@@ -25,7 +25,7 @@ import views.html.register.trust_details.TrustNameView
 class TrustNameViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "trustName"
-  val hintKey = "trustName.hint.hasUtr"
+  val hintKey          = "trustName.hint.hasUtr"
 
   val form = new TrustNameFormProvider()()
 
@@ -64,4 +64,5 @@ class TrustNameViewSpec extends StringViewBehaviours {
     }
 
   }
+
 }

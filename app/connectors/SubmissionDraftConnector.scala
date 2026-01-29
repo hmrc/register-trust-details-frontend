@@ -28,45 +28,49 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) {
+class SubmissionDraftConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig) {
 
   val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
-  def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
-                        (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
+  def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] =
     http
       .post(url"$submissionsBaseUrl/$draftId/set/$section")
       .withBody(Json.toJson(data))
       .execute[HttpResponse]
-  }
 
-  def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
+  def getDraftSection(draftId: String, section: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[SubmissionDraftResponse] =
     http
       .get(url"$submissionsBaseUrl/$draftId/$section")
       .execute[SubmissionDraftResponse]
-  }
 
-  def getIsTrustTaxable(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
+  def getIsTrustTaxable(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     http
       .get(url"$submissionsBaseUrl/$draftId/is-trust-taxable")
       .execute[Boolean]
-      .recover {
-        case _ => true
+      .recover { case _ =>
+        true
       }
-  }
 
-  def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[Boolean] = {
+  def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]           =
     http
       .get(url"$submissionsBaseUrl/$draftId/is-express-trust")
       .execute[Boolean]
-      .recover {
-        case _ => true
+      .recover { case _ =>
+        true
       }
-  }
+
   def getTrustStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
     getStartDate(s"$submissionsBaseUrl/$draftId/when-trust-setup")
 
-  def getTaxLiabilityStartDate(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
+  def getTaxLiabilityStartDate(
+    draftId: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
     getStartDate(s"$submissionsBaseUrl/$draftId/tax-liability/when-trust-setup")
 
   def resetTaxLiability(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
@@ -74,17 +78,15 @@ class SubmissionDraftConnector @Inject()(http: HttpClientV2, config : FrontendAp
       .delete(url"$submissionsBaseUrl/$draftId/tax-liability")
       .execute[HttpResponse]
 
-  private def getStartDate(url: String)
-                          (implicit hc: HeaderCarrier,
-                           ec: ExecutionContext
-                          ): Future[Option[LocalDate]] =
+  private def getStartDate(url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[LocalDate]] =
     http
       .get(url"$url")
       .execute[HttpResponse]
-      .map {
-        response => (response.json \ "startDate").asOpt[LocalDate]
+      .map { response =>
+        (response.json \ "startDate").asOpt[LocalDate]
       }
-      .recover {
-        case _ => None
+      .recover { case _ =>
+        None
       }
+
 }

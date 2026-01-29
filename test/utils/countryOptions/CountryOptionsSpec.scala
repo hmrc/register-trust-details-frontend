@@ -29,10 +29,12 @@ class CountryOptionsSpec extends SpecBase {
     "build correctly the English InputOptions with all country list and country code" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(defaultAppConfigurations ++ Map("location.canonical.list.all" -> "countries-canonical-list-test.json"))
+        .configure(
+          defaultAppConfigurations ++ Map("location.canonical.list.all" -> "countries-canonical-list-test.json")
+        )
         .build()
 
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi                     = app.injector.instanceOf[MessagesApi]
       implicit val messages: MessagesImpl = MessagesImpl(lang = Lang(ENGLISH), messagesApi = messagesApi)
 
       val countryOption: CountryOptions = application.injector.instanceOf[CountryOptions]
@@ -44,10 +46,12 @@ class CountryOptionsSpec extends SpecBase {
     "build correctly the Welsh InputOptions with all country list and country code" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(defaultAppConfigurations ++ Map("location.canonical.list.allCY" -> "countries-canonical-list-test-cy.json"))
+        .configure(
+          defaultAppConfigurations ++ Map("location.canonical.list.allCY" -> "countries-canonical-list-test-cy.json")
+        )
         .build()
 
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi                     = app.injector.instanceOf[MessagesApi]
       implicit val messages: MessagesImpl = MessagesImpl(lang = Lang(WELSH), messagesApi = messagesApi)
 
       val countryOption: CountryOptions = application.injector.instanceOf[CountryOptions]
@@ -69,4 +73,5 @@ class CountryOptionsSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

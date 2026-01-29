@@ -40,45 +40,45 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
         TrustHasBusinessRelationshipInUkPage.path.readNullable[Boolean] and
         trustUkResidentReads and
         Schedule3aExemptYesNoPage.path.readNullable[Boolean]
-      )(TrustDetailsType.apply _)
+    )(TrustDetailsType.apply _)
 
     userAnswers.data.validate[TrustDetailsType](reads) match {
       case JsSuccess(value, _) =>
         Some(value)
-      case JsError(_) =>
+      case JsError(_)          =>
         None
     }
   }
 
-  private def administrationCountryReads(ua: UserAnswers): Reads[Option[String]] = {
+  private def administrationCountryReads(ua: UserAnswers): Reads[Option[String]] =
     if (ua.isTaxable) {
-      CountryAdministeringTrustPage.path.read[String]
+      CountryAdministeringTrustPage.path
+        .read[String]
         .map(Some(_): Option[String])
         .orElse(Reads(_ => JsSuccess(Some(GB))))
     } else {
       Reads(_ => JsSuccess(None))
     }
-  }
 
-  private def trustUkResidentReads: Reads[Option[Boolean]] = {
-      basedInUkReads[Boolean](
-        ukReads     = Reads(_ => JsSuccess(Some(true))),
-        nonUkReads  = Reads(_ => JsSuccess(Some(false)))
-      )
-  }
+  private def trustUkResidentReads: Reads[Option[Boolean]] =
+    basedInUkReads[Boolean](
+      ukReads = Reads(_ => JsSuccess(Some(true))),
+      nonUkReads = Reads(_ => JsSuccess(Some(false)))
+    )
 
-  private def residentialStatusReads(ua: UserAnswers): Reads[Option[ResidentialStatusType]] = {
+  private def residentialStatusReads(ua: UserAnswers): Reads[Option[ResidentialStatusType]] =
     if (ua.isTaxable) {
 
-      def combineReads(ukReads: Reads[Option[UkType]], nonUkReads: Reads[Option[NonUKType]]): Reads[Option[ResidentialStatusType]] = {
+      def combineReads(
+        ukReads: Reads[Option[UkType]],
+        nonUkReads: Reads[Option[NonUKType]]
+      ): Reads[Option[ResidentialStatusType]] =
         (ukReads and nonUkReads)(ResidentialStatusType.apply _).map(Some(_))
-      }
 
       lazy val ukReads: Reads[Option[ResidentialStatusType]] = {
         lazy val reads: Reads[Option[UkType]] =
           (EstablishedUnderScotsLawPage.path.read[Boolean] and
-            TrustPreviouslyResidentPage.path.readNullable[String]
-            )(UkType.apply _).map(Some(_))
+            TrustPreviouslyResidentPage.path.readNullable[String])(UkType.apply _).map(Some(_))
 
         combineReads(reads, Reads(_ => JsSuccess(None: Option[NonUKType])))
       }
@@ -88,8 +88,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
           (RegisteringTrustFor5APage.path.read[Boolean] and
             InheritanceTaxActPage.path.readNullable[Boolean] and
             AgentOtherThanBarristerPage.path.readNullable[Boolean] and
-            Reads(_ => JsSuccess(None))
-            )(NonUKType.apply _).map(Some(_))
+            Reads(_ => JsSuccess(None)))(NonUKType.apply _).map(Some(_))
 
         combineReads(Reads(_ => JsSuccess(None: Option[UkType])), reads)
       }
@@ -98,18 +97,16 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
     } else {
       Reads(_ => JsSuccess(None))
     }
-  }
 
-  private def basedInUkReads[T](ukReads: Reads[Option[T]], nonUkReads: Reads[Option[T]]): Reads[Option[T]] = {
+  private def basedInUkReads[T](ukReads: Reads[Option[T]], nonUkReads: Reads[Option[T]]): Reads[Option[T]] =
     TrusteesBasedInTheUKPage.path.read[TrusteesBasedInTheUK].flatMap {
-      case UKBasedTrustees => ukReads
-      case NonUkBasedTrustees => nonUkReads
+      case UKBasedTrustees            => ukReads
+      case NonUkBasedTrustees         => nonUkReads
       case InternationalAndUKTrustees =>
         SettlorsBasedInTheUKPage.path.read[Boolean].flatMap {
-          case true => ukReads
+          case true  => ukReads
           case false => nonUkReads
         }
     }
-  }
 
 }

@@ -31,44 +31,41 @@ import views.html.register.trust_details.SettlorsBasedInTheUKView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SettlorsBasedInTheUKController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                registrationsRepository: RegistrationsRepository,
-                                                navigator: Navigator,
-                                                formProvider: YesNoFormProvider,
-                                                standardActions: StandardActionSets,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: SettlorsBasedInTheUKView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+class SettlorsBasedInTheUKController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  formProvider: YesNoFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: SettlorsBasedInTheUKView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(SettlorsBasedInTheUKPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(SettlorsBasedInTheUKPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, draftId))
+    Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value => {
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SettlorsBasedInTheUKPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SettlorsBasedInTheUKPage, draftId, updatedAnswers))
-        }
       )
   }
+
 }

@@ -30,44 +30,41 @@ import views.html.register.trust_details.RegisteringTrustFor5AView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisteringTrustFor5AController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 registrationsRepository: RegistrationsRepository,
-                                                 navigator: Navigator,
-                                                 yesNoFormProvider: YesNoFormProvider,
-                                                 standardActions: StandardActionSets,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: RegisteringTrustFor5AView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class RegisteringTrustFor5AController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  yesNoFormProvider: YesNoFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: RegisteringTrustFor5AView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("registeringTrustFor5AYesNo")
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(RegisteringTrustFor5APage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(RegisteringTrustFor5APage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, draftId))
+    Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String) = actions(draftId).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value => {
+  def onSubmit(draftId: String) = actions(draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(RegisteringTrustFor5APage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(RegisteringTrustFor5APage, draftId, updatedAnswers))
-        }
       )
   }
+
 }

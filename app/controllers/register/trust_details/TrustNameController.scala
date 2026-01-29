@@ -32,48 +32,46 @@ import views.html.register.trust_details.TrustNameView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustNameController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     registrationsRepository: RegistrationsRepository,
-                                     navigator: Navigator,
-                                     formProvider: TrustNameFormProvider,
-                                     standardActions: StandardActionSets,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: TrustNameView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TrustNameController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  formProvider: TrustNameFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: TrustNameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   val form = formProvider()
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    val preparedForm = request.userAnswers.get(TrustNamePage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(TrustNamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      showHintText(draftId) map { hintTextShown =>
-        Ok(view(preparedForm, draftId, hintTextShown))
-      }
+    showHintText(draftId) map { hintTextShown =>
+      Ok(view(preparedForm, draftId, hintTextShown))
+    }
 
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId: String).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId: String).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
         (formWithErrors: Form[_]) =>
           showHintText(draftId) map { hintTextShown =>
             BadRequest(view(formWithErrors, draftId, hintTextShown))
           },
-        value => {
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustNamePage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TrustNamePage, draftId, updatedAnswers))
-        }
       )
   }
 
@@ -83,4 +81,5 @@ class TrustNameController @Inject()(
         _.get(TrustHaveAUTRPage).contains(true)
       }
     }
+
 }

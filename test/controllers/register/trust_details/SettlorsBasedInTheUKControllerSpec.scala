@@ -26,10 +26,10 @@ import views.html.register.trust_details.SettlorsBasedInTheUKView
 
 class SettlorsBasedInTheUKControllerSpec extends SpecBase {
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
 
-  lazy val settlorsBasedInTheUKRoute: String = routes.SettlorsBasedInTheUKController.onPageLoad( fakeDraftId).url
+  lazy val settlorsBasedInTheUKRoute: String = routes.SettlorsBasedInTheUKController.onPageLoad(fakeDraftId).url
 
   "SettlorsBasedInTheUK Controller" must {
 
@@ -46,7 +46,7 @@ class SettlorsBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form,  fakeDraftId)(request, messages).toString
+        view(form, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -66,7 +66,7 @@ class SettlorsBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true),  fakeDraftId)(request, messages).toString
+        view(form.fill(true), fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -106,7 +106,7 @@ class SettlorsBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm,  fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -143,4 +143,5 @@ class SettlorsBasedInTheUKControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

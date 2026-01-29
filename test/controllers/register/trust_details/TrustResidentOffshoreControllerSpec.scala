@@ -26,7 +26,7 @@ import views.html.register.trust_details.TrustResidentOffshoreView
 
 class TrustResidentOffshoreControllerSpec extends SpecBase {
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("trustResidentOffshoreYesNo")
 
   lazy val trustResidentOffshoreRoute: String = routes.TrustResidentOffshoreController.onPageLoad(fakeDraftId).url
@@ -66,7 +66,7 @@ class TrustResidentOffshoreControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true),  fakeDraftId)(request, messages).toString
+        view(form.fill(true), fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -106,7 +106,7 @@ class TrustResidentOffshoreControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm,  fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -143,4 +143,5 @@ class TrustResidentOffshoreControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

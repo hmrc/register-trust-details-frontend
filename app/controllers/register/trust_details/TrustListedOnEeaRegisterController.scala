@@ -31,46 +31,42 @@ import views.html.register.trust_details.TrustListedOnEeaRegisterView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustListedOnEeaRegisterController @Inject()(
-                                                    override val messagesApi: MessagesApi,
-                                                    registrationsRepository: RegistrationsRepository,
-                                                    navigator: Navigator,
-                                                    yesNoFormProvider: YesNoFormProvider,
-                                                    standardActions: StandardActionSets,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    view: TrustListedOnEeaRegisterView
-                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TrustListedOnEeaRegisterController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  yesNoFormProvider: YesNoFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: TrustListedOnEeaRegisterView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     standardActions.identifiedUserWithData(draftId)
-  }
 
   private val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustListedOnEeaRegisterYesNo")
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(TrustListedOnEeaRegisterPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(TrustListedOnEeaRegisterPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, draftId))
+    Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value => {
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustListedOnEeaRegisterPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TrustListedOnEeaRegisterPage, draftId, updatedAnswers))
-        }
       )
   }
+
 }

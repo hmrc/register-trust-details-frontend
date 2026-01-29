@@ -30,4 +30,5 @@ class WhenTrustSetupPageSpec extends PageBehaviours {
 
     beRemovable[LocalDate](WhenTrustSetupPage)
   }
+
 }

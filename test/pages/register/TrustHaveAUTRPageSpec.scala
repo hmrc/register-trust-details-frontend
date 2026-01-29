@@ -20,8 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class TrustHaveAUTRPageSpec extends PageBehaviours {
 
-  "TrustHaveAUTRPage" must {
-
+  "TrustHaveAUTRPage" must
     beRetrievable[Boolean](TrustHaveAUTRPage)
-  }
+
 }

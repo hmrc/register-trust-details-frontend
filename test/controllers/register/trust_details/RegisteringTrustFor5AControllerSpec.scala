@@ -28,7 +28,6 @@ class RegisteringTrustFor5AControllerSpec extends SpecBase {
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("registeringTrustFor5AYesNo")
 
-
   lazy val registeringTrustFor5ARoute: String = routes.RegisteringTrustFor5AController.onPageLoad(fakeDraftId).url
 
   "RegisteringTrustFor5A Controller" must {
@@ -143,4 +142,5 @@ class RegisteringTrustFor5AControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -26,11 +26,12 @@ import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class SubmissionSetFactory @Inject()(trustDetailsMapper: TrustDetailsMapper,
-                                     trustDetailsPrintHelper: TrustDetailsPrintHelper) {
+class SubmissionSetFactory @Inject() (
+  trustDetailsMapper: TrustDetailsMapper,
+  trustDetailsPrintHelper: TrustDetailsPrintHelper
+) {
 
-  def createFrom(userAnswers: UserAnswers)
-                (implicit messages: Messages): Future[RegistrationSubmission.DataSet] = {
+  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): Future[RegistrationSubmission.DataSet] =
 
     Future.successful {
       RegistrationSubmission.DataSet(
@@ -39,30 +40,27 @@ class SubmissionSetFactory @Inject()(trustDetailsMapper: TrustDetailsMapper,
         answerSections = answerSectionsIfCompleted(userAnswers)
       )
     }
-  }
 
   private def mappedPieces(trustDetailsJson: JsValue) =
     List(RegistrationSubmission.MappedPiece("trust/details", trustDetailsJson))
 
-  private def mappedDataIfCompleted(userAnswers: UserAnswers): List[RegistrationSubmission.MappedPiece] = {
+  private def mappedDataIfCompleted(userAnswers: UserAnswers): List[RegistrationSubmission.MappedPiece] =
     trustDetailsMapper.build(userAnswers) match {
       case Some(trustDetails) => mappedPieces(Json.toJson(trustDetails))
-      case _ => mappedPieces(JsNull)
+      case _                  => mappedPieces(JsNull)
     }
-  }
 
-  private def answerSectionsIfCompleted(userAnswers: UserAnswers)
-                               (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
+  private def answerSectionsIfCompleted(
+    userAnswers: UserAnswers
+  )(implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
     val answerSection = trustDetailsPrintHelper.printSection(userAnswers)
     List(answerSection).map(convertForSubmission)
   }
 
-  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection = {
+  private def convertForSubmission(section: AnswerSection): RegistrationSubmission.AnswerSection =
     RegistrationSubmission.AnswerSection(section.headingKey, section.rows.map(convertForSubmission), section.sectionKey)
-  }
 
-  private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow = {
+  private def convertForSubmission(row: AnswerRow): RegistrationSubmission.AnswerRow =
     RegistrationSubmission.AnswerRow(row.label, row.answer.toString, row.labelArg)
-  }
 
 }

@@ -39,15 +39,15 @@ class DataRequiredActionImplSpec extends SpecBase {
 
       val optReq: OptionalDataRequest[AnyContentAsEmpty.type] =
         OptionalDataRequest(
-          request     = request,
-          internalId  = "int-123",
+          request = request,
+          internalId = "int-123",
           userAnswers = None
         )
 
       val resultF: Future[Result] =
         action.invokeBlock(optReq, (_: DataRequest[AnyContentAsEmpty.type]) => Future.successful(Ok))
 
-      status(resultF) mustBe SEE_OTHER
+      status(resultF)           mustBe SEE_OTHER
       redirectLocation(resultF) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
@@ -56,8 +56,8 @@ class DataRequiredActionImplSpec extends SpecBase {
 
       val optReq: OptionalDataRequest[AnyContentAsEmpty.type] =
         OptionalDataRequest(
-          request     = request,
-          internalId  = "int-123",
+          request = request,
+          internalId = "int-123",
           userAnswers = Some(emptyUserAnswers) // from SpecBase
         )
 
@@ -76,4 +76,5 @@ class DataRequiredActionImplSpec extends SpecBase {
       body must include(s"auth=$userInternalId") // from SpecBase
     }
   }
+
 }

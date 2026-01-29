@@ -47,4 +47,5 @@ class CountryGoverningTrustViewSpec extends SelectCountryViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

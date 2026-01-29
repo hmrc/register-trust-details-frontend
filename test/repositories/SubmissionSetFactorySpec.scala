@@ -69,14 +69,19 @@ class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks wi
         headingKey = None,
         rows = Seq(
           RegistrationSubmission.AnswerRow("whenTrustSetupDate.checkYourAnswersLabel", "1 January 2000", ""),
-          RegistrationSubmission.AnswerRow("trusteesBasedInTheUK.checkYourAnswersLabel", "All of the trustees are based in the UK", "")
+          RegistrationSubmission
+            .AnswerRow("trusteesBasedInTheUK.checkYourAnswersLabel", "All of the trustees are based in the UK", "")
         ),
         sectionKey = Some("answerPage.section.trustDetails.heading")
       )
 
       val userAnswers = UserAnswers(draftId, Json.obj(), internalAuthId = userInternalId, isTaxable = false)
-        .set(WhenTrustSetupPage, LocalDate.parse("2000-01-01")).success.value
-        .set(TrusteesBasedInTheUKPage, TrusteesBasedInTheUK.UKBasedTrustees).success.value
+        .set(WhenTrustSetupPage, LocalDate.parse("2000-01-01"))
+        .success
+        .value
+        .set(TrusteesBasedInTheUKPage, TrusteesBasedInTheUK.UKBasedTrustees)
+        .success
+        .value
 
       val expectedDataSet = RegistrationSubmission.DataSet(
         data = Json.toJson(userAnswers),
@@ -84,7 +89,8 @@ class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks wi
           RegistrationSubmission.MappedPiece(
             "trust/details",
             Json.toJson(expectedMappedEtmpData)
-          )),
+          )
+        ),
         answerSections = List(convertedAnswerSection)
       )
 

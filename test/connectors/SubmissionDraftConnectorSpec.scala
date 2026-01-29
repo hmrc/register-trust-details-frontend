@@ -40,10 +40,10 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
 
   private lazy val connector = injector.instanceOf[SubmissionDraftConnector]
 
-  private val testDraftId = "draftId"
-  private val testSection = "section"
-  private val submissionsUrl = s"/trusts/register/submission-drafts"
-  private val submissionUrl = s"$submissionsUrl/$testDraftId/$testSection"
+  private val testDraftId      = "draftId"
+  private val testSection      = "section"
+  private val submissionsUrl   = s"/trusts/register/submission-drafts"
+  private val submissionUrl    = s"$submissionsUrl/$testDraftId/$testSection"
   private val setSubmissionUrl = s"$submissionsUrl/$testDraftId/set/$testSection"
 
   "SubmissionDraftConnector" when {
@@ -52,8 +52,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
 
       "set data for section set" in {
 
-        val sectionData = Json.parse(
-          """
+        val sectionData = Json.parse("""
             |{
             | "field1": "value1",
             | "field2": "value2"
@@ -76,14 +75,14 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
             )
         )
 
-        val result = Await.result(connector.setDraftSectionSet(testDraftId, testSection, submissionDraftSetData), Duration.Inf)
+        val result =
+          Await.result(connector.setDraftSectionSet(testDraftId, testSection, submissionDraftSetData), Duration.Inf)
         result.status mustBe Status.OK
       }
 
       "get data for section" in {
 
-        val draftData = Json.parse(
-          """
+        val draftData = Json.parse("""
             |{
             | "field1": "value1",
             | "field2": "value2"
@@ -110,9 +109,10 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
             )
         )
 
-        val result: SubmissionDraftResponse = Await.result(connector.getDraftSection(testDraftId, testSection), Duration.Inf)
+        val result: SubmissionDraftResponse =
+          Await.result(connector.getDraftSection(testDraftId, testSection), Duration.Inf)
         result.createdAt mustBe LocalDateTime.of(2012, 2, 3, 9, 30)
-        result.data mustBe draftData
+        result.data      mustBe draftData
       }
     }
 
@@ -215,9 +215,13 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
             .willReturn(
               aResponse()
                 .withStatus(Status.OK)
-                .withBody(Json.obj(
-                  "startDate" -> date
-                ).toString())
+                .withBody(
+                  Json
+                    .obj(
+                      "startDate" -> date
+                    )
+                    .toString()
+                )
             )
         )
 
@@ -266,9 +270,13 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
             .willReturn(
               aResponse()
                 .withStatus(Status.OK)
-                .withBody(Json.obj(
-                  "startDate" -> date
-                ).toString())
+                .withBody(
+                  Json
+                    .obj(
+                      "startDate" -> date
+                    )
+                    .toString()
+                )
             )
         )
 
@@ -290,4 +298,5 @@ class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
       }
     }
   }
+
 }

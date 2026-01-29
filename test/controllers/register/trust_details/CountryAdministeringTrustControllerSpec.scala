@@ -28,10 +28,11 @@ import views.html.register.trust_details.CountryAdministeringTrustView
 
 class CountryAdministeringTrustControllerSpec extends SpecBase {
 
-  val formProvider = new CountryAdministeringTrustFormProvider()
+  val formProvider       = new CountryAdministeringTrustFormProvider()
   val form: Form[String] = formProvider()
 
-  lazy val countryAdministeringTrustRoute: String = routes.CountryAdministeringTrustController.onPageLoad(fakeDraftId).url
+  lazy val countryAdministeringTrustRoute: String =
+    routes.CountryAdministeringTrustController.onPageLoad(fakeDraftId).url
 
   "CountryAdministeringTrust Controller" must {
 
@@ -150,4 +151,5 @@ class CountryAdministeringTrustControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

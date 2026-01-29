@@ -33,44 +33,45 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 repository: RegistrationsRepository,
-                                 identify: RegistrationIdentifierAction,
-                                 trustsStoreService: TrustsStoreService,
-                                 submissionDraftConnector: SubmissionDraftConnector
-                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class IndexController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  repository: RegistrationsRepository,
+  identify: RegistrationIdentifierAction,
+  trustsStoreService: TrustsStoreService,
+  submissionDraftConnector: SubmissionDraftConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request: IdentifierRequest[AnyContent] =>
+  def onPageLoad(draftId: String): Action[AnyContent] = identify.async {
+    implicit request: IdentifierRequest[AnyContent] =>
+      def redirect(userAnswers: UserAnswers): Future[Result] =
 
-    def redirect(userAnswers: UserAnswers): Future[Result] = {
+        for {
+          taskStatus          <- trustsStoreService.getTaskStatus(draftId)
+          _                   <- repository.set(userAnswers)
+          successfullyMatched <-
+            repository.getMainAnswers(draftId).map(_.exists(_.get(ExistingTrustMatched).contains(Success)))
+        } yield
+          if (taskStatus.isCompleted) {
+            Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
+          } else {
+            if (successfullyMatched) {
+              Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
+            } else {
+              Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
+            }
+          }
 
       for {
-        taskStatus <- trustsStoreService.getTaskStatus(draftId)
-        _ <- repository.set(userAnswers)
-        successfullyMatched <- repository.getMainAnswers(draftId).map(_.exists(_.get(ExistingTrustMatched).contains(Success)))
-      } yield {
-        if (taskStatus.isCompleted) {
-          Redirect(controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(draftId))
-        } else {
-          if (successfullyMatched) {
-            Redirect(controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(draftId))
-          } else {
-            Redirect(controllers.register.trust_details.routes.TrustNameController.onPageLoad(draftId))
-          }
-        }
-      }
-    }
-
-    for {
-      isTaxable <- submissionDraftConnector.getIsTrustTaxable(draftId)
-      isExpress <- submissionDraftConnector.getIsExpressTrust(draftId)
-      userAnswers <- repository.get(draftId)
-      result <- userAnswers match {
-        case Some(value) => redirect(value.copy(isTaxable = isTaxable, isExpress = isExpress))
-        case None => redirect(UserAnswers(draftId, Json.obj(), request.identifier, isTaxable, isExpress))
-      }
-      _ <- trustsStoreService.updateTaskStatus(draftId, InProgress)
-    } yield result
+        isTaxable   <- submissionDraftConnector.getIsTrustTaxable(draftId)
+        isExpress   <- submissionDraftConnector.getIsExpressTrust(draftId)
+        userAnswers <- repository.get(draftId)
+        result      <- userAnswers match {
+                         case Some(value) => redirect(value.copy(isTaxable = isTaxable, isExpress = isExpress))
+                         case None        => redirect(UserAnswers(draftId, Json.obj(), request.identifier, isTaxable, isExpress))
+                       }
+        _           <- trustsStoreService.updateTaskStatus(draftId, InProgress)
+      } yield result
   }
+
 }

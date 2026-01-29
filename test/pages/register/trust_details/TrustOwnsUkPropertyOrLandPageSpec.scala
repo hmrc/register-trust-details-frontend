@@ -28,4 +28,5 @@ class TrustOwnsUkPropertyOrLandPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](TrustOwnsUkPropertyOrLandPage)
   }
+
 }

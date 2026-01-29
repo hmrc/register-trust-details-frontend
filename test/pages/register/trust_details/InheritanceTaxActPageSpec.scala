@@ -34,7 +34,9 @@ class InheritanceTaxActPageSpec extends PageBehaviours {
       "no selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(AgentOtherThanBarristerPage, true).success.value
+          .set(AgentOtherThanBarristerPage, true)
+          .success
+          .value
 
         val result = userAnswers.set(InheritanceTaxActPage, false).success.value
 
@@ -42,4 +44,5 @@ class InheritanceTaxActPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

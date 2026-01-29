@@ -142,4 +142,5 @@ class GovernedInsideTheUKControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

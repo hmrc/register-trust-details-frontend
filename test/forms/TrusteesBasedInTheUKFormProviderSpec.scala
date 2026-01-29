@@ -26,13 +26,13 @@ class TrusteesBasedInTheUKFormProviderSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "trusteesBasedInTheUK.error.required"
 
     behave like optionsField[TrusteesBasedInTheUK](
       form,
       fieldName,
-      validValues  = TrusteesBasedInTheUK.values.toSet,
+      validValues = TrusteesBasedInTheUK.values.toSet,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
@@ -42,4 +42,5 @@ class TrusteesBasedInTheUKFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

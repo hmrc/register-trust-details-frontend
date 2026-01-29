@@ -30,21 +30,23 @@ case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] 
 
   override def toString: String = "trusteesBasedInTheUK"
 
-  override def cleanup(value: Option[TrusteesBasedInTheUK], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[TrusteesBasedInTheUK], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(NonUkBasedTrustees) =>
-        userAnswers.remove(SettlorsBasedInTheUKPage)
+        userAnswers
+          .remove(SettlorsBasedInTheUKPage)
           .flatMap(_.remove(EstablishedUnderScotsLawPage))
           .flatMap(_.remove(TrustResidentOffshorePage))
           .flatMap(_.remove(TrustPreviouslyResidentPage))
-      case Some(UKBasedTrustees) =>
-        userAnswers.remove(SettlorsBasedInTheUKPage)
+      case Some(UKBasedTrustees)    =>
+        userAnswers
+          .remove(SettlorsBasedInTheUKPage)
           .flatMap(_.remove(TrustHasBusinessRelationshipInUkPage))
           .flatMap(_.remove(RegisteringTrustFor5APage))
           .flatMap(_.remove(InheritanceTaxActPage))
           .flatMap(_.remove(AgentOtherThanBarristerPage))
-      case _ =>
+      case _                        =>
         super.cleanup(value, userAnswers)
     }
-  }
+
 }

@@ -27,14 +27,16 @@ object TrusteesBasedInTheUK extends Enumerable.Implicits {
   case object InternationalAndUKTrustees extends WithName("InternationalAndUKTrustees") with TrusteesBasedInTheUK
 
   val values: List[TrusteesBasedInTheUK] = List(
-    UKBasedTrustees, NonUkBasedTrustees, InternationalAndUKTrustees
+    UKBasedTrustees,
+    NonUkBasedTrustees,
+    InternationalAndUKTrustees
   )
 
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption("trusteesBasedInTheUK", value.toString)
+  val options: List[RadioOption] = values.map { value =>
+    RadioOption("trusteesBasedInTheUK", value.toString)
   }
 
   implicit val enumerable: Enumerable[TrusteesBasedInTheUK] =
     Enumerable(values.map(v => v.toString -> v): _*)
+
 }

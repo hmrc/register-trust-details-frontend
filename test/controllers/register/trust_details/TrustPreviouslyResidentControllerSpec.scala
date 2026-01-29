@@ -28,7 +28,7 @@ import views.html.register.trust_details.TrustPreviouslyResidentView
 
 class TrustPreviouslyResidentControllerSpec extends SpecBase {
 
-  val formProvider = new TrustPreviouslyResidentFormProvider()
+  val formProvider       = new TrustPreviouslyResidentFormProvider()
   val form: Form[String] = formProvider()
 
   lazy val trustPreviouslyResidentRoute: String = routes.TrustPreviouslyResidentController.onPageLoad(fakeDraftId).url
@@ -50,7 +50,7 @@ class TrustPreviouslyResidentControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions,  fakeDraftId)(request, messages).toString
+        view(form, countryOptions, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -69,10 +69,10 @@ class TrustPreviouslyResidentControllerSpec extends SpecBase {
 
       val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
-       status(result) mustEqual OK
+      status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("Spain"), countryOptions,  fakeDraftId)(request, messages).toString
+        view(form.fill("Spain"), countryOptions, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -113,7 +113,7 @@ class TrustPreviouslyResidentControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions,  fakeDraftId)(request, messages).toString
+        view(boundForm, countryOptions, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -150,4 +150,5 @@ class TrustPreviouslyResidentControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

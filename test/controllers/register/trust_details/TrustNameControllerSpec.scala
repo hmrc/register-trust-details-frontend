@@ -35,186 +35,167 @@ import scala.concurrent.Future
 
 class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-  val formProvider = new TrustNameFormProvider()
+  val formProvider       = new TrustNameFormProvider()
   val form: Form[String] = formProvider()
 
   lazy val trustNameRoute: String = routes.TrustNameController.onPageLoad(fakeDraftId).url
 
-  def readOnlyAnswers(trustHaveAUTR: Boolean): ReadOnlyUserAnswers = ReadOnlyUserAnswers(Json.obj(
-    "trustHaveAUTR" -> trustHaveAUTR
-  ))
+  def readOnlyAnswers(trustHaveAUTR: Boolean): ReadOnlyUserAnswers = ReadOnlyUserAnswers(
+    Json.obj(
+      "trustHaveAUTR" -> trustHaveAUTR
+    )
+  )
 
   "TrustName Controller" when {
 
     "an existing trust" must {
 
-      "return OK and the correct view for a GET" in {
+      "return OK and the correct view for a GET" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          when(registrationsRepository.getMainAnswers(any())(any()))
+            .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-            when(registrationsRepository.getMainAnswers(any())(any()))
-              .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
+          val request = FakeRequest(GET, trustNameRoute)
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val result = route(application, request).value
 
-            val request = FakeRequest(GET, trustNameRoute)
+          val view = application.injector.instanceOf[TrustNameView]
 
-            val result = route(application, request).value
+          status(result) mustEqual OK
 
-            val view = application.injector.instanceOf[TrustNameView]
-
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(form,  fakeDraftId, hintTextShown = true)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form, fakeDraftId, hintTextShown = true)(request, messages).toString
         }
-      }
 
-      "populate the view correctly on a GET when the question has previously been answered" in {
+      "populate the view correctly on a GET when the question has previously been answered" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          when(registrationsRepository.getMainAnswers(any())(any()))
+            .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
+          val answers = userAnswers
+            .set(TrustNamePage, "This Name")
+            .success
+            .value
 
-            when(registrationsRepository.getMainAnswers(any())(any()))
-              .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
+          val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-            val answers = userAnswers
-              .set(TrustNamePage, "This Name").success.value
+          val request = FakeRequest(GET, trustNameRoute)
 
-            val application = applicationBuilder(userAnswers = Some(answers)).build()
+          val view = application.injector.instanceOf[TrustNameView]
 
-            val request = FakeRequest(GET, trustNameRoute)
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[TrustNameView]
+          status(result) mustEqual OK
 
-            val result = route(application, request).value
+          contentAsString(result) mustEqual
+            view(form.fill("This Name"), fakeDraftId, hintTextShown = true)(request, messages).toString
 
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(form.fill("This Name"),  fakeDraftId, hintTextShown = true)(request, messages).toString
-
-            application.stop()
+          application.stop()
         }
-      }
 
-      "return a Bad Request and errors when invalid data is submitted" in {
+      "return a Bad Request and errors when invalid data is submitted" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          when(registrationsRepository.getMainAnswers(any())(any()))
+            .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-            when(registrationsRepository.getMainAnswers(any())(any()))
-              .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
+          val request =
+            FakeRequest(POST, trustNameRoute)
+              .withFormUrlEncodedBody(("value", ""))
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val boundForm = form.bind(Map("value" -> ""))
 
-            val request =
-              FakeRequest(POST, trustNameRoute)
-                .withFormUrlEncodedBody(("value", ""))
+          val view = application.injector.instanceOf[TrustNameView]
 
-            val boundForm = form.bind(Map("value" -> ""))
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[TrustNameView]
+          status(result) mustEqual BAD_REQUEST
 
-            val result = route(application, request).value
+          contentAsString(result) mustEqual
+            view(boundForm, fakeDraftId, hintTextShown = true)(request, messages).toString
 
-            status(result) mustEqual BAD_REQUEST
-
-            contentAsString(result) mustEqual
-              view(boundForm,  fakeDraftId, hintTextShown = true)(request, messages).toString
-
-            application.stop()
+          application.stop()
         }
-      }
 
     }
 
     "a new trust" must {
 
-      "return OK and the correct view for a GET" in {
+      "return OK and the correct view for a GET" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          when(registrationsRepository.getMainAnswers(any())(any()))
+            .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-            when(registrationsRepository.getMainAnswers(any())(any()))
-              .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
+          val request = FakeRequest(GET, trustNameRoute)
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val result = route(application, request).value
 
-            val request = FakeRequest(GET, trustNameRoute)
+          val view = application.injector.instanceOf[TrustNameView]
 
-            val result = route(application, request).value
+          status(result) mustEqual OK
 
-            val view = application.injector.instanceOf[TrustNameView]
+          contentAsString(result) mustEqual
+            view(form, fakeDraftId, hintTextShown = false)(request, messages).toString
 
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(form,  fakeDraftId, hintTextShown = false)(request, messages).toString
-
-            application.stop()
+          application.stop()
         }
-      }
 
-      "populate the view correctly on a GET when the question has previously been answered" in {
+      "populate the view correctly on a GET when the question has previously been answered" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          when(registrationsRepository.getMainAnswers(any())(any()))
+            .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
+          val answers = userAnswers
+            .set(TrustNamePage, "This Name")
+            .success
+            .value
 
-            when(registrationsRepository.getMainAnswers(any())(any()))
-              .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
+          val application = applicationBuilder(userAnswers = Some(answers)).build()
+          val request     = FakeRequest(GET, trustNameRoute)
 
-            val answers = userAnswers
-              .set(TrustNamePage, "This Name").success.value
+          val view = application.injector.instanceOf[TrustNameView]
 
-            val application = applicationBuilder(userAnswers = Some(answers)).build()
-            val request = FakeRequest(GET, trustNameRoute)
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[TrustNameView]
+          status(result) mustEqual OK
 
-            val result = route(application, request).value
+          contentAsString(result) mustEqual
+            view(form.fill("This Name"), fakeDraftId, hintTextShown = false)(request, messages).toString
 
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(form.fill("This Name"),  fakeDraftId, hintTextShown = false)(request, messages).toString
-
-            application.stop()
+          application.stop()
         }
-      }
 
-      "return a Bad Request and errors when invalid data is submitted" in {
+      "return a Bad Request and errors when invalid data is submitted" in
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          when(registrationsRepository.getMainAnswers(any())(any()))
+            .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-            when(registrationsRepository.getMainAnswers(any())(any()))
-              .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
+          val request =
+            FakeRequest(POST, trustNameRoute)
+              .withFormUrlEncodedBody(("value", ""))
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val boundForm = form.bind(Map("value" -> ""))
 
-            val request =
-              FakeRequest(POST, trustNameRoute)
-                .withFormUrlEncodedBody(("value", ""))
+          val view = application.injector.instanceOf[TrustNameView]
 
-            val boundForm = form.bind(Map("value" -> ""))
+          val result = route(application, request).value
 
-            val view = application.injector.instanceOf[TrustNameView]
+          status(result) mustEqual BAD_REQUEST
 
-            val result = route(application, request).value
+          contentAsString(result) mustEqual
+            view(boundForm, fakeDraftId, hintTextShown = false)(request, messages).toString
 
-            status(result) mustEqual BAD_REQUEST
-
-            contentAsString(result) mustEqual
-              view(boundForm,  fakeDraftId, hintTextShown = false)(request, messages).toString
-
-            application.stop()
+          application.stop()
         }
-      }
 
     }
-
 
     "redirect to the next page when valid data is submitted" in {
 
@@ -266,4 +247,5 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
     }
 
   }
+
 }

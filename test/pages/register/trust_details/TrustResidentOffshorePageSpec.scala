@@ -34,7 +34,9 @@ class TrustResidentOffshorePageSpec extends PageBehaviours {
       "no selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(TrustPreviouslyResidentPage, "FR").success.value
+          .set(TrustPreviouslyResidentPage, "FR")
+          .success
+          .value
 
         val result = userAnswers.set(TrustResidentOffshorePage, false).success.value
 
@@ -42,4 +44,5 @@ class TrustResidentOffshorePageSpec extends PageBehaviours {
       }
     }
   }
+
 }

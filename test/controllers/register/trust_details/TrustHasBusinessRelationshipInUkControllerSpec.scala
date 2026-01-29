@@ -28,7 +28,8 @@ class TrustHasBusinessRelationshipInUkControllerSpec extends SpecBase {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustHasBusinessRelationshipInUkYesNo")
 
-  private lazy val onPageLoadRoute: String = routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId).url
+  private lazy val onPageLoadRoute: String =
+    routes.TrustHasBusinessRelationshipInUkController.onPageLoad(fakeDraftId).url
 
   private val validAnswer: Boolean = true
 
@@ -140,4 +141,5 @@ class TrustHasBusinessRelationshipInUkControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

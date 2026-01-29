@@ -28,4 +28,5 @@ class TrustNamePageSpec extends PageBehaviours {
 
     beRemovable[String](TrustNamePage)
   }
+
 }

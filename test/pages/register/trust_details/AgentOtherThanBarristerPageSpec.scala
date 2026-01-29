@@ -28,4 +28,5 @@ class AgentOtherThanBarristerPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AgentOtherThanBarristerPage)
   }
+
 }

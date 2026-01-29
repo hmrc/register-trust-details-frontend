@@ -34,11 +34,21 @@ class TrusteesBasedInTheUKPageSpec extends PageBehaviours {
       "UK based trustees selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(SettlorsBasedInTheUKPage, true).success.value
-          .set(TrustHasBusinessRelationshipInUkPage, true).success.value
-          .set(RegisteringTrustFor5APage, false).success.value
-          .set(InheritanceTaxActPage, true).success.value
-          .set(AgentOtherThanBarristerPage, true).success.value
+          .set(SettlorsBasedInTheUKPage, true)
+          .success
+          .value
+          .set(TrustHasBusinessRelationshipInUkPage, true)
+          .success
+          .value
+          .set(RegisteringTrustFor5APage, false)
+          .success
+          .value
+          .set(InheritanceTaxActPage, true)
+          .success
+          .value
+          .set(AgentOtherThanBarristerPage, true)
+          .success
+          .value
 
         val result = userAnswers.set(TrusteesBasedInTheUKPage, TrusteesBasedInTheUK.UKBasedTrustees).success.value
 
@@ -52,10 +62,18 @@ class TrusteesBasedInTheUKPageSpec extends PageBehaviours {
       "non-UK based trustees selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(SettlorsBasedInTheUKPage, false).success.value
-          .set(EstablishedUnderScotsLawPage, true).success.value
-          .set(TrustResidentOffshorePage, true).success.value
-          .set(TrustPreviouslyResidentPage, "FR").success.value
+          .set(SettlorsBasedInTheUKPage, false)
+          .success
+          .value
+          .set(EstablishedUnderScotsLawPage, true)
+          .success
+          .value
+          .set(TrustResidentOffshorePage, true)
+          .success
+          .value
+          .set(TrustPreviouslyResidentPage, "FR")
+          .success
+          .value
 
         val result = userAnswers.set(TrusteesBasedInTheUKPage, TrusteesBasedInTheUK.NonUkBasedTrustees).success.value
 
@@ -66,4 +84,5 @@ class TrusteesBasedInTheUKPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

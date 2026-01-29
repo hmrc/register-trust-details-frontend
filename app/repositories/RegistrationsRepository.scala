@@ -30,50 +30,44 @@ import utils.Session
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: SubmissionDraftConnector,
-                                               config: FrontendAppConfig,
-                                               submissionSetFactory: SubmissionSetFactory,
-                                               trustStoreService: TrustsStoreService
-                                              )(implicit ec: ExecutionContext) extends RegistrationsRepository with Logging {
+class DefaultRegistrationsRepository @Inject() (
+  submissionDraftConnector: SubmissionDraftConnector,
+  config: FrontendAppConfig,
+  submissionSetFactory: SubmissionSetFactory,
+  trustStoreService: TrustsStoreService
+)(implicit ec: ExecutionContext)
+    extends RegistrationsRepository with Logging {
 
   private val userAnswersSection = config.repositoryKey
   private val mainAnswersSection = "main"
 
-  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean] = {
+  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean] =
     for {
-      dataSet <- submissionSetFactory.createFrom(userAnswers)
+      dataSet  <- submissionSetFactory.createFrom(userAnswers)
       response <- submissionDraftConnector.setDraftSectionSet(
-        userAnswers.draftId,
-        userAnswersSection,
-        dataSet
-      )
-    } yield {
-      response.status == http.Status.OK
-    }
-  }
+                    userAnswers.draftId,
+                    userAnswersSection,
+                    dataSet
+                  )
+    } yield response.status == http.Status.OK
 
-  override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
-    submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
-      response =>
-        response.data.validate[UserAnswers] match {
-          case JsSuccess(userAnswers, _) => Some(userAnswers)
-          case _ => None
-        }
+  override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
+    submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map { response =>
+      response.data.validate[UserAnswers] match {
+        case JsSuccess(userAnswers, _) => Some(userAnswers)
+        case _                         => None
+      }
     }
-  }
 
-  override def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]] = {
-    submissionDraftConnector.getDraftSection(draftId, mainAnswersSection).map {
-      response =>
-        response.data.validate[ReadOnlyUserAnswers] match {
-          case JsSuccess(userAnswers, _) => Some(userAnswers)
-          case _ => None
-        }
+  override def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]] =
+    submissionDraftConnector.getDraftSection(draftId, mainAnswersSection).map { response =>
+      response.data.validate[ReadOnlyUserAnswers] match {
+        case JsSuccess(userAnswers, _) => Some(userAnswers)
+        case _                         => None
+      }
     }
-  }
 
-  override def modifyTaxLiabilityState(userAnswers: UserAnswers)
-                                      (implicit hc: HeaderCarrier): Future[Unit] = {
+  override def modifyTaxLiabilityState(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Unit] =
 
     userAnswers.get(WhenTrustSetupPage) match {
       case Some(trustStartDate) =>
@@ -85,20 +79,20 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
             } else {
               resetTaxLiability(userAnswers)
             }
-          case None =>
-            logger.info(s"[.modifyTaxLiabilityState][${Session.id(hc)}] tax liability has not been answered, nothing to reset")
+          case None       =>
+            logger.info(
+              s"[.modifyTaxLiabilityState][${Session.id(hc)}] tax liability has not been answered, nothing to reset"
+            )
             Future.successful(())
         }
-      case None =>
+      case None                 =>
         logger.info(s"[.modifyTaxLiabilityState][${Session.id(hc)}] no trust start date, nothing to reset")
         Future.successful(())
     }
-  }
 
-  private def resetTaxLiability(userAnswers: UserAnswers)
-                               (implicit hc: HeaderCarrier): Future[Unit] = {
+  private def resetTaxLiability(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
     val updateStatus = trustStoreService.updateTaxLiabilityTaskStatus(userAnswers.draftId, TaskStatus.InProgress)
-    val reset = submissionDraftConnector.resetTaxLiability(userAnswers.draftId)
+    val reset        = submissionDraftConnector.resetTaxLiability(userAnswers.draftId)
     for {
       _ <- updateStatus
       _ <- reset
@@ -107,6 +101,7 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
       ()
     }
   }
+
 }
 
 trait RegistrationsRepository {

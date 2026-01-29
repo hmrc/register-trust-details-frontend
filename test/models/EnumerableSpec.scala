@@ -28,18 +28,16 @@ object EnumerableSpec {
   case object Baz extends Foo
 
   object Foo {
-    val values: Set[Foo] = Set(Bar, Baz)
+    val values: Set[Foo]                        = Set(Bar, Baz)
+
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+
   }
+
 }
 
-class EnumerableSpec
-  extends AnyWordSpec
-    with Matchers
-    with EitherValues
-    with OptionValues
-    with Enumerable.Implicits {
+class EnumerableSpec extends AnyWordSpec with Matchers with EitherValues with OptionValues with Enumerable.Implicits {
 
   import EnumerableSpec._
 
@@ -48,7 +46,7 @@ class EnumerableSpec
       val e = implicitly[Enumerable[Foo]]
       e.withName("Bar").value mustBe Bar
       e.withName("Baz").value mustBe Baz
-      e.withName("nope") mustBe None
+      e.withName("nope")      mustBe None
     }
   }
 
@@ -95,4 +93,5 @@ class EnumerableSpec
       implicitly[Format[Foo]]
     }
   }
+
 }

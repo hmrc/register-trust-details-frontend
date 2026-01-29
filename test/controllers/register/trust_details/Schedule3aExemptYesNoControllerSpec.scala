@@ -28,7 +28,6 @@ class Schedule3aExemptYesNoControllerSpec extends SpecBase {
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("schedule3aExemptYesNo")
 
-
   lazy val schedule3aExemptYesNoRoute: String = routes.Schedule3aExemptYesNoController.onPageLoad(fakeDraftId).url
 
   "Schedule3aExemptYesNoController" must {
@@ -143,4 +142,5 @@ class Schedule3aExemptYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

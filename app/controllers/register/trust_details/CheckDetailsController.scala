@@ -33,32 +33,32 @@ import views.html.register.trust_details.CheckDetailsView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        repository: RegistrationsRepository,
-                                        navigator: Navigator,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        val appConfig: FrontendAppConfig,
-                                        printHelper: TrustDetailsPrintHelper,
-                                        trustsStoreService: TrustsStoreService
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  repository: RegistrationsRepository,
+  navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  val appConfig: FrontendAppConfig,
+  printHelper: TrustDetailsPrintHelper,
+  trustsStoreService: TrustsStoreService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {
     implicit request =>
-
       val section: AnswerSection = printHelper.checkDetailsSection(request.userAnswers)
       Ok(view(Seq(section), draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId).async {
-    implicit request =>
-
+  def onSubmit(draftId: String): Action[AnyContent] =
+    standardActionSets.identifiedUserWithData(draftId).async { implicit request =>
       for {
         _ <- trustsStoreService.updateTaskStatus(draftId, Completed)
         _ <- repository.set(request.userAnswers)
         _ <- repository.modifyTaxLiabilityState(request.userAnswers)
       } yield Redirect(navigator.nextPage(CheckDetailsPage, draftId, request.userAnswers))
-  }
+    }
+
 }

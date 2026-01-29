@@ -29,10 +29,12 @@ class CountryOptionsNonUKSpec extends SpecBase {
     "build correctly the English InputOptions with non-UK country list and country code" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(defaultAppConfigurations ++ Map("location.canonical.list.all" -> "non-uk-countries-canonical-list-test.json"))
+        .configure(
+          defaultAppConfigurations ++ Map("location.canonical.list.all" -> "non-uk-countries-canonical-list-test.json")
+        )
         .build()
 
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi                     = app.injector.instanceOf[MessagesApi]
       implicit val messages: MessagesImpl = MessagesImpl(lang = Lang(ENGLISH), messagesApi = messagesApi)
 
       val countryOption = application.injector.instanceOf[CountryOptionsNonUK].options()
@@ -44,10 +46,14 @@ class CountryOptionsNonUKSpec extends SpecBase {
     "build correctly the Welsh InputOptions with non-UK country list and country code" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(defaultAppConfigurations ++ Map("location.canonical.list.allCY" -> "non-uk-countries-canonical-list-test-cy.json"))
+        .configure(
+          defaultAppConfigurations ++ Map(
+            "location.canonical.list.allCY" -> "non-uk-countries-canonical-list-test-cy.json"
+          )
+        )
         .build()
 
-      val messagesApi = app.injector.instanceOf[MessagesApi]
+      val messagesApi                     = app.injector.instanceOf[MessagesApi]
       implicit val messages: MessagesImpl = MessagesImpl(lang = Lang(WELSH), messagesApi = messagesApi)
 
       val countryOption = application.injector.instanceOf[CountryOptionsNonUK].options()
@@ -69,7 +75,5 @@ class CountryOptionsNonUKSpec extends SpecBase {
       application.stop()
     }
   }
+
 }
-
-
-

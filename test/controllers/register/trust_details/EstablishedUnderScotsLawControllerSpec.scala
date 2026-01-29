@@ -142,4 +142,5 @@ class EstablishedUnderScotsLawControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }
