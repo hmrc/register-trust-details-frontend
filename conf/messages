@@ -173,7 +173,6 @@ trustHasBusinessRelationshipInUkYesNo.bullet6 = an estate agent
 trustHasBusinessRelationshipInUkYesNo.bullet7 = a bank or building society
 trustHasBusinessRelationshipInUkYesNo.bullet8 = another professional organisation
 
-trustListedOnEeaRegisterYesNo.checkYourAnswersLabel = Trusts registered in the European Economic Area (EEA)
 trustListedOnEeaRegisterYesNo.title = Trusts registered in the European Economic Area (EEA)
 trustListedOnEeaRegisterYesNo.heading = Trusts registered in the European Economic Area (EEA)
 trustListedOnEeaRegisterYesNo.paragraph = You need to tell HMRC if the trust is on the trust register of any countries within the EEA.
@@ -184,6 +183,7 @@ trustListedOnEeaRegisterYesNo.text.bullet2 = Iceland
 trustListedOnEeaRegisterYesNo.text.bullet3 = Liechtenstein
 trustListedOnEeaRegisterYesNo.text.bullet4 = Norway
 trustListedOnEeaRegisterYesNo.question = Is the trust registered on the trust register of any countries within the EEA?
+trustListedOnEeaRegisterYesNo.checkYourAnswersLabel = Is the trust registered on the trust register of any countries within the EEA?
 
 trustOwnsUkPropertyOrLandYesNo.title = Has the trust acquired land or property in the UK since 6 October 2020?
 trustOwnsUkPropertyOrLandYesNo.heading = Has the trust acquired land or property in the UK since 6 October 2020?
