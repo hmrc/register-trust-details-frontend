@@ -28,7 +28,7 @@ object EnumerableSpec {
   case object Baz extends Foo
 
   object Foo {
-    val values: Set[Foo]                        = Set(Bar, Baz)
+    val values: Set[Foo] = Set(Bar, Baz)
 
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(values.toSeq.map(v => v.toString -> v): _*)

@@ -25,7 +25,7 @@ import scala.util.matching.Regex
 
 class MessagesSpec extends SpecBase {
 
-  private val logger  = Logger(this.getClass)
+  private val logger = Logger(this.getClass)
 
   private val configs = defaultAppConfigurations ++ Seq(
     "application.langs"               -> "en,cy",

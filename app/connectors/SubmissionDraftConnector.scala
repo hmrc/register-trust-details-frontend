@@ -57,7 +57,7 @@ class SubmissionDraftConnector @Inject() (http: HttpClientV2, config: FrontendAp
         true
       }
 
-  def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]           =
+  def getIsExpressTrust(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     http
       .get(url"$submissionsBaseUrl/$draftId/is-express-trust")
       .execute[Boolean]
