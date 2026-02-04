@@ -21,8 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class ExistingTrustMatchedSpec extends PageBehaviours {
 
-  "ExistingTrustMatched" must {
-
+  "ExistingTrustMatched" must
     beRetrievable[Matched](ExistingTrustMatched)
-  }
+
 }

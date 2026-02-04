@@ -20,38 +20,40 @@ import java.time.LocalDate
 
 import play.api.libs.json._
 
-case class TrustDetailsType(startDate: LocalDate,
-                            lawCountry: Option[String],
-                            administrationCountry: Option[String],
-                            residentialStatus: Option[ResidentialStatusType],
-                            trustUKProperty: Option[Boolean] = None,
-                            trustRecorded: Option[Boolean] = None,
-                            trustUKRelation: Option[Boolean] = None,
-                            trustUKResident: Option[Boolean] = None,
-                            schedule3aExempt: Option[Boolean] = None)
+case class TrustDetailsType(
+  startDate: LocalDate,
+  lawCountry: Option[String],
+  administrationCountry: Option[String],
+  residentialStatus: Option[ResidentialStatusType],
+  trustUKProperty: Option[Boolean] = None,
+  trustRecorded: Option[Boolean] = None,
+  trustUKRelation: Option[Boolean] = None,
+  trustUKResident: Option[Boolean] = None,
+  schedule3aExempt: Option[Boolean] = None
+)
 
 object TrustDetailsType {
   implicit val trustDetailsTypeFormat: Format[TrustDetailsType] = Json.format[TrustDetailsType]
 }
 
-case class ResidentialStatusType(uk: Option[UkType],
-                                 nonUK: Option[NonUKType])
+case class ResidentialStatusType(uk: Option[UkType], nonUK: Option[NonUKType])
 
 object ResidentialStatusType {
   implicit val residentialStatusTypeFormat: Format[ResidentialStatusType] = Json.format[ResidentialStatusType]
 }
 
-case class UkType(scottishLaw: Boolean,
-                  preOffShore: Option[String])
+case class UkType(scottishLaw: Boolean, preOffShore: Option[String])
 
 object UkType {
   implicit val ukTypeFormat: Format[UkType] = Json.format[UkType]
 }
 
-case class NonUKType(sch5atcgga92: Boolean,
-                     s218ihta84: Option[Boolean],
-                     agentS218IHTA84: Option[Boolean],
-                     trusteeStatus: Option[String])
+case class NonUKType(
+  sch5atcgga92: Boolean,
+  s218ihta84: Option[Boolean],
+  agentS218IHTA84: Option[Boolean],
+  trusteeStatus: Option[String]
+)
 
 object NonUKType {
   implicit val nonUKTypeFormat: Format[NonUKType] = Json.format[NonUKType]

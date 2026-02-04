@@ -140,4 +140,5 @@ class TrustListedOnEeaRegisterControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

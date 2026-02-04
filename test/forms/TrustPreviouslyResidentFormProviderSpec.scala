@@ -22,10 +22,10 @@ import play.api.data.FormError
 class TrustPreviouslyResidentFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "trustPreviouslyResident.error.required"
-  val lengthKey = "trustPreviouslyResident.error.length"
-  val maxLength = 100
-  val regexp = "^[A-Za-z ,.()'-]*$"
-  val invalidKey = "trustPreviouslyResident.error.invalidCharacters"
+  val lengthKey   = "trustPreviouslyResident.error.length"
+  val maxLength   = 100
+  val regexp      = "^[A-Za-z ,.()'-]*$"
+  val invalidKey  = "trustPreviouslyResident.error.invalidCharacters"
 
   val form = new TrustPreviouslyResidentFormProvider()()
 
@@ -61,8 +61,11 @@ class TrustPreviouslyResidentFormProviderSpec extends StringFieldBehaviours {
     )
 
     behave like nonEmptyField(
-      form, fieldName, FormError(fieldName, requiredKey, Seq(fieldName))
+      form,
+      fieldName,
+      FormError(fieldName, requiredKey, Seq(fieldName))
     )
 
   }
+
 }

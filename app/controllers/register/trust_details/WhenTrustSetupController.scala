@@ -35,56 +35,51 @@ import views.html.register.trust_details.WhenTrustSetupView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhenTrustSetupController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          registrationsRepository: RegistrationsRepository,
-                                          navigator: Navigator,
-                                          formProvider: WhenTrustSetupFormProvider,
-                                          standardActions: StandardActionSets,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: WhenTrustSetupView,
-                                          appConfig: FrontendAppConfig
-                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class WhenTrustSetupController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  formProvider: WhenTrustSetupFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhenTrustSetupView,
+  appConfig: FrontendAppConfig
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-
- private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
+  private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   private def form(draftId: String)(implicit hc: HeaderCarrier): Future[Form[LocalDate]] =
     minDate(draftId) map { config =>
       formProvider.withConfig(config)
     }
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    val preparedForm = request.userAnswers.get(WhenTrustSetupPage) match {
+      case None        => form(draftId)
+      case Some(value) => form(draftId).map(_.fill(value))
+    }
 
-      val preparedForm = request.userAnswers.get(WhenTrustSetupPage) match {
-        case None => form(draftId)
-        case Some(value) => form(draftId).map(_.fill(value))
-      }
-
-      preparedForm map { form =>
-        Ok(view(form, draftId))
-      }
+    preparedForm map { form =>
+      Ok(view(form, draftId))
+    }
 
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
-
-      form(draftId).flatMap(_.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value => {
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    form(draftId).flatMap(
+      _.bindFromRequest().fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenTrustSetupPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(WhenTrustSetupPage, draftId, updatedAnswers))
-        }
-      ))
+      )
+    )
   }
 
-  private def minDate(draftId: String)(implicit hc: HeaderCarrier): Future[(LocalDate, String)] = {
+  private def minDate(draftId: String)(implicit hc: HeaderCarrier): Future[(LocalDate, String)] =
     registrationsRepository.getMainAnswers(draftId) map {
       _.flatMap {
         _.get(SettlorDateOfDeathPage) map { dateOfDeath =>
@@ -92,6 +87,5 @@ class WhenTrustSetupController @Inject()(
         }
       } getOrElse ((appConfig.minDate, "past"))
     }
-  }
-}
 
+}

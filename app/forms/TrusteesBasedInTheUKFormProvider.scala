@@ -27,4 +27,5 @@ class TrusteesBasedInTheUKFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[TrusteesBasedInTheUK]("trusteesBasedInTheUK.error.required")
     )
+
 }

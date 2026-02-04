@@ -21,10 +21,11 @@ import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import play.api.mvc.{ActionBuilder, AnyContent}
 
-class StandardActionSets @Inject()(identify: RegistrationIdentifierAction,
-                                   getData: DraftIdRetrievalActionProvider,
-                                   requireData: RegistrationDataRequiredAction
-                                  ){
+class StandardActionSets @Inject() (
+  identify: RegistrationIdentifierAction,
+  getData: DraftIdRetrievalActionProvider,
+  requireData: RegistrationDataRequiredAction
+) {
 
   def identifiedUserWithData(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData

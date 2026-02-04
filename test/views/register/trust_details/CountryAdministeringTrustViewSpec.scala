@@ -46,4 +46,5 @@ class CountryAdministeringTrustViewSpec extends SelectCountryViewBehaviours {
     behave like selectCountryPage(form, applyView, messageKeyPrefix)
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

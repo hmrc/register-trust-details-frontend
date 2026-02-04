@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  private val trustsStoreService: TrustsStoreService = Mockito.mock(classOf[TrustsStoreService])
+  private val trustsStoreService: TrustsStoreService             = Mockito.mock(classOf[TrustsStoreService])
   private val submissionDraftConnector: SubmissionDraftConnector = Mockito.mock(classOf[SubmissionDraftConnector])
 
   override def beforeEach(): Unit = {
@@ -75,7 +75,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.register.trust_details.routes.CheckDetailsController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustBe controllers.register.trust_details.routes.CheckDetailsController
+            .onPageLoad(fakeDraftId)
+            .url
 
           val inOrder = Mockito.inOrder(trustsStoreService)
           inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
@@ -91,7 +93,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           "redirect to WhenTrustSetupController" in {
 
             val answers = emptyUserAnswers
-              .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
+              .setAtPath(ExistingTrustMatched.path, JsString(Success.toString))
+              .success
+              .value
 
             val application = applicationBuilder()
               .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
@@ -105,7 +109,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
+            redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController
+              .onPageLoad(fakeDraftId)
+              .url
 
             val inOrder = Mockito.inOrder(trustsStoreService)
             inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
@@ -132,7 +138,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
+            redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController
+              .onPageLoad(fakeDraftId)
+              .url
 
             val inOrder = Mockito.inOrder(trustsStoreService)
             inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
@@ -144,7 +152,6 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
 
       "update value of isTaxable to true, isExpress to true in user answers" in {
-
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
@@ -207,7 +214,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         "trust has been matched" in {
 
           val answers = emptyUserAnswers
-            .setAtPath(ExistingTrustMatched.path, JsString(Success.toString)).success.value
+            .setAtPath(ExistingTrustMatched.path, JsString(Success.toString))
+            .success
+            .value
 
           val application = applicationBuilder()
             .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
@@ -221,7 +230,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustBe controllers.register.trust_details.routes.WhenTrustSetupController
+            .onPageLoad(fakeDraftId)
+            .url
 
           val inOrder = Mockito.inOrder(trustsStoreService)
           inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
@@ -248,7 +259,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustBe controllers.register.trust_details.routes.TrustNameController
+            .onPageLoad(fakeDraftId)
+            .url
 
           val inOrder = Mockito.inOrder(trustsStoreService)
           inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
@@ -259,4 +272,5 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       }
     }
   }
+
 }

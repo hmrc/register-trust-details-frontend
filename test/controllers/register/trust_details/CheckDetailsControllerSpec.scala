@@ -67,8 +67,8 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CheckDetailsView]
-      val printHelper = application.injector.instanceOf[TrustDetailsPrintHelper]
+      val view          = application.injector.instanceOf[CheckDetailsView]
+      val printHelper   = application.injector.instanceOf[TrustDetailsPrintHelper]
       val answerSection = printHelper.checkDetailsSection(userAnswers)
 
       status(result) mustEqual OK
@@ -102,4 +102,5 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     }
 
   }
+
 }

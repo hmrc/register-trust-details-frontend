@@ -142,4 +142,5 @@ class AgentOtherThanBarristerControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

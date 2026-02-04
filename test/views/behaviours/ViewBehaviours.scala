@@ -22,12 +22,10 @@ import views.ViewSpecBase
 
 trait ViewBehaviours extends ViewSpecBase {
 
-  private def findBannerTitle(view:HtmlFormat.Appendable):String =
+  private def findBannerTitle(view: HtmlFormat.Appendable): String =
     asDocument(view).getElementsByClass("govuk-service-navigation__service-name").text().trim
 
-  def normalPage(view: HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*): Unit = {
+  def normalPage(view: HtmlFormat.Appendable, messageKeyPrefix: String, expectedGuidanceKeys: String*): Unit =
 
     "behave like a normal page" when {
 
@@ -63,12 +61,13 @@ trait ViewBehaviours extends ViewSpecBase {
 
       }
     }
-  }
 
-  def dynamicTitlePage(view: HtmlFormat.Appendable,
-                       messageKeyPrefix: String,
-                       messageKeyParam: String,
-                       expectedGuidanceKeys: String*): Unit = {
+  def dynamicTitlePage(
+    view: HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    messageKeyParam: String,
+    expectedGuidanceKeys: String*
+  ): Unit =
 
     "behave like a dynamic title page" when {
 
@@ -104,12 +103,13 @@ trait ViewBehaviours extends ViewSpecBase {
 
       }
     }
-  }
 
-  def confirmationPage(view: HtmlFormat.Appendable,
-                       messageKeyPrefix: String,
-                       messageKeyParam: String,
-                       accessibleKeyParam: String): Unit = {
+  def confirmationPage(
+    view: HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    messageKeyParam: String,
+    accessibleKeyParam: String
+  ): Unit =
 
     "behave like a confirmation page" when {
 
@@ -139,9 +139,8 @@ trait ViewBehaviours extends ViewSpecBase {
 
       }
     }
-  }
 
-  def pageWithBackLink(view: HtmlFormat.Appendable): Unit = {
+  def pageWithBackLink(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with a back link" must {
 
@@ -151,24 +150,22 @@ trait ViewBehaviours extends ViewSpecBase {
         assertRenderedByClass(doc, "govuk-back-link")
       }
     }
-  }
 
-  def pageWithLink(view: HtmlFormat.Appendable, id: String, url : String): Unit = {
+  def pageWithLink(view: HtmlFormat.Appendable, id: String, url: String): Unit =
 
     "behave like a page with a link" must {
 
       "have a link" in {
 
-        val doc = asDocument(view)
+        val doc     = asDocument(view)
         val element = doc.getElementById(id)
 
         assertRenderedByClass(doc, id)
         assertAttributeValueForElement(element, "href", url)
       }
     }
-  }
 
-  def pageWithASubmitButton(view: HtmlFormat.Appendable): Unit = {
+  def pageWithASubmitButton(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with a submit button" must {
       "have a submit button" in {
@@ -176,14 +173,13 @@ trait ViewBehaviours extends ViewSpecBase {
         assertRenderedById(doc, "submit")
       }
     }
-  }
 
-  def pageWithContinueButton(view: HtmlFormat.Appendable, url : String): Unit = {
+  def pageWithContinueButton(view: HtmlFormat.Appendable, url: String): Unit =
 
     "behave like a page with a Continue button" must {
       "have a continue button" in {
         val doc = asDocument(view)
-        assertContainsTextForId(doc,"button", "Continue")
+        assertContainsTextForId(doc, "button", "Continue")
         assertAttributeValueForElement(
           doc.getElementById("button"),
           "href",
@@ -191,18 +187,13 @@ trait ViewBehaviours extends ViewSpecBase {
         )
       }
     }
-  }
 
-  def pageWithHint[A](form: Form[A],
-                      createView: Form[A] => HtmlFormat.Appendable,
-                      expectedHintKey: String): Unit = {
+  def pageWithHint[A](form: Form[A], createView: Form[A] => HtmlFormat.Appendable, expectedHintKey: String): Unit =
 
     "behave like a page with hint text" in {
 
       val doc = asDocument(createView(form))
       assertContainsHint(doc, "value", Some(messages(expectedHintKey)))
     }
-  }
 
 }
-

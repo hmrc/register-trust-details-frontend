@@ -47,4 +47,5 @@ class TrustPreviouslyResidentViewSpec extends SelectCountryViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

@@ -26,18 +26,18 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import java.time.LocalDate
 
 @Singleton
-class FrontendAppConfig @Inject()(val configuration: Configuration,
-                                  contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject() (val configuration: Configuration, contactFrontendConfig: ContactFrontendConfig) {
 
   final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val WELSH   = "cy"
 
-  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
+  val betaFeedbackUrl =
+    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
-  lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
+  lazy val authUrl: String          = configuration.get[Service]("auth").baseUrl
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val logoutUrl: String = configuration.get[String]("urls.logout")
+  lazy val logoutUrl: String        = configuration.get[String]("urls.logout")
 
   val appName: String = configuration.get[String]("appName")
 
@@ -55,7 +55,7 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  lazy val maintainATrustFrontendUrl: String = configuration.get[String]("urls.maintainATrust")
+  lazy val maintainATrustFrontendUrl: String     = configuration.get[String]("urls.maintainATrust")
   lazy val createAgentServicesAccountUrl: String = configuration.get[String]("urls.createAgentServicesAccount")
 
   lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
@@ -66,6 +66,7 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
     configuration.get[Boolean]("microservice.services.features.schedule3aExempt.enabled")
 
   private def getInt(path: String): Int = configuration.get[Int](path)
+
   private def getDate(entry: String): LocalDate =
     LocalDate.of(
       getInt(s"dates.$entry.year"),
@@ -73,14 +74,14 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
       getInt(s"dates.$entry.day")
     )
 
-  lazy val minDate: LocalDate = getDate("minimum")
+  lazy val minDate: LocalDate         = getDate("minimum")
   lazy val maxPassportDate: LocalDate = getDate("maximumPassport")
 
-  lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
+  lazy val locationCanonicalList: String   = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
-  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
+  lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
 
   val repositoryKey: String = "trustDetails"
 
@@ -95,7 +96,7 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {
       case WELSH => "urls.welshHelpline"
-      case _ => "urls.trustsHelpline"
+      case _     => "urls.trustsHelpline"
     }
 
     configuration.get[String](path)

@@ -29,11 +29,10 @@ case object GovernedInsideTheUKPage extends QuestionPage[Boolean] {
 
   override def toString: String = "governedInsideTheUK"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(true) => userAnswers.remove(CountryGoverningTrustPage)
-      case _ => super.cleanup(value, userAnswers)
+      case _          => super.cleanup(value, userAnswers)
     }
-  }
 
 }

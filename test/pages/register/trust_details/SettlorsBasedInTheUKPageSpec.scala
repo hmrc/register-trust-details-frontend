@@ -34,10 +34,18 @@ class SettlorsBasedInTheUKPageSpec extends PageBehaviours {
       "yes selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(TrustHasBusinessRelationshipInUkPage, true).success.value
-          .set(RegisteringTrustFor5APage, false).success.value
-          .set(InheritanceTaxActPage, true).success.value
-          .set(AgentOtherThanBarristerPage, true).success.value
+          .set(TrustHasBusinessRelationshipInUkPage, true)
+          .success
+          .value
+          .set(RegisteringTrustFor5APage, false)
+          .success
+          .value
+          .set(InheritanceTaxActPage, true)
+          .success
+          .value
+          .set(AgentOtherThanBarristerPage, true)
+          .success
+          .value
 
         val result = userAnswers.set(SettlorsBasedInTheUKPage, true).success.value
 
@@ -50,9 +58,15 @@ class SettlorsBasedInTheUKPageSpec extends PageBehaviours {
       "no selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(EstablishedUnderScotsLawPage, true).success.value
-          .set(TrustResidentOffshorePage, true).success.value
-          .set(TrustPreviouslyResidentPage, "FR").success.value
+          .set(EstablishedUnderScotsLawPage, true)
+          .success
+          .value
+          .set(TrustResidentOffshorePage, true)
+          .success
+          .value
+          .set(TrustPreviouslyResidentPage, "FR")
+          .success
+          .value
 
         val result = userAnswers.set(SettlorsBasedInTheUKPage, false).success.value
 
@@ -62,4 +76,5 @@ class SettlorsBasedInTheUKPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

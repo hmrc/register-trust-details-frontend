@@ -28,7 +28,6 @@ class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "whenTrustSetupDate"
 
-
   val form: Form[LocalDate] = new WhenTrustSetupFormProvider(frontendAppConfig).withConfig()
 
   "WhenTrustSetupView view" must {
@@ -38,17 +37,15 @@ class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, fakeDraftId)(fakeRequest, messages)
 
-    val applyViewF = (form : Form[_]) => applyView(form)
+    val applyViewF = (form: Form[_]) => applyView(form)
 
-    behave like normalPage(applyView(form), messageKeyPrefix,s"hint")
+    behave like normalPage(applyView(form), messageKeyPrefix, s"hint")
 
-    behave like pageWithDateFields(form, applyViewF,
-      messageKeyPrefix,
-      "value"
-    )
+    behave like pageWithDateFields(form, applyViewF, messageKeyPrefix, "value")
 
     behave like pageWithBackLink(applyView(form))
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

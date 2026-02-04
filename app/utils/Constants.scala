@@ -18,6 +18,6 @@ package utils
 
 object Constants {
 
-  final val GB: String  = "GB"
+  final val GB: String = "GB"
 
 }

@@ -34,7 +34,9 @@ class AdministrationInsideUKPageSpec extends PageBehaviours {
       "yes selected" in {
 
         val userAnswers: UserAnswers = emptyUserAnswers
-          .set(CountryAdministeringTrustPage, "FR").success.value
+          .set(CountryAdministeringTrustPage, "FR")
+          .success
+          .value
 
         val result = userAnswers.set(AdministrationInsideUKPage, true).success.value
 
@@ -42,4 +44,5 @@ class AdministrationInsideUKPageSpec extends PageBehaviours {
       }
     }
   }
+
 }

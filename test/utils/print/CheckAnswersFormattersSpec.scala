@@ -54,4 +54,5 @@ class CheckAnswersFormattersSpec extends SpecBase {
       }
     }
   }
+
 }

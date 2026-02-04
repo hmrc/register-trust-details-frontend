@@ -28,4 +28,5 @@ class TrustListedOnEeaRegisterPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](TrustListedOnEeaRegisterPage)
   }
+
 }

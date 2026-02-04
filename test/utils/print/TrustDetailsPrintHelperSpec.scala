@@ -31,35 +31,73 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
 
   "Trust details print helper" must {
 
-    "return no answer rows" when  {
+    "return no answer rows" when {
       "there are no answers" in {
-        printHelper.printSection(emptyUserAnswers).rows mustBe Seq.empty
+        printHelper.printSection(emptyUserAnswers).rows        mustBe Seq.empty
         printHelper.checkDetailsSection(emptyUserAnswers).rows mustBe Seq.empty
       }
     }
 
-    "return answer rows" when  {
+    "return answer rows" when {
       "there are answers" in {
         val answers = emptyUserAnswers
-          .set(TrustNamePage, "Trust of John").success.value
-          .set(WhenTrustSetupPage, LocalDate.of(2012, 6, 9)).success.value
-          .set(GovernedInsideTheUKPage, false).success.value
-          .set(CountryGoverningTrustPage, "FR").success.value
-          .set(AdministrationInsideUKPage, false).success.value
-          .set(CountryAdministeringTrustPage, "US").success.value
-          .set(TrustOwnsUkPropertyOrLandPage, true).success.value
-          .set(TrustListedOnEeaRegisterPage, true).success.value
-          .set(TrusteesBasedInTheUKPage, UKBasedTrustees).success.value
-          .set(SettlorsBasedInTheUKPage, true).success.value
-          .set(EstablishedUnderScotsLawPage, false).success.value
-          .set(TrustResidentOffshorePage, false).success.value
-          .set(TrustPreviouslyResidentPage, "CA").success.value
-          .set(TrustHasBusinessRelationshipInUkPage, true).success.value
-          .set(RegisteringTrustFor5APage, true).success.value
-          .set(InheritanceTaxActPage, false).success.value
-          .set(AgentOtherThanBarristerPage, true).success.value
-          .set(Schedule3aExemptYesNoPage, true).success.value
-          .set(TrustListedOnEeaRegisterPage, true).success.value
+          .set(TrustNamePage, "Trust of John")
+          .success
+          .value
+          .set(WhenTrustSetupPage, LocalDate.of(2012, 6, 9))
+          .success
+          .value
+          .set(GovernedInsideTheUKPage, false)
+          .success
+          .value
+          .set(CountryGoverningTrustPage, "FR")
+          .success
+          .value
+          .set(AdministrationInsideUKPage, false)
+          .success
+          .value
+          .set(CountryAdministeringTrustPage, "US")
+          .success
+          .value
+          .set(TrustOwnsUkPropertyOrLandPage, true)
+          .success
+          .value
+          .set(TrustListedOnEeaRegisterPage, true)
+          .success
+          .value
+          .set(TrusteesBasedInTheUKPage, UKBasedTrustees)
+          .success
+          .value
+          .set(SettlorsBasedInTheUKPage, true)
+          .success
+          .value
+          .set(EstablishedUnderScotsLawPage, false)
+          .success
+          .value
+          .set(TrustResidentOffshorePage, false)
+          .success
+          .value
+          .set(TrustPreviouslyResidentPage, "CA")
+          .success
+          .value
+          .set(TrustHasBusinessRelationshipInUkPage, true)
+          .success
+          .value
+          .set(RegisteringTrustFor5APage, true)
+          .success
+          .value
+          .set(InheritanceTaxActPage, false)
+          .success
+          .value
+          .set(AgentOtherThanBarristerPage, true)
+          .success
+          .value
+          .set(Schedule3aExemptYesNoPage, true)
+          .success
+          .value
+          .set(TrustListedOnEeaRegisterPage, true)
+          .success
+          .value
 
         val rows = Seq(
           AnswerRow(
@@ -168,4 +206,5 @@ class TrustDetailsPrintHelperSpec extends SpecBase {
       }
     }
   }
+
 }

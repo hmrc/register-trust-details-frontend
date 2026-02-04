@@ -27,21 +27,24 @@ import scala.concurrent.duration.Duration
 
 class ErrorHandlerSpec extends SpecBase {
 
-  private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private val errorTemplate: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
+  private val messageApi: MessagesApi            = app.injector.instanceOf[MessagesApi]
+  private val errorTemplate: ErrorTemplate       = app.injector.instanceOf[ErrorTemplate]
   private val pageNotFoundView: PageNotFoundView = app.injector.instanceOf[PageNotFoundView]
-  private val errorHandler = new ErrorHandler(messageApi, errorTemplate, pageNotFoundView)
+  private val errorHandler                       = new ErrorHandler(messageApi, errorTemplate, pageNotFoundView)
 
   "ErrorHandler" must {
 
     "standardErrorTemplate" in {
       implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-      val result = Await.result(errorHandler.standardErrorTemplate(
-        pageTitle = "pageTitle",
-        heading = "heading",
-        message = "message"
-      ), Duration.Inf)
+      val result = Await.result(
+        errorHandler.standardErrorTemplate(
+          pageTitle = "pageTitle",
+          heading = "heading",
+          message = "message"
+        ),
+        Duration.Inf
+      )
 
       result mustBe errorTemplate("pageTitle", "heading", "message")
     }
@@ -54,4 +57,5 @@ class ErrorHandlerSpec extends SpecBase {
       result mustBe pageNotFoundView()
     }
   }
+
 }

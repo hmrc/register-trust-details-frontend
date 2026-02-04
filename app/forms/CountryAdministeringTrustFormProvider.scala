@@ -30,6 +30,8 @@ class CountryAdministeringTrustFormProvider @Inject() extends Mappings {
             maxLength(100, "countryAdministeringTrust.error.length"),
             regexp(Validation.countryRegex, "countryAdministeringTrust.error.invalidCharacters"),
             nonEmptyString("value", "countryAdministeringTrust.error.required")
-          ))
+          )
         )
+    )
+
 }

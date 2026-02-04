@@ -26,7 +26,7 @@ import views.html.register.trust_details.AdministrationInsideUKView
 
 class AdministrationInsideUKControllerSpec extends SpecBase {
 
-  val formProvider = new YesNoFormProvider()
+  val formProvider        = new YesNoFormProvider()
   val form: Form[Boolean] = formProvider.withPrefix("administrationInsideUKYesNo")
 
   lazy val administrationInsideUKRoute: String = routes.AdministrationInsideUKController.onPageLoad(fakeDraftId).url
@@ -143,4 +143,5 @@ class AdministrationInsideUKControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

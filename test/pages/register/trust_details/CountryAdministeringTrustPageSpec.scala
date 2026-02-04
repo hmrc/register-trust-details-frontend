@@ -28,4 +28,5 @@ class CountryAdministeringTrustPageSpec extends PageBehaviours {
 
     beRemovable[String](CountryAdministeringTrustPage)
   }
+
 }

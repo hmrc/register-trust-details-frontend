@@ -31,45 +31,43 @@ import views.html.register.trust_details.TrustPreviouslyResidentView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustPreviouslyResidentController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   registrationsRepository: RegistrationsRepository,
-                                                   navigator: Navigator,
-                                                   formProvider: TrustPreviouslyResidentFormProvider,
-                                                   standardActions: StandardActionSets,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: TrustPreviouslyResidentView,
-                                                   val countryOptions: CountryOptionsNonUK
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TrustPreviouslyResidentController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  formProvider: TrustPreviouslyResidentFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: TrustPreviouslyResidentView,
+  val countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(TrustPreviouslyResidentPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(TrustPreviouslyResidentPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, countryOptions.options(), draftId))
+    Ok(view(preparedForm, countryOptions.options(), draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), draftId))),
-
-        value => {
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustPreviouslyResidentPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(TrustPreviouslyResidentPage, draftId, updatedAnswers))
-        }
       )
   }
+
 }

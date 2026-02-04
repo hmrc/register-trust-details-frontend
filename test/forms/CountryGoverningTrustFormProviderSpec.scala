@@ -22,10 +22,10 @@ import play.api.data.FormError
 class CountryGoverningTrustFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "countryGoverningTrust.error.required"
-  val lengthKey = "countryGoverningTrust.error.length"
-  val maxLength = 100
-  val regexp = "^[A-Za-z ,.()'-]*$"
-  val invalidKey = "countryGoverningTrust.error.invalidCharacters"
+  val lengthKey   = "countryGoverningTrust.error.length"
+  val maxLength   = 100
+  val regexp      = "^[A-Za-z ,.()'-]*$"
+  val invalidKey  = "countryGoverningTrust.error.invalidCharacters"
 
   val form = new CountryGoverningTrustFormProvider()()
 
@@ -60,4 +60,5 @@ class CountryGoverningTrustFormProviderSpec extends StringFieldBehaviours {
       error = FormError(fieldName, invalidKey, Seq(regexp))
     )
   }
+
 }

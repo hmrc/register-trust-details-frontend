@@ -29,10 +29,10 @@ case object InheritanceTaxActPage extends QuestionPage[Boolean] {
 
   override def toString: String = "inheritanceTaxAct"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) => userAnswers.remove(AgentOtherThanBarristerPage)
-      case _ => super.cleanup(value, userAnswers)
+      case _           => super.cleanup(value, userAnswers)
     }
-  }
+
 }

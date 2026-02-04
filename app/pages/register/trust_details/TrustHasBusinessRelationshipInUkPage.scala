@@ -29,14 +29,15 @@ case object TrustHasBusinessRelationshipInUkPage extends QuestionPage[Boolean] {
 
   override def toString: String = "hasBusinessRelationshipInUk"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(true) =>
-        userAnswers.remove(RegisteringTrustFor5APage)
+        userAnswers
+          .remove(RegisteringTrustFor5APage)
           .flatMap(_.remove(InheritanceTaxActPage))
           .flatMap(_.remove(AgentOtherThanBarristerPage))
-      case _ =>
+      case _          =>
         super.cleanup(value, userAnswers)
     }
-  }
+
 }

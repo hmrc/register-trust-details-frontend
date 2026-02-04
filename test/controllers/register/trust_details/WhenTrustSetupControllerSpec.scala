@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class WhenTrustSetupControllerSpec extends SpecBase {
 
-  val formProvider = new WhenTrustSetupFormProvider(frontendAppConfig)
+  val formProvider          = new WhenTrustSetupFormProvider(frontendAppConfig)
   val form: Form[LocalDate] = formProvider.withConfig()
 
   val validAnswer: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -75,7 +75,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer),  fakeDraftId)(request, messages).toString
+        view(form.fill(validAnswer), fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -119,23 +119,25 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm,  fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
 
     "return a Bad Request and errors when submitted date is before date of death" in {
 
-      val dateOfDeath: LocalDate = LocalDate.parse("2019-02-03")
+      val dateOfDeath: LocalDate   = LocalDate.parse("2019-02-03")
       val submittedDate: LocalDate = LocalDate.parse("2018-02-03")
 
-      val readOnlyAnswers = ReadOnlyUserAnswers(Json.obj(
-        "settlors" -> Json.obj(
-          "deceased" -> Json.obj(
-            "dateOfDeath" -> dateOfDeath
+      val readOnlyAnswers = ReadOnlyUserAnswers(
+        Json.obj(
+          "settlors" -> Json.obj(
+            "deceased" -> Json.obj(
+              "dateOfDeath" -> dateOfDeath
+            )
           )
         )
-      ))
+      )
 
       when(registrationsRepository.getMainAnswers(any())(any()))
         .thenReturn(Future.successful(Some(readOnlyAnswers)))
@@ -152,11 +154,13 @@ class WhenTrustSetupControllerSpec extends SpecBase {
             "value.year"  -> submittedDate.getYear.toString
           )
 
-      val boundForm = form.bind(Map(
-        "value.day"   -> submittedDate.getDayOfMonth.toString,
-        "value.month" -> submittedDate.getMonthValue.toString,
-        "value.year"  -> submittedDate.getYear.toString
-      ))
+      val boundForm = form.bind(
+        Map(
+          "value.day"   -> submittedDate.getDayOfMonth.toString,
+          "value.month" -> submittedDate.getMonthValue.toString,
+          "value.year"  -> submittedDate.getYear.toString
+        )
+      )
 
       val view = application.injector.instanceOf[WhenTrustSetupView]
 
@@ -165,7 +169,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm,  fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -205,4 +209,5 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -28,7 +28,6 @@ class InheritanceTaxActControllerSpec extends SpecBase {
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("inheritanceTaxActYesNo")
 
-
   lazy val inheritanceTaxActRoute: String = routes.InheritanceTaxActController.onPageLoad(fakeDraftId).url
 
   "InheritanceTaxAct Controller" must {
@@ -142,4 +141,5 @@ class InheritanceTaxActControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -32,9 +32,12 @@ object MappingsSpec {
 
   object Foo {
     val values: Set[Foo] = Set(Bar, Baz)
+
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+
   }
+
 }
 
 class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mappings {
@@ -69,7 +72,7 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     }
 
     "return a custom error message" in {
-      val form = Form("value" -> text("custom.error"))
+      val form   = Form("value" -> text("custom.error"))
       val result = form.bind(Map("value" -> ""))
       errorMessages(result) must contain only "custom.error"
     }
@@ -197,15 +200,15 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
 
     val form = Form(
       "value" -> localDate(
-        invalidKey     = "error.invalid",
+        invalidKey = "error.invalid",
         allRequiredKey = "error.allRequired",
         twoRequiredKey = "error.twoRequired",
-        requiredKey    = "error.required"
+        requiredKey = "error.required"
       )
     )
 
     "bind a valid date" in {
-      val today = LocalDate.now()
+      val today  = LocalDate.now()
       val result = form.bind(
         Map(
           "value.day"   -> today.getDayOfMonth.toString,
@@ -246,4 +249,5 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       errorMessages(result) must contain only "error.invalid"
     }
   }
+
 }

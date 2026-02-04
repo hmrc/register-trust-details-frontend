@@ -27,9 +27,9 @@ import views.html.register.trust_details.TrusteesBasedInTheUKView
 
 class TrusteesBasedInTheUKControllerSpec extends SpecBase {
 
-  lazy val trusteesBasedInTheUKRoute: String = routes.TrusteesBasedInTheUKController.onPageLoad( fakeDraftId).url
+  lazy val trusteesBasedInTheUKRoute: String = routes.TrusteesBasedInTheUKController.onPageLoad(fakeDraftId).url
 
-  val formProvider = new TrusteesBasedInTheUKFormProvider()
+  val formProvider                     = new TrusteesBasedInTheUKFormProvider()
   val form: Form[TrusteesBasedInTheUK] = formProvider()
 
   "TrusteesBasedInTheUK Controller" must {
@@ -47,7 +47,7 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form,  fakeDraftId)(request, messages).toString
+        view(form, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -67,7 +67,7 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(TrusteesBasedInTheUK.values.head),  fakeDraftId)(request, messages).toString
+        view(form.fill(TrusteesBasedInTheUK.values.head), fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -107,7 +107,7 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm,  fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -143,4 +143,5 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -24,12 +24,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
 
-class ConstraintsSpec
-  extends AnyWordSpec
-    with Matchers
-    with ScalaCheckPropertyChecks
-    with Generators
-    with Constraints {
+class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
   "firstError" must {
     "return Valid when all constraints pass" in {
@@ -230,4 +225,5 @@ class ConstraintsSpec
       nonEmptyString("valueName", "error.required")("   \t") mustEqual Invalid("error.required", "valueName")
     }
   }
+
 }

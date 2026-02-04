@@ -43,4 +43,5 @@ class InheritanceTaxActViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

@@ -28,4 +28,5 @@ class EstablishedUnderScotsLawPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](EstablishedUnderScotsLawPage)
   }
+
 }

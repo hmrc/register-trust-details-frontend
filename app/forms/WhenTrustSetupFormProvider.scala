@@ -23,19 +23,21 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class WhenTrustSetupFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
+class WhenTrustSetupFormProvider @Inject() (appConfig: FrontendAppConfig) extends Mappings {
 
   def withConfig(minimumDate: (LocalDate, String) = (appConfig.minDate, "past")): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "whenTrustSetupDate.error.invalid",
+        invalidKey = "whenTrustSetupDate.error.invalid",
         allRequiredKey = "whenTrustSetupDate.error.required.all",
         twoRequiredKey = "whenTrustSetupDate.error.required.two",
-        requiredKey    = "whenTrustSetupDate.error.required"
-      ).verifying(firstError(
-        maxDate(LocalDate.now, s"whenTrustSetupDate.error.future", "day", "month", "year"),
-        minDate(minimumDate._1, s"whenTrustSetupDate.error.${minimumDate._2}", "day", "month", "year")
-      ))
-
+        requiredKey = "whenTrustSetupDate.error.required"
+      ).verifying(
+        firstError(
+          maxDate(LocalDate.now, s"whenTrustSetupDate.error.future", "day", "month", "year"),
+          minDate(minimumDate._1, s"whenTrustSetupDate.error.${minimumDate._2}", "day", "month", "year")
+        )
+      )
     )
+
 }

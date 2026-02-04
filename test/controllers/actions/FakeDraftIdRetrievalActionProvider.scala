@@ -25,8 +25,7 @@ import repositories.RegistrationsRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDraftIdRetrievalActionProvider(dataToReturn: Option[UserAnswers])
-  extends DraftIdRetrievalActionProvider {
+class FakeDraftIdRetrievalActionProvider(dataToReturn: Option[UserAnswers]) extends DraftIdRetrievalActionProvider {
 
   implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
@@ -38,7 +37,3 @@ class FakeDraftIdRetrievalActionProvider(dataToReturn: Option[UserAnswers])
   override def apply(draftId: String) = new DraftIdDataRetrievalAction(draftId, mockedRepository, executionContext)
 
 }
-
-
-
-

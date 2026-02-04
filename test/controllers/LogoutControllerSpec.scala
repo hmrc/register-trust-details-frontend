@@ -84,12 +84,13 @@ class LogoutControllerSpec extends SpecBase {
         eqTo("trusts"),
         argThat[Map[String, String]] { m =>
           m.get("event").contains("signout") &&
-            m.get("service").contains("register-trust-details-frontend") &&
-            m.get("sessionId").exists(_.nonEmpty) &&
-            m.contains("userGroup")
+          m.get("service").contains("register-trust-details-frontend") &&
+          m.get("sessionId").exists(_.nonEmpty) &&
+          m.contains("userGroup")
         }
       )(any[HeaderCarrier], any[ExecutionContext])
 
     application.stop()
   }
+
 }

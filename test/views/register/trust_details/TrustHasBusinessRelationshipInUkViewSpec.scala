@@ -38,8 +38,16 @@ class TrustHasBusinessRelationshipInUkViewSpec extends YesNoViewBehaviours {
     behave like normalPage(
       view = applyView(form),
       messageKeyPrefix = messageKeyPrefix,
-      expectedGuidanceKeys = "paragraph1", "bullet1", "bullet2", "bullet3",
-      "paragraph2", "bullet4", "bullet5", "bullet6", "bullet7", "bullet8"
+      expectedGuidanceKeys = "paragraph1",
+      "bullet1",
+      "bullet2",
+      "bullet3",
+      "paragraph2",
+      "bullet4",
+      "bullet5",
+      "bullet6",
+      "bullet7",
+      "bullet8"
     )
 
     behave like pageWithBackLink(applyView(form))
@@ -48,4 +56,5 @@ class TrustHasBusinessRelationshipInUkViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

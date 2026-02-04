@@ -140,4 +140,5 @@ class TrustOwnsUkPropertyOrLandControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

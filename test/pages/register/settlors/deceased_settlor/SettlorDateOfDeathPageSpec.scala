@@ -22,8 +22,7 @@ import java.time.LocalDate
 
 class SettlorDateOfDeathPageSpec extends PageBehaviours {
 
-  "SettlorDateOfDeathPage" must {
-
+  "SettlorDateOfDeathPage" must
     beRetrievable[LocalDate](SettlorDateOfDeathPage)
-  }
+
 }

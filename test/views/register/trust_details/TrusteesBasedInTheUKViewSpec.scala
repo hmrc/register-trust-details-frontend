@@ -49,13 +49,12 @@ class TrusteesBasedInTheUKViewSpec extends ViewBehaviours {
 
         val doc = asDocument(applyView(form))
 
-        for (option <- TrusteesBasedInTheUK.options) {
+        for (option <- TrusteesBasedInTheUK.options)
           assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = false)
-        }
       }
     }
 
-    for (option <- TrusteesBasedInTheUK.options) {
+    for (option <- TrusteesBasedInTheUK.options)
 
       s"rendered with a value of '${option.value}'" must {
 
@@ -65,11 +64,10 @@ class TrusteesBasedInTheUKViewSpec extends ViewBehaviours {
 
           assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = true)
 
-          for (unselectedOption <- TrusteesBasedInTheUK.options.filterNot(o => o == option)) {
+          for (unselectedOption <- TrusteesBasedInTheUK.options.filterNot(o => o == option))
             assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, isChecked = false)
-          }
         }
       }
-    }
   }
+
 }

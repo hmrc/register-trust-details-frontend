@@ -31,8 +31,10 @@ trait Mocked {
 
   when(registrationsRepository.get(any())(any()))
     .thenReturn(Future.successful(None))
+
   when(registrationsRepository.set(any())(any(), any()))
     .thenReturn(Future.successful(true))
+
   when(registrationsRepository.getMainAnswers(any())(any()))
     .thenReturn(Future.successful(Some(ReadOnlyUserAnswers(Json.obj()))))
 

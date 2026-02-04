@@ -31,44 +31,41 @@ import views.html.register.trust_details.Schedule3aExemptYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class Schedule3aExemptYesNoController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                registrationsRepository: RegistrationsRepository,
-                                                navigator: Navigator,
-                                                formProvider: YesNoFormProvider,
-                                                standardActions: StandardActionSets,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: Schedule3aExemptYesNoView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+class Schedule3aExemptYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  registrationsRepository: RegistrationsRepository,
+  navigator: Navigator,
+  formProvider: YesNoFormProvider,
+  standardActions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: Schedule3aExemptYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider.withPrefix("schedule3aExemptYesNo")
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
-    implicit request =>
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(Schedule3aExemptYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(Schedule3aExemptYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, draftId))
+    Ok(view(preparedForm, draftId))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
-
-        value => {
+  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(Schedule3aExemptYesNoPage, value))
             _              <- registrationsRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(Schedule3aExemptYesNoPage, draftId, updatedAnswers))
-        }
       )
   }
+
 }

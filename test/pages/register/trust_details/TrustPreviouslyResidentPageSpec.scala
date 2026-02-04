@@ -28,4 +28,5 @@ class TrustPreviouslyResidentPageSpec extends PageBehaviours {
 
     beRemovable[String](TrustPreviouslyResidentPage)
   }
+
 }
