@@ -1,6 +1,5 @@
 import play.sbt.routes.RoutesKeys
 import sbt.Def
-import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 lazy val appName: String = "register-trust-details-frontend"
@@ -38,9 +37,7 @@ lazy val microservice = (project in file("."))
           Seq(
             "javascripts/registertrustdetailsfrontend.js",
             "javascripts/iebacklink.js",
-            "javascripts/print.js",
-            "javascripts/autocomplete.js",
-            "javascripts/libraries/location-autocomplete.min.js"
+            "javascripts/print.js"
           )
         )
     ),
