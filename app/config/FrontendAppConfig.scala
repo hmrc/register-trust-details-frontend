@@ -37,7 +37,9 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
   lazy val authUrl: String          = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val logoutUrl: String        = configuration.get[String]("urls.logout")
+
+  lazy val logoutUrl: String =
+    s"${configuration.get[String]("urls.logout")}?useServiceNavigation"
 
   val appName: String = configuration.get[String]("appName")
 
