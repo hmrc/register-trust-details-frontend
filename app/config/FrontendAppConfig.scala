@@ -17,24 +17,17 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
-import play.api.mvc.Call
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import java.time.LocalDate
 
 @Singleton
-class FrontendAppConfig @Inject() (val configuration: Configuration, contactFrontendConfig: ContactFrontendConfig) {
+class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   final val ENGLISH = "en"
   final val WELSH   = "cy"
 
-  val betaFeedbackUrl =
-    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
-
-  lazy val authUrl: String          = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
@@ -46,16 +39,11 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
-  lazy val registrationStartUrl: String = configuration.get[String]("urls.registrationStart")
-
   lazy val registrationProgressUrlTemplate: String =
     configuration.get[String]("urls.registrationProgress")
 
   def registrationProgressUrl(draftId: String): String =
     registrationProgressUrlTemplate.replace(":draftId", draftId)
-
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val maintainATrustFrontendUrl: String     = configuration.get[String]("urls.maintainATrust")
   lazy val createAgentServicesAccountUrl: String = configuration.get[String]("urls.createAgentServicesAccount")
@@ -76,8 +64,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
       getInt(s"dates.$entry.day")
     )
 
-  lazy val minDate: LocalDate         = getDate("minimum")
-  lazy val maxPassportDate: LocalDate = getDate("maximumPassport")
+  lazy val minDate: LocalDate = getDate("minimum")
 
   lazy val locationCanonicalList: String   = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
@@ -91,9 +78,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, contactFron
     "english" -> Lang(ENGLISH),
     "cymraeg" -> Lang(WELSH)
   )
-
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {

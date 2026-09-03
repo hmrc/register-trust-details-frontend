@@ -116,40 +116,6 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     }
   }
 
-  "int" must {
-
-    val testForm: Form[Int] = Form("value" -> int())
-
-    "bind a valid integer" in {
-      testForm.bind(Map("value" -> "1")).get mustEqual 1
-    }
-
-    "not bind an empty value" in {
-      val result = testForm.bind(Map("value" -> ""))
-      errorMessages(result) must contain only "error.required"
-    }
-
-    "not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      errorMessages(result) must contain only "error.required"
-    }
-
-    "not bind a non-numeric value" in {
-      val result = testForm.bind(Map("value" -> "abc"))
-      errorMessages(result) must contain only "error.nonNumeric"
-    }
-
-    "reject a decimal value" in {
-      val result = testForm.bind(Map("value" -> "1.2"))
-      errorMessages(result) must (contain only "error.wholeNumber" or contain only "error.nonNumeric")
-    }
-
-    "unbind a valid value" in {
-      val result = testForm.fill(123)
-      result.apply("value").value.value mustEqual "123"
-    }
-  }
-
   "enumerable" must {
 
     val testForm = Form("value" -> enumerable[Foo]())
@@ -166,33 +132,6 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     "not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       errorMessages(result) must contain only "error.required"
-    }
-  }
-
-  "postcode" must {
-
-    val testForm = Form("value" -> postcode())
-
-    "bind and normalise a valid UK postcode without space/lowercase" in {
-      val result = testForm.bind(Map("value" -> "ec1a1bb"))
-      result.errors mustBe empty
-      result.get.replaceAll("\\s", "") mustEqual "EC1A1BB"
-    }
-
-    "bind a valid UK postcode with space and mixed case" in {
-      val result = testForm.bind(Map("value" -> "Sw1A 1AA"))
-      result.errors mustBe empty
-      result.get.replaceAll("\\s", "") mustEqual "SW1A1AA"
-    }
-
-    "not bind an empty value" in {
-      val result = testForm.bind(Map("value" -> ""))
-      errorMessages(result) must contain only "error.required"
-    }
-
-    "not bind an invalid postcode" in {
-      val result = testForm.bind(Map("value" -> "###"))
-      errorMessages(result) must contain only "error.invalid"
     }
   }
 

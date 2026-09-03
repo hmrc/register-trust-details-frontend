@@ -25,8 +25,8 @@ class MainTemplateSpec extends ViewSpecBase {
 
   val view: MainTemplate = app.injector.instanceOf[MainTemplate]
 
-  private val title       = "Test page"
-  private val mainContent = Html("<p id='main-content'>hello</p>")
+  private val title          = "Test page"
+  private val mainContent    = Html("<p id='main-content'>hello</p>")
   private def render(): Html = view(title)(mainContent)(fakeRequest, messages)
 
   "MainTemplate" must {

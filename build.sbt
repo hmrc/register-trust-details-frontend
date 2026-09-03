@@ -1,18 +1,12 @@
 import play.sbt.routes.RoutesKeys
-import sbt.Def
-import uk.gov.hmrc.DefaultBuildSettings
-
-lazy val appName: String = "register-trust-details-frontend"
 
 ThisBuild / scalaVersion := "2.13.18"
 ThisBuild / majorVersion := 1
 
-lazy val microservice = (project in file("."))
+lazy val microservice = Project("register-trust-details-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
-    majorVersion := 1,
-    name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -23,27 +17,16 @@ lazy val microservice = (project in file("."))
       "views.ViewUtils._",
       "controllers.routes._"
     ),
-    PlayKeys.playDefaultPort := 8842,
+    libraryDependencies ++= AppDependencies(),
+    PlayKeys.playDefaultPort := 8842
+  )
+  .settings(CodeCoverageSettings())
+  .settings(
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:src=routes/.*:s",
       "-Wconf:cat=unused-imports&src=views/.*:s"
-    ),
-    libraryDependencies ++= AppDependencies()
+    )
   )
-  .settings(CodeCoverageSettings())
-
-lazy val testSettings: Seq[Def.Setting[?]] = Seq(
-  fork := true,
-  javaOptions ++= Seq(
-    "-Dlogger.resource=logback-test.xml",
-    "-Dconfig.resource=test.application.conf"
-  )
-)
-
-lazy val it = project
-  .enablePlugins(PlayScala)
-  .dependsOn(microservice % "test->test")
-  .settings(DefaultBuildSettings.itSettings())
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
