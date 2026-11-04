@@ -49,7 +49,7 @@ class FrontendAppConfigSpec extends SpecBase {
 
     ".logoutUrl" must {
       "append the useServiceNavigation parameter" in {
-        config.logoutUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+        config.logoutUrl mustBe "/gg/sign-out"
       }
     }
   }

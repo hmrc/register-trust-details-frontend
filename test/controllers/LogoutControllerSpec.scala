@@ -19,24 +19,27 @@ package controllers
 import base.SpecBase
 import config.FrontendAppConfig
 import org.mockito.ArgumentMatchers.{any, argThat, eq => eqTo}
-import org.mockito.Mockito.{never, verify, when}
 import org.mockito.Mockito
+import org.mockito.Mockito.{never, verify, when}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.net.URLEncoder
 import scala.concurrent.ExecutionContext
 
 class LogoutControllerSpec extends SpecBase {
 
   "logout should redirect and not audit when auditing is disabled" in {
+
     val mockAuditConnector = Mockito.mock(classOf[AuditConnector])
     val mockAppConfig      = Mockito.mock(classOf[FrontendAppConfig])
 
     when(mockAppConfig.logoutAudit).thenReturn(false)
-    when(mockAppConfig.logoutUrl).thenReturn("/feedback-disabled")
+    when(mockAppConfig.logoutWithBasGatewayUrl).thenReturn(frontendAppConfig.logoutWithBasGatewayUrl)
+    when(mockAppConfig.feedbackFrontendUrl).thenReturn(frontendAppConfig.feedbackFrontendUrl)
 
     val application =
       applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -46,11 +49,20 @@ class LogoutControllerSpec extends SpecBase {
         )
         .build()
 
+    val continueUrl = URLEncoder.encode(frontendAppConfig.feedbackFrontendUrl, "UTF-8")
+
+    val expectedUrl = s"${frontendAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"
+
     val request = FakeRequest(GET, routes.LogoutController.logout().url)
     val result  = route(application, request).value
 
     status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustBe "/feedback-disabled"
+
+    val value = redirectLocation(result).value
+
+    value mustBe expectedUrl
+
+    value must include("useServiceNavigation")
 
     verify(mockAuditConnector, never())
       .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any[HeaderCarrier], any[ExecutionContext])
@@ -63,7 +75,8 @@ class LogoutControllerSpec extends SpecBase {
     val mockAppConfig      = Mockito.mock(classOf[FrontendAppConfig])
 
     when(mockAppConfig.logoutAudit).thenReturn(true)
-    when(mockAppConfig.logoutUrl).thenReturn("/feedback-enabled")
+    when(mockAppConfig.logoutWithBasGatewayUrl).thenReturn(frontendAppConfig.logoutWithBasGatewayUrl)
+    when(mockAppConfig.feedbackFrontendUrl).thenReturn(frontendAppConfig.feedbackFrontendUrl)
 
     val application =
       applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -76,8 +89,12 @@ class LogoutControllerSpec extends SpecBase {
     val request = FakeRequest(GET, routes.LogoutController.logout().url)
     val result  = route(application, request).value
 
+    val continueUrl = URLEncoder.encode(mockAppConfig.feedbackFrontendUrl, "UTF-8")
+
+    val expectedUrl = s"${mockAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"
+
     status(result) mustEqual SEE_OTHER
-    redirectLocation(result).value mustBe "/feedback-enabled"
+    redirectLocation(result).value mustBe expectedUrl
 
     verify(mockAuditConnector)
       .sendExplicitAudit(
