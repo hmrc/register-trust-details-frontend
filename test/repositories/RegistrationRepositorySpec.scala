@@ -18,7 +18,7 @@ package repositories
 
 import base.SpecBase
 import connectors.SubmissionDraftConnector
-import models._
+import models.*
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.{never, times, verify, when}
@@ -47,7 +47,7 @@ class RegistrationRepositorySpec extends SpecBase {
   "RegistrationRepository" when {
     "getting user answers" must {
       "read answers from my section" in {
-        implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+        given hc: HeaderCarrier = HeaderCarrier()
 
         val draftId = "DraftId"
 
@@ -60,15 +60,15 @@ class RegistrationRepositorySpec extends SpecBase {
 
         val response = SubmissionDraftResponse(LocalDateTime.now, Json.toJson(userAnswers), None)
 
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(response))
+        when(mockConnector.getDraftSection(any(), any())(using any(), any())).thenReturn(Future.successful(response))
 
         val result = Await.result(repository.get(draftId), Duration.Inf)
 
         result mustBe Some(userAnswers)
-        verify(mockConnector).getDraftSection(draftId, frontendAppConfig.repositoryKey)(hc, executionContext)
+        verify(mockConnector).getDraftSection(draftId, frontendAppConfig.repositoryKey)(using hc, executionContext)
       }
       "read answers from main section" in {
-        implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+        given hc: HeaderCarrier = HeaderCarrier()
 
         val draftId = "DraftId"
 
@@ -87,7 +87,7 @@ class RegistrationRepositorySpec extends SpecBase {
 
         val response = SubmissionDraftResponse(LocalDateTime.now, Json.toJson(dummyData), None)
 
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(response))
+        when(mockConnector.getDraftSection(any(), any())(using any(), any())).thenReturn(Future.successful(response))
 
         val result = Await.result(repository.getMainAnswers(draftId), Duration.Inf)
 
@@ -95,14 +95,14 @@ class RegistrationRepositorySpec extends SpecBase {
         val expectedUserAnswers = ReadOnlyUserAnswers(expectedAnswers)
 
         result mustBe Some(expectedUserAnswers)
-        verify(mockConnector).getDraftSection(draftId, "main")(hc, executionContext)
+        verify(mockConnector).getDraftSection(draftId, "main")(using hc, executionContext)
       }
 
     }
 
     "setting user answers" must {
       "write answers to my section" in {
-        implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+        given hc: HeaderCarrier = HeaderCarrier()
 
         val draftId = "DraftId"
 
@@ -118,17 +118,17 @@ class RegistrationRepositorySpec extends SpecBase {
         )
 
         val mockSubmissionSetFactory = Mockito.mock(classOf[SubmissionSetFactory])
-        when(mockSubmissionSetFactory.createFrom(any())(any())).thenReturn(Future.successful(submissionSet))
+        when(mockSubmissionSetFactory.createFrom(any())(using any())).thenReturn(Future.successful(submissionSet))
 
         val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
-        when(mockConnector.setDraftSectionSet(any(), any(), any())(any(), any()))
+        when(mockConnector.setDraftSectionSet(any(), any(), any())(using any(), any()))
           .thenReturn(Future.successful(HttpResponse(http.Status.OK, "")))
 
         val result = Await.result(repository.set(userAnswers), Duration.Inf)
 
         result mustBe true
-        verify(mockConnector).setDraftSectionSet(draftId, frontendAppConfig.repositoryKey, submissionSet)(
+        verify(mockConnector).setDraftSectionSet(draftId, frontendAppConfig.repositoryKey, submissionSet)(using
           hc,
           executionContext
         )
@@ -149,17 +149,17 @@ class RegistrationRepositorySpec extends SpecBase {
             .success
             .value
 
-          implicit val hc: HeaderCarrier = HeaderCarrier()
+          given hc: HeaderCarrier = HeaderCarrier()
 
           val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
-          when(mockConnector.getTaxLiabilityStartDate(any())(any(), any()))
+          when(mockConnector.getTaxLiabilityStartDate(any())(using any(), any()))
             .thenReturn(Future.successful(Some(LocalDate.of(2020, 1, 1))))
 
-          when(mockConnector.resetTaxLiability(any())(any(), any()))
+          when(mockConnector.resetTaxLiability(any())(using any(), any()))
             .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
 
-          when(mockTrustStoreService.updateTaxLiabilityTaskStatus(any(), any())(any(), any()))
+          when(mockTrustStoreService.updateTaxLiabilityTaskStatus(any(), any())(using any(), any()))
             .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
 
           Await.result(
@@ -167,9 +167,9 @@ class RegistrationRepositorySpec extends SpecBase {
             Duration.Inf
           )
 
-          verify(mockConnector, times(1)).resetTaxLiability(any())(any(), any())
+          verify(mockConnector, times(1)).resetTaxLiability(any())(using any(), any())
           verify(mockTrustStoreService, times(1))
-            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
+            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(using any(), any())
         }
 
       }
@@ -186,11 +186,11 @@ class RegistrationRepositorySpec extends SpecBase {
             .success
             .value
 
-          implicit val hc: HeaderCarrier = HeaderCarrier()
+          given hc: HeaderCarrier = HeaderCarrier()
 
           val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
-          when(mockConnector.getTaxLiabilityStartDate(any())(any(), any()))
+          when(mockConnector.getTaxLiabilityStartDate(any())(using any(), any()))
             .thenReturn(Future.successful(Some(LocalDate.of(2020, 1, 1))))
 
           Await.result(
@@ -198,9 +198,9 @@ class RegistrationRepositorySpec extends SpecBase {
             Duration.Inf
           )
 
-          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
+          verify(mockConnector, never()).resetTaxLiability(any())(using any(), any())
           verify(mockTrustStoreService, never())
-            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
+            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(using any(), any())
         }
 
         "no start date in tax liability" in {
@@ -213,11 +213,11 @@ class RegistrationRepositorySpec extends SpecBase {
             .success
             .value
 
-          implicit val hc: HeaderCarrier = HeaderCarrier()
+          given hc: HeaderCarrier = HeaderCarrier()
 
           val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
-          when(mockConnector.getTaxLiabilityStartDate(any())(any(), any()))
+          when(mockConnector.getTaxLiabilityStartDate(any())(using any(), any()))
             .thenReturn(Future.successful(None))
 
           Await.result(
@@ -225,9 +225,9 @@ class RegistrationRepositorySpec extends SpecBase {
             Duration.Inf
           )
 
-          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
+          verify(mockConnector, never()).resetTaxLiability(any())(using any(), any())
           verify(mockTrustStoreService, never())
-            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
+            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(using any(), any())
         }
 
         "no start date in user answers" in {
@@ -237,7 +237,7 @@ class RegistrationRepositorySpec extends SpecBase {
 
           val userAnswers = emptyUserAnswers
 
-          implicit val hc: HeaderCarrier = HeaderCarrier()
+          given hc: HeaderCarrier = HeaderCarrier()
 
           val repository = createRepository(mockConnector, mockSubmissionSetFactory, mockTrustStoreService)
 
@@ -246,9 +246,9 @@ class RegistrationRepositorySpec extends SpecBase {
             Duration.Inf
           )
 
-          verify(mockConnector, never()).resetTaxLiability(any())(any(), any())
+          verify(mockConnector, never()).resetTaxLiability(any())(using any(), any())
           verify(mockTrustStoreService, never())
-            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(any(), any())
+            .updateTaxLiabilityTaskStatus(any(), eqTo(TaskStatus.InProgress))(using any(), any())
         }
 
       }

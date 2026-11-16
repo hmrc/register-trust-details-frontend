@@ -17,7 +17,7 @@
 package models
 
 import play.api.Logging
-import play.api.libs.json._
+import play.api.libs.json.*
 import queries.{Gettable, Settable}
 
 import scala.util.{Failure, Success, Try}
@@ -28,7 +28,7 @@ trait ReadableUserAnswers {
   val isTaxable: Boolean = true
   val isExpress: Boolean = true
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: Gettable[A])(using rds: Reads[A]): Option[A] =
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)
       case JsError(_)          => None
@@ -39,7 +39,7 @@ trait ReadableUserAnswers {
 case class ReadOnlyUserAnswers(data: JsObject) extends ReadableUserAnswers
 
 object ReadOnlyUserAnswers {
-  implicit lazy val formats: OFormat[ReadOnlyUserAnswers] = Json.format[ReadOnlyUserAnswers]
+  given formats: OFormat[ReadOnlyUserAnswers] = Json.format[ReadOnlyUserAnswers]
 }
 
 final case class UserAnswers(
@@ -50,7 +50,7 @@ final case class UserAnswers(
   override val isExpress: Boolean = true
 ) extends ReadableUserAnswers with Logging {
 
-  def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: Settable[A], value: A)(using writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedAnswers = setAtPath(page.path, Json.toJson(value))
 
@@ -103,9 +103,9 @@ final case class UserAnswers(
 
 object UserAnswers {
 
-  implicit lazy val reads: Reads[UserAnswers] = {
+  given reads: Reads[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").read[String] and
@@ -113,12 +113,12 @@ object UserAnswers {
         (__ \ "internalId").read[String] and
         (__ \ "isTaxable").readWithDefault[Boolean](true) and
         (__ \ "isExpress").readWithDefault[Boolean](true)
-    )(UserAnswers.apply _)
+    )(UserAnswers.apply)
   }
 
-  implicit lazy val writes: OWrites[UserAnswers] = {
+  given writes: OWrites[UserAnswers] = {
 
-    import play.api.libs.functional.syntax._
+    import play.api.libs.functional.syntax.*
 
     (
       (__ \ "_id").write[String] and
@@ -126,7 +126,15 @@ object UserAnswers {
         (__ \ "internalId").write[String] and
         (__ \ "isTaxable").write[Boolean] and
         (__ \ "isExpress").write[Boolean]
-    )(unlift(UserAnswers.unapply))
+    )(userAnswer =>
+      (
+        userAnswer.draftId,
+        userAnswer.data,
+        userAnswer.internalAuthId,
+        userAnswer.isTaxable,
+        userAnswer.isExpress
+      )
+    )
   }
 
 }

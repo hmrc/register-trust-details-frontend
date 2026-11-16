@@ -20,7 +20,8 @@ import config.FrontendAppConfig
 import models.Task
 import models.TaskStatus.TaskStatus
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
@@ -31,7 +32,7 @@ class TrustsStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppCon
 
   private val baseUrl: String = s"${config.trustsStoreUrl}/trusts-store"
 
-  def updateTaskStatus(draftId: String, taskStatus: TaskStatus)(implicit
+  def updateTaskStatus(draftId: String, taskStatus: TaskStatus)(using
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
@@ -40,7 +41,7 @@ class TrustsStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppCon
       .withBody(Json.toJson(taskStatus))
       .execute[HttpResponse]
 
-  def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)(implicit
+  def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)(using
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
@@ -49,7 +50,7 @@ class TrustsStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppCon
       .withBody(Json.toJson(taskStatus))
       .execute[HttpResponse]
 
-  def getTaskStatus(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Task] =
+  def getTaskStatus(draftId: String)(using hc: HeaderCarrier, ec: ExecutionContext): Future[Task] =
     http
       .get(url"$baseUrl/register/tasks/$draftId")
       .execute[Task]

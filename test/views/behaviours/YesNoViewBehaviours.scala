@@ -42,9 +42,9 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
           legends.size mustBe 1
 
           if (legendAsHeading) {
-            legends.first.text mustBe messages(s"$messageKeyPrefix.heading", args: _*)
+            legends.first.text mustBe messages(s"$messageKeyPrefix.heading", args*)
           } else {
-            legends.first.text mustBe messages(s"$messageKeyPrefix.question", args: _*)
+            legends.first.text mustBe messages(s"$messageKeyPrefix.question", args*)
           }
 
           hintTextPrefix.map { pref =>
@@ -105,7 +105,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
             doc,
             "title",
             ViewUtils.breadcrumbTitle(
-              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}"""
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args*)}"""
             )
           )
         }

@@ -14,16 +14,18 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.button.{Button => GovukButtonModel}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 @this(govukButton : GovukButton)
 
 @(
-messageKey: String = "site.continue",
-isStartButton:Boolean = false,
-)(implicit messages: Messages)
+ messageKey: String = "site.continue",
+ isStartButton:Boolean = false,
+)(using messages: Messages)
 
-@govukButton(Button(
+@govukButton(GovukButtonModel(
  isStartButton = isStartButton,
  content = Text(messages(messageKey))
 ))

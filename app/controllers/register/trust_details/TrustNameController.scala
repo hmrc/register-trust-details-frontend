@@ -40,7 +40,7 @@ class TrustNameController @Inject() (
   standardActions: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: TrustNameView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
@@ -63,7 +63,7 @@ class TrustNameController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           showHintText(draftId) map { hintTextShown =>
             BadRequest(view(formWithErrors, draftId, hintTextShown))
           },
@@ -75,7 +75,7 @@ class TrustNameController @Inject() (
       )
   }
 
-  private def showHintText(draftId: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+  private def showHintText(draftId: String)(using hc: HeaderCarrier): Future[Boolean] =
     registrationsRepository.getMainAnswers(draftId) map {
       _.exists {
         _.get(TrustHaveAUTRPage).contains(true)

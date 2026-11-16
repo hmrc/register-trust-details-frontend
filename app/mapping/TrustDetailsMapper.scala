@@ -16,11 +16,11 @@
 
 package mapping
 
-import models.TrusteesBasedInTheUK._
+import models.TrusteesBasedInTheUK.*
 import models.{NonUKType, ResidentialStatusType, TrustDetailsType, TrusteesBasedInTheUK, UkType, UserAnswers}
-import pages.register.trust_details._
+import pages.register.trust_details.*
 import play.api.Logging
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 import utils.Constants.GB
 
@@ -40,9 +40,9 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
         TrustHasBusinessRelationshipInUkPage.path.readNullable[Boolean] and
         trustUkResidentReads and
         Schedule3aExemptYesNoPage.path.readNullable[Boolean]
-    )(TrustDetailsType.apply _)
+    )(TrustDetailsType.apply)
 
-    userAnswers.data.validate[TrustDetailsType](reads) match {
+    userAnswers.data.validate[TrustDetailsType](using reads) match {
       case JsSuccess(value, _) =>
         Some(value)
       case JsError(_)          =>
@@ -73,12 +73,12 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
         ukReads: Reads[Option[UkType]],
         nonUkReads: Reads[Option[NonUKType]]
       ): Reads[Option[ResidentialStatusType]] =
-        (ukReads and nonUkReads)(ResidentialStatusType.apply _).map(Some(_))
+        (ukReads and nonUkReads)(ResidentialStatusType.apply).map(Some(_))
 
       lazy val ukReads: Reads[Option[ResidentialStatusType]] = {
         lazy val reads: Reads[Option[UkType]] =
           (EstablishedUnderScotsLawPage.path.read[Boolean] and
-            TrustPreviouslyResidentPage.path.readNullable[String])(UkType.apply _).map(Some(_))
+            TrustPreviouslyResidentPage.path.readNullable[String])(UkType.apply).map(Some(_))
 
         combineReads(reads, Reads(_ => JsSuccess(None: Option[NonUKType])))
       }
@@ -88,7 +88,7 @@ class TrustDetailsMapper extends Mapping[TrustDetailsType] with Logging {
           (RegisteringTrustFor5APage.path.read[Boolean] and
             InheritanceTaxActPage.path.readNullable[Boolean] and
             AgentOtherThanBarristerPage.path.readNullable[Boolean] and
-            Reads(_ => JsSuccess(None)))(NonUKType.apply _).map(Some(_))
+            Reads(_ => JsSuccess(None)))(NonUKType.apply).map(Some(_))
 
         combineReads(Reads(_ => JsSuccess(None: Option[UkType])), reads)
       }

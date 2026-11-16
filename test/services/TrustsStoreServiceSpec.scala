@@ -34,21 +34,21 @@ class TrustsStoreServiceSpec extends SpecBase {
 
   val trustStoreService = new TrustsStoreService(mockConnector)
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   ".updateTaskStatus" must {
     "call trusts store connector" in {
 
       val draftId = "draftId"
 
-      when(mockConnector.updateTaskStatus(any(), any())(any(), any()))
+      when(mockConnector.updateTaskStatus(any(), any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val result = trustStoreService.updateTaskStatus(draftId, Completed)
 
       whenReady(result) { res =>
         res.status mustBe OK
-        verify(mockConnector).updateTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
+        verify(mockConnector).updateTaskStatus(eqTo(draftId), eqTo(Completed))(using any(), any())
       }
     }
   }
@@ -58,14 +58,14 @@ class TrustsStoreServiceSpec extends SpecBase {
 
       val draftId = "draftId"
 
-      when(mockConnector.updateTaxLiabilityTaskStatus(any(), any())(any(), any()))
+      when(mockConnector.updateTaxLiabilityTaskStatus(any(), any())(using any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val result = trustStoreService.updateTaxLiabilityTaskStatus(draftId, Completed)
 
       whenReady(result) { res =>
         res.status mustBe OK
-        verify(mockConnector).updateTaxLiabilityTaskStatus(eqTo(draftId), eqTo(Completed))(any(), any())
+        verify(mockConnector).updateTaxLiabilityTaskStatus(eqTo(draftId), eqTo(Completed))(using any(), any())
       }
     }
   }
@@ -75,14 +75,14 @@ class TrustsStoreServiceSpec extends SpecBase {
 
       val draftId = "draftId"
 
-      when(mockConnector.getTaskStatus(any())(any(), any()))
+      when(mockConnector.getTaskStatus(any())(using any(), any()))
         .thenReturn(Future.successful(Task(Completed)))
 
       val result = trustStoreService.getTaskStatus(draftId)
 
       whenReady(result) { res =>
         res mustBe Completed
-        verify(mockConnector).getTaskStatus(eqTo(draftId))(any(), any())
+        verify(mockConnector).getTaskStatus(eqTo(draftId))(using any(), any())
       }
     }
   }

@@ -25,12 +25,12 @@ import java.time.LocalDate
 
 trait ModelGenerators {
 
-  implicit lazy val arbitraryTrusteesBasedInTheUK: Arbitrary[TrusteesBasedInTheUK] =
+  given arbitraryTrusteesBasedInTheUK: Arbitrary[TrusteesBasedInTheUK] =
     Arbitrary {
       Gen.oneOf(TrusteesBasedInTheUK.values)
     }
 
-  implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] =
+  given arbitraryLocalDate: Arbitrary[LocalDate] =
     Arbitrary {
       for {
         year  <- Gen.choose(min = 1500, max = 2099)
@@ -47,12 +47,12 @@ trait ModelGenerators {
       } yield LocalDate.of(year, month, day)
     }
 
-  implicit lazy val arbitraryMatches: Arbitrary[Matched] =
+  given arbitraryMatches: Arbitrary[Matched] =
     Arbitrary {
       Gen.oneOf(Matched.values.toList)
     }
 
-  implicit lazy val arbitraryTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
+  given arbitraryTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.values.toList)
   }
 

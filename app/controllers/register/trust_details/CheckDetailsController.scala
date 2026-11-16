@@ -17,7 +17,7 @@
 package controllers.register.trust_details
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import models.TaskStatus.Completed
 import navigation.Navigator
 import pages.register.trust_details.CheckDetailsPage
@@ -43,7 +43,7 @@ class CheckDetailsController @Inject() (
   val appConfig: FrontendAppConfig,
   printHelper: TrustDetailsPrintHelper,
   trustsStoreService: TrustsStoreService
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData(draftId) {

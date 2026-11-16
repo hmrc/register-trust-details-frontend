@@ -34,10 +34,10 @@ class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     val view = viewFor[WhenTrustSetupView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, fakeDraftId)(using fakeRequest, messages)
 
-    val applyViewF = (form: Form[_]) => applyView(form)
+    val applyViewF = (form: Form[?]) => applyView(form)
 
     behave like normalPage(applyView(form), messageKeyPrefix, s"hint")
 

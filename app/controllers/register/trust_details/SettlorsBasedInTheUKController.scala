@@ -39,7 +39,7 @@ class SettlorsBasedInTheUKController @Inject() (
   standardActions: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: SettlorsBasedInTheUKView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
@@ -59,7 +59,7 @@ class SettlorsBasedInTheUKController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SettlorsBasedInTheUKPage, value))

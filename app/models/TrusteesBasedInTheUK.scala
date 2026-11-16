@@ -36,7 +36,7 @@ object TrusteesBasedInTheUK extends Enumerable.Implicits {
     RadioOption("trusteesBasedInTheUK", value.toString)
   }
 
-  implicit val enumerable: Enumerable[TrusteesBasedInTheUK] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+  given enumerable: Enumerable[TrusteesBasedInTheUK] =
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }

@@ -38,7 +38,7 @@ class InheritanceTaxActController @Inject() (
   standardActions: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: InheritanceTaxActView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
@@ -58,7 +58,7 @@ class InheritanceTaxActController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(InheritanceTaxActPage, value))

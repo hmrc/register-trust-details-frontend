@@ -18,7 +18,7 @@ package models
 
 import java.time.LocalDate
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class TrustDetailsType(
   startDate: LocalDate,
@@ -33,19 +33,19 @@ case class TrustDetailsType(
 )
 
 object TrustDetailsType {
-  implicit val trustDetailsTypeFormat: Format[TrustDetailsType] = Json.format[TrustDetailsType]
+  given trustDetailsTypeFormat: Format[TrustDetailsType] = Json.format[TrustDetailsType]
 }
 
 case class ResidentialStatusType(uk: Option[UkType], nonUK: Option[NonUKType])
 
 object ResidentialStatusType {
-  implicit val residentialStatusTypeFormat: Format[ResidentialStatusType] = Json.format[ResidentialStatusType]
+  given residentialStatusTypeFormat: Format[ResidentialStatusType] = Json.format[ResidentialStatusType]
 }
 
 case class UkType(scottishLaw: Boolean, preOffShore: Option[String])
 
 object UkType {
-  implicit val ukTypeFormat: Format[UkType] = Json.format[UkType]
+  given ukTypeFormat: Format[UkType] = Json.format[UkType]
 }
 
 case class NonUKType(
@@ -56,5 +56,5 @@ case class NonUKType(
 )
 
 object NonUKType {
-  implicit val nonUKTypeFormat: Format[NonUKType] = Json.format[NonUKType]
+  given nonUKTypeFormat: Format[NonUKType] = Json.format[NonUKType]
 }

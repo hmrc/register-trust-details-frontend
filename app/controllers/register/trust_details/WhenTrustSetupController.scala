@@ -44,12 +44,12 @@ class WhenTrustSetupController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: WhenTrustSetupView,
   appConfig: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
 
-  private def form(draftId: String)(implicit hc: HeaderCarrier): Future[Form[LocalDate]] =
+  private def form(draftId: String)(using hc: HeaderCarrier): Future[Form[LocalDate]] =
     minDate(draftId) map { config =>
       formProvider.withConfig(config)
     }
@@ -69,7 +69,7 @@ class WhenTrustSetupController @Inject() (
   def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async { implicit request =>
     form(draftId).flatMap(
       _.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhenTrustSetupPage, value))
@@ -79,7 +79,7 @@ class WhenTrustSetupController @Inject() (
     )
   }
 
-  private def minDate(draftId: String)(implicit hc: HeaderCarrier): Future[(LocalDate, String)] =
+  private def minDate(draftId: String)(using hc: HeaderCarrier): Future[(LocalDate, String)] =
     registrationsRepository.getMainAnswers(draftId) map {
       _.flatMap {
         _.get(SettlorDateOfDeathPage) map { dateOfDeath =>

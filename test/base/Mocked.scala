@@ -29,13 +29,13 @@ trait Mocked {
 
   val registrationsRepository: RegistrationsRepository = Mockito.mock(classOf[RegistrationsRepository])
 
-  when(registrationsRepository.get(any())(any()))
+  when(registrationsRepository.get(any())(using any()))
     .thenReturn(Future.successful(None))
 
-  when(registrationsRepository.set(any())(any(), any()))
+  when(registrationsRepository.set(any())(using any(), any()))
     .thenReturn(Future.successful(true))
 
-  when(registrationsRepository.getMainAnswers(any())(any()))
+  when(registrationsRepository.getMainAnswers(any())(using any()))
     .thenReturn(Future.successful(Some(ReadOnlyUserAnswers(Json.obj()))))
 
 }

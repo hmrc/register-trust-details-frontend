@@ -21,7 +21,7 @@ import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours {
 
-  def fieldWithMinLength(form: Form[_], fieldName: String, minLength: Int, lengthError: FormError): Unit =
+  def fieldWithMinLength(form: Form[?], fieldName: String, minLength: Int, lengthError: FormError): Unit =
 
     s"not bind strings shorter than $minLength characters" in {
 
@@ -33,7 +33,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
     }
 
-  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
+  def fieldWithMaxLength(form: Form[?], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
 
     s"not bind strings longer than $maxLength characters" in
       forAll(stringsLongerThan(maxLength) -> "longString") { string =>
@@ -42,7 +42,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
       }
 
   def fieldWithRegexpWithGenerator(
-    form: Form[_],
+    form: Form[?],
     fieldName: String,
     regexp: String,
     generator: Gen[String],
@@ -57,7 +57,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
         }
       }
 
-  def nonEmptyField(form: Form[_], fieldName: String, requiredError: FormError): Unit =
+  def nonEmptyField(form: Form[?], fieldName: String, requiredError: FormError): Unit =
 
     "not bind spaces" in {
 

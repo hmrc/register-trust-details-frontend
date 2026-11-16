@@ -17,12 +17,12 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.register.trust_details.routes._
-import controllers.routes._
+import controllers.register.trust_details.routes.*
+import controllers.routes.*
 import models.ReadableUserAnswers
-import models.TrusteesBasedInTheUK._
+import models.TrusteesBasedInTheUK.*
 import pages.Page
-import pages.register.trust_details._
+import pages.register.trust_details.*
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
@@ -42,7 +42,7 @@ class TrustDetailsNavigator @Inject() (config: FrontendAppConfig) extends Naviga
     case TrustNamePage                                             => _ => WhenTrustSetupController.onPageLoad(draftId)
     case WhenTrustSetupPage                                        => ua => navigateAwayFromTrustSetupPage(ua, draftId)
     case CountryGoverningTrustPage                                 => _ => AdministrationInsideUKController.onPageLoad(draftId)
-    case CountryAdministeringTrustPage                             => ua => TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
+    case CountryAdministeringTrustPage                             => _ => TrustOwnsUkPropertyOrLandController.onPageLoad(draftId)
     case TrustOwnsUkPropertyOrLandPage                             => _ => TrustListedOnEeaRegisterController.onPageLoad(draftId)
     case TrustListedOnEeaRegisterPage                              => _ => TrusteesBasedInTheUKController.onPageLoad(draftId)
     case TrustHasBusinessRelationshipInUkPage                      => ua => navigateAwayFromRelationshipInTheUk(ua, draftId)

@@ -37,7 +37,7 @@ class RegistrationIdentifierAction @Inject() (
   val parser: BodyParsers.Default,
   trustsAuth: TrustsAuthorisedFunctions,
   config: FrontendAppConfig
-)(implicit override val executionContext: ExecutionContext)
+)(using override val executionContext: ExecutionContext)
     extends ActionBuilder[IdentifierRequest, AnyContent] with Logging {
 
   private def authoriseAgent[A](
@@ -106,7 +106,7 @@ class RegistrationIdentifierAction @Inject() (
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     val retrievals = Retrievals.internalId and
       Retrievals.affinityGroup and

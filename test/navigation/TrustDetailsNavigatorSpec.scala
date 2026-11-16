@@ -20,7 +20,7 @@ import base.SpecBase
 import config.FrontendAppConfig
 import controllers.register.trust_details.routes
 import generators.Generators
-import models.TrusteesBasedInTheUK._
+import models.TrusteesBasedInTheUK.*
 import models.UserAnswers
 import org.mockito.Mockito
 import org.mockito.Mockito.when

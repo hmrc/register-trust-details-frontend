@@ -32,8 +32,8 @@ class Schedule3aExemptYesNoViewSpec extends Schedule3aExemptYesNoViewBehaviours 
 
     val view = viewFor[Schedule3aExemptYesNoView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, fakeDraftId)(using fakeRequest, messages)
 
     behave like normalPage(
       applyView(form),

@@ -17,7 +17,7 @@
 package repositories
 
 import mapping.TrustDetailsMapper
-import models._
+import models.*
 import play.api.i18n.Messages
 import play.api.libs.json.{JsNull, JsValue, Json}
 import utils.print.TrustDetailsPrintHelper
@@ -31,7 +31,7 @@ class SubmissionSetFactory @Inject() (
   trustDetailsPrintHelper: TrustDetailsPrintHelper
 ) {
 
-  def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): Future[RegistrationSubmission.DataSet] =
+  def createFrom(userAnswers: UserAnswers)(using messages: Messages): Future[RegistrationSubmission.DataSet] =
 
     Future.successful {
       RegistrationSubmission.DataSet(
@@ -52,7 +52,7 @@ class SubmissionSetFactory @Inject() (
 
   private def answerSectionsIfCompleted(
     userAnswers: UserAnswers
-  )(implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
+  )(using messages: Messages): List[RegistrationSubmission.AnswerSection] = {
     val answerSection = trustDetailsPrintHelper.printSection(userAnswers)
     List(answerSection).map(convertForSubmission)
   }

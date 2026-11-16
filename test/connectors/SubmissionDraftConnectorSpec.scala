@@ -18,13 +18,13 @@ package connectors
 
 import java.time.{LocalDate, LocalDateTime}
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.{RegistrationSubmission, SubmissionDraftResponse}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsBoolean, Json}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -32,7 +32,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class SubmissionDraftConnectorSpec extends SpecBase with WireMockHelper {
-  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(defaultAppConfigurations ++ Map("microservice.services.trusts.port" -> server.port()))

@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import models.TrusteesBasedInTheUK.UKBasedTrustees
-import pages.register.trust_details._
+import pages.register.trust_details.*
 import utils.print.TrustDetailsPrintHelper
 import viewmodels.AnswerSection
 

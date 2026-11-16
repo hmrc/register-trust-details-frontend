@@ -19,7 +19,7 @@ package utils.print
 import base.SpecBase
 import controllers.register.trust_details.routes
 import models.TrusteesBasedInTheUK.UKBasedTrustees
-import pages.register.trust_details._
+import pages.register.trust_details.*
 import play.twirl.api.HtmlFormat
 import viewmodels.{AnswerRow, AnswerSection}
 

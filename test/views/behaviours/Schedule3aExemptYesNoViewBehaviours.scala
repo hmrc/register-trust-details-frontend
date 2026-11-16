@@ -39,7 +39,7 @@ trait Schedule3aExemptYesNoViewBehaviours extends QuestionViewBehaviours[Boolean
           val doc     = asDocument(createView(form))
           val legends = doc.getElementsByTag("legend")
           legends.size                        mustBe 1
-          legends.first.text                    must include(messages(s"$messageKeyPrefix.subheading", args: _*))
+          legends.first.text                    must include(messages(s"$messageKeyPrefix.subheading", args*))
           legends.hasClass("govuk-heading-m") mustBe true
 
           hintTextPrefix.map { pref =>
@@ -100,7 +100,7 @@ trait Schedule3aExemptYesNoViewBehaviours extends QuestionViewBehaviours[Boolean
             doc,
             "title",
             ViewUtils.breadcrumbTitle(
-              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}"""
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args*)}"""
             )
           )
         }

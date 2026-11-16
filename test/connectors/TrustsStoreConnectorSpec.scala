@@ -17,7 +17,7 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.Task
 import models.TaskStatus.Completed
 import play.api.Application
@@ -28,7 +28,7 @@ import utils.WireMockHelper
 
 class TrustsStoreConnectorSpec extends SpecBase with WireMockHelper {
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
+  private given hc: HeaderCarrier = HeaderCarrier()
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(defaultAppConfigurations ++ Map("microservice.services.trusts-store.port" -> server.port()))

@@ -23,8 +23,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import play.api.mvc.{Action, AnyContent, Results}
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 
 import scala.concurrent.Future
@@ -81,7 +81,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
             .thenReturn(authRetrievals(AffinityGroup.Agent, noEnrollment))
 
           val identify: RegistrationIdentifierAction =
@@ -100,7 +100,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
             .thenReturn(authRetrievals(AffinityGroup.Agent, emptyAgentEnrolment))
 
           val identify = new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -120,7 +120,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
             .thenReturn(authRetrievals(AffinityGroup.Agent, agentEnrolment))
 
           val identify: RegistrationIdentifierAction =
@@ -143,7 +143,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = None).build()
 
-          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
             .thenReturn(authRetrievals(AffinityGroup.Organisation, agentEnrolment))
 
           val identify: RegistrationIdentifierAction =
@@ -165,7 +165,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
             val application = applicationBuilder(userAnswers = None).build()
 
-            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
               .thenReturn(authRetrievals(AffinityGroup.Organisation, trustsTaxableEnrolment))
 
             val identify: RegistrationIdentifierAction =
@@ -186,7 +186,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
             val application = applicationBuilder(userAnswers = None).build()
 
-            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
               .thenReturn(authRetrievals(AffinityGroup.Organisation, emptyTaxableEnrolment))
 
             val identify: RegistrationIdentifierAction =
@@ -210,7 +210,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
             val application = applicationBuilder(userAnswers = None).build()
 
-            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
               .thenReturn(authRetrievals(AffinityGroup.Organisation, trustsNonTaxableEnrolment))
 
             val identify: RegistrationIdentifierAction =
@@ -231,7 +231,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
             val application = applicationBuilder(userAnswers = None).build()
 
-            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
               .thenReturn(authRetrievals(AffinityGroup.Organisation, emptyNonTaxableEnrolment))
 
             val identify: RegistrationIdentifierAction =
@@ -255,7 +255,7 @@ class RegistrationIdentifierActionSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any()))
           .thenReturn(authRetrievals(AffinityGroup.Individual, noEnrollment))
 
         val identify: RegistrationIdentifierAction =
@@ -278,8 +278,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed MissingBearerToken())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed MissingBearerToken())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -302,8 +302,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed BearerTokenExpired())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed BearerTokenExpired())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -326,8 +326,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed InsufficientEnrolments())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed InsufficientEnrolments())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -349,8 +349,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed InsufficientConfidenceLevel())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed InsufficientConfidenceLevel())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -372,8 +372,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed UnsupportedAuthProvider())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed UnsupportedAuthProvider())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -395,8 +395,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed UnsupportedAffinityGroup())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed UnsupportedAffinityGroup())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)
@@ -418,8 +418,8 @@ class RegistrationIdentifierActionSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = None).build()
 
         when(
-          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())
-        ) thenReturn (Future failed UnsupportedCredentialRole())
+          mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(using any(), any())
+        ).thenReturn(Future failed UnsupportedCredentialRole())
 
         val identify: RegistrationIdentifierAction =
           new RegistrationIdentifierAction(injectedParsers, trustsAuth, appConfig)

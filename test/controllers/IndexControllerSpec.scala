@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.SubmissionDraftConnector
-import models.TaskStatus._
+import models.TaskStatus.*
 import models.UserAnswers
 import models.registration.Matched.Success
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -29,7 +29,7 @@ import pages.register.ExistingTrustMatched
 import play.api.inject.bind
 import play.api.libs.json.JsString
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpResponse
 
@@ -44,12 +44,12 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(registrationsRepository)
     reset(trustsStoreService)
 
-    when(registrationsRepository.set(any())(any(), any()))
+    when(registrationsRepository.set(any())(using any(), any()))
       .thenReturn(Future.successful(true))
 
-    when(trustsStoreService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(InProgress))
+    when(trustsStoreService.getTaskStatus(any())(using any(), any())).thenReturn(Future.successful(InProgress))
 
-    when(trustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+    when(trustsStoreService.updateTaskStatus(any(), any())(using any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
@@ -66,9 +66,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
             .build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
-          when(trustsStoreService.getTaskStatus(any())(any(), any())).thenReturn(Future.successful(Completed))
+          when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(Some(answers)))
+          when(registrationsRepository.getMainAnswers(any())(using any())).thenReturn(Future.successful(Some(answers)))
+          when(trustsStoreService.getTaskStatus(any())(using any(), any())).thenReturn(Future.successful(Completed))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -80,8 +80,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             .url
 
           val inOrder = Mockito.inOrder(trustsStoreService)
-          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
           application.stop()
         }
@@ -101,8 +101,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
               .build()
 
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.getMainAnswers(any())(using any()))
+              .thenReturn(Future.successful(Some(answers)))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -114,8 +115,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               .url
 
             val inOrder = Mockito.inOrder(trustsStoreService)
-            inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-            inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+            inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+            inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
             application.stop()
           }
@@ -130,8 +131,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
               .build()
 
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(answers)))
-            when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+            when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(Some(answers)))
+            when(registrationsRepository.getMainAnswers(any())(using any()))
+              .thenReturn(Future.successful(Some(answers)))
 
             val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -143,8 +145,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
               .url
 
             val inOrder = Mockito.inOrder(trustsStoreService)
-            inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-            inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+            inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+            inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
             application.stop()
           }
@@ -157,23 +159,24 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .build()
 
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
-        when(submissionDraftConnector.getIsExpressTrust(any())(any(), any())).thenReturn(Future.successful(true))
+        when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+        when(registrationsRepository.getMainAnswers(any())(using any()))
+          .thenReturn(Future.successful(Some(emptyUserAnswers)))
+        when(submissionDraftConnector.getIsTrustTaxable(any())(using any(), any())).thenReturn(Future.successful(true))
+        when(submissionDraftConnector.getIsExpressTrust(any())(using any(), any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
         route(application, request).value.map { _ =>
           val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          verify(registrationsRepository).set(uaCaptor.capture)(using any(), any())
 
           uaCaptor.getValue.isTaxable mustBe true
           uaCaptor.getValue.isExpress mustBe true
 
           val inOrder = Mockito.inOrder(trustsStoreService)
-          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
           application.stop()
         }
@@ -185,23 +188,24 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
           .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
           .build()
 
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-        when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
-        when(submissionDraftConnector.getIsExpressTrust(any())(any(), any())).thenReturn(Future.successful(false))
+        when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+        when(registrationsRepository.getMainAnswers(any())(using any()))
+          .thenReturn(Future.successful(Some(emptyUserAnswers)))
+        when(submissionDraftConnector.getIsTrustTaxable(any())(using any(), any())).thenReturn(Future.successful(false))
+        when(submissionDraftConnector.getIsExpressTrust(any())(using any(), any())).thenReturn(Future.successful(false))
 
         val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
         route(application, request).value.map { _ =>
           val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          verify(registrationsRepository).set(uaCaptor.capture)(using any(), any())
 
           uaCaptor.getValue.isTaxable mustBe false
           uaCaptor.getValue.isExpress mustBe false
 
           val inOrder = Mockito.inOrder(trustsStoreService)
-          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
           application.stop()
         }
@@ -222,8 +226,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
             .build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+          when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.getMainAnswers(any())(using any())).thenReturn(Future.successful(Some(answers)))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -235,8 +239,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             .url
 
           val inOrder = Mockito.inOrder(trustsStoreService)
-          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
           application.stop()
         }
@@ -251,8 +255,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             .overrides(bind[TrustsStoreService].toInstance(trustsStoreService))
             .build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-          when(registrationsRepository.getMainAnswers(any())(any())).thenReturn(Future.successful(Some(answers)))
+          when(registrationsRepository.get(any())(using any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.getMainAnswers(any())(using any())).thenReturn(Future.successful(Some(answers)))
 
           val request = FakeRequest(GET, routes.IndexController.onPageLoad(fakeDraftId).url)
 
@@ -264,8 +268,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
             .url
 
           val inOrder = Mockito.inOrder(trustsStoreService)
-          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(any(), any())
-          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(any(), any())
+          inOrder.verify(trustsStoreService).getTaskStatus(eqTo(draftId))(using any(), any())
+          inOrder.verify(trustsStoreService).updateTaskStatus(eqTo(draftId), eqTo(InProgress))(using any(), any())
 
           application.stop()
         }

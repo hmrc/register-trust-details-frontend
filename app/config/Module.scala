@@ -17,9 +17,9 @@
 package config
 
 import com.google.inject.AbstractModule
-import controllers.actions.register._
-import navigation._
-import repositories._
+import controllers.actions.register.*
+import navigation.*
+import repositories.*
 
 class Module extends AbstractModule {
 

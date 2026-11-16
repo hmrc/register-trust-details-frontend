@@ -40,7 +40,7 @@ class TrustPreviouslyResidentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TrustPreviouslyResidentView,
   val countryOptions: CountryOptionsNonUK
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
@@ -60,7 +60,7 @@ class TrustPreviouslyResidentController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), draftId))),
         value =>
           for {

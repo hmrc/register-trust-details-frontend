@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.{Format, Reads, Writes}
+import play.api.libs.json.{Format, JsString, Reads, Writes}
 
 object TaskStatus extends Enumeration {
 
@@ -28,11 +28,11 @@ object TaskStatus extends Enumeration {
   val CannotStartYet: Value = Value("cannot-start-yet")
   val NoActionNeeded: Value = Value("no-action-needed")
 
-  implicit val reads: Reads[Value]    = Reads.enumNameReads(TaskStatus)
-  implicit val writes: Writes[Value]  = Writes.enumNameWrites
-  implicit val formats: Format[Value] = Format.apply(reads, writes)
+  given reads: Reads[Value]    = Reads.enumNameReads(TaskStatus)
+  given writes: Writes[Value]  = Writes(value => JsString(value.toString))
+  given formats: Format[Value] = Format.apply(reads, writes)
 
-  implicit class TaskStatusValue(taskStatus: TaskStatus) {
+  extension (taskStatus: TaskStatus) {
     def isCompleted: Boolean = taskStatus == Completed
   }
 

@@ -35,7 +35,7 @@ class ErrorHandlerSpec extends SpecBase {
   "ErrorHandler" must {
 
     "standardErrorTemplate" in {
-      implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+      given fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
       val result = Await.result(
         errorHandler.standardErrorTemplate(
@@ -46,13 +46,13 @@ class ErrorHandlerSpec extends SpecBase {
         Duration.Inf
       )
 
-      result mustBe errorTemplate("pageTitle", "heading", "message")
+      result mustBe errorTemplate("pageTitle", "message")
     }
 
     "notFoundTemplate" in {
-      implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+      given fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-      val result = Await.result(errorHandler.notFoundTemplate(fakeRequest), Duration.Inf)
+      val result = Await.result(errorHandler.notFoundTemplate(using fakeRequest), Duration.Inf)
 
       result mustBe pageNotFoundView()
     }

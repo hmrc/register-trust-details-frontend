@@ -23,7 +23,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.{never, verify, when}
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
@@ -65,7 +65,7 @@ class LogoutControllerSpec extends SpecBase {
     value must include("useServiceNavigation")
 
     verify(mockAuditConnector, never())
-      .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any[HeaderCarrier], any[ExecutionContext])
+      .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(using any[HeaderCarrier], any[ExecutionContext])
 
     application.stop()
   }
@@ -105,7 +105,7 @@ class LogoutControllerSpec extends SpecBase {
           m.get("sessionId").exists(_.nonEmpty) &&
           m.contains("userGroup")
         }
-      )(any[HeaderCarrier], any[ExecutionContext])
+      )(using any[HeaderCarrier], any[ExecutionContext])
 
     application.stop()
   }
