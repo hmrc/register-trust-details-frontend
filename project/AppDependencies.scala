@@ -2,7 +2,7 @@ import sbt.*
 
 object AppDependencies {
 
-  private val playBootstrapVersion = "10.8.0"
+  private val playBootstrapVersion = "10.9.0"
 
   private lazy val compile = Seq(
     "uk.gov.hmrc" %% "play-frontend-hmrc-play-30"            % "13.16.0",
