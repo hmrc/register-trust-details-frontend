@@ -16,12 +16,9 @@
 
 package controllers.register.trust_details
 
-import java.time.LocalDate
-
 import config.FrontendAppConfig
 import controllers.actions.StandardActionSets
 import forms.WhenTrustSetupFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.settlors.deceased_settlor.SettlorDateOfDeathPage
 import pages.register.trust_details.WhenTrustSetupPage
@@ -33,6 +30,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.trust_details.WhenTrustSetupView
 
+import java.time.LocalDate
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhenTrustSetupController @Inject() (

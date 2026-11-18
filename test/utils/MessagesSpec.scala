@@ -17,8 +17,8 @@
 package utils
 
 import base.SpecBase
-import play.api.{Application, Logger}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.{Application, Logger}
 
 import scala.util.matching.Regex
 

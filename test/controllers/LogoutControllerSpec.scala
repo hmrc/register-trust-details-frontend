@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import org.mockito.ArgumentMatchers.{any, argThat, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, argThat, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.{never, verify, when}
 import play.api.inject.bind

@@ -1,5 +1,4 @@
 import play.sbt.routes.RoutesKeys
-
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
 ThisBuild / scalaVersion := "3.9.0"

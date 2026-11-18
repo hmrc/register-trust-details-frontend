@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.CountryAdministeringTrustFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.trust_details.CountryAdministeringTrustPage
 import play.api.data.Form
@@ -29,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.register.trust_details.CountryAdministeringTrustView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryAdministeringTrustController @Inject() (

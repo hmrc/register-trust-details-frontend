@@ -17,9 +17,10 @@
 package controllers.actions
 
 import controllers.actions.register.*
-import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import play.api.mvc.{ActionBuilder, AnyContent}
+
+import javax.inject.Inject
 
 class StandardActionSets @Inject() (
   identify: RegistrationIdentifierAction,

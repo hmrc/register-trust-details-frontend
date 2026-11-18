@@ -16,7 +16,6 @@
 
 package connectors
 
-import java.time.{LocalDate, LocalDateTime}
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.{RegistrationSubmission, SubmissionDraftResponse}
@@ -28,6 +27,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 

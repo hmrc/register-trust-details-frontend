@@ -19,7 +19,7 @@ package repositories
 import base.SpecBase
 import connectors.SubmissionDraftConnector
 import models.*
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.{never, times, verify, when}
 import pages.register.trust_details.WhenTrustSetupPage

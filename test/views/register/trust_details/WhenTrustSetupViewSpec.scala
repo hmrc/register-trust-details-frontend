@@ -16,13 +16,13 @@
 
 package views.register.trust_details
 
-import java.time.LocalDate
-
 import forms.WhenTrustSetupFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.trust_details.WhenTrustSetupView
+
+import java.time.LocalDate
 
 class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
 

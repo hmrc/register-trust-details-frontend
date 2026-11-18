@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.TrusteesBasedInTheUKFormProvider
-import javax.inject.Inject
 import models.Enumerable
 import navigation.Navigator
 import pages.register.trust_details.TrusteesBasedInTheUKPage
@@ -29,6 +28,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.trust_details.TrusteesBasedInTheUKView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrusteesBasedInTheUKController @Inject() (

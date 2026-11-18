@@ -41,7 +41,4 @@ object Service {
     Service(host, port, protocol)
   }
 
-  given convertToString(using service: Service): String =
-    service.baseUrl
-
 }

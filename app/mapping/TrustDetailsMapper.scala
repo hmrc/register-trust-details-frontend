@@ -17,7 +17,7 @@
 package mapping
 
 import models.TrusteesBasedInTheUK.*
-import models.{NonUKType, ResidentialStatusType, TrustDetailsType, TrusteesBasedInTheUK, UkType, UserAnswers}
+import models.*
 import pages.register.trust_details.*
 import play.api.Logging
 import play.api.libs.functional.syntax.*

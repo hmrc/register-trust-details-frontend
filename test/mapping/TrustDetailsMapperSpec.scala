@@ -18,7 +18,7 @@ package mapping
 
 import base.SpecBase
 import models.TrusteesBasedInTheUK.*
-import models.{NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
+import models.*
 import pages.register.trust_details.*
 import utils.Constants.GB
 

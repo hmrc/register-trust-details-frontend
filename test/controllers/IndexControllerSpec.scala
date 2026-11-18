@@ -21,7 +21,7 @@ import connectors.SubmissionDraftConnector
 import models.TaskStatus.*
 import models.UserAnswers
 import models.registration.Matched.Success
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach

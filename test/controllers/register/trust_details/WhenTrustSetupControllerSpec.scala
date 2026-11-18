@@ -16,7 +16,6 @@
 
 package controllers.register.trust_details
 
-import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import forms.WhenTrustSetupFormProvider
 import models.ReadOnlyUserAnswers
@@ -29,6 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import views.html.register.trust_details.WhenTrustSetupView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class WhenTrustSetupControllerSpec extends SpecBase {

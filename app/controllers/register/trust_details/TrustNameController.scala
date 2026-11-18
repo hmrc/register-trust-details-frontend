@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.TrustNameFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details.TrustNamePage
@@ -30,6 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.trust_details.TrustNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustNameController @Inject() (

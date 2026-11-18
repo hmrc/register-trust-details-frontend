@@ -16,9 +16,9 @@
 
 package models
 
-import java.time.LocalDateTime
-
 import play.api.libs.json.{JsValue, Json, OFormat}
+
+import java.time.LocalDateTime
 
 // Primary front end draft data (e.g, trusts-frontend), including reference and in-progress.
 case class SubmissionDraftData(data: JsValue, reference: Option[String], inProgress: Option[Boolean])

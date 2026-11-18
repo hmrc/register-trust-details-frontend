@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat.escape
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
 
-import java.time.{LocalDate => JavaDate}
+import java.time.LocalDate as JavaDate
 import javax.inject.Inject
 
 class CheckAnswersFormatters @Inject() (languageUtils: LanguageUtils, countryOptions: CountryOptions) {

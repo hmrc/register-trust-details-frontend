@@ -17,6 +17,7 @@
 package models
 
 import play.api.libs.json.*
+
 import scala.annotation.unused
 
 trait Enumerable[A] {

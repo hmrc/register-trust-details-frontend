@@ -19,7 +19,7 @@ package controllers.register.trust_details
 import base.SpecBase
 import models.TaskStatus.Completed
 import models.UserAnswers
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
