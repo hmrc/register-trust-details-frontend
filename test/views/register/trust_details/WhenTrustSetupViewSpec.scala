@@ -16,13 +16,13 @@
 
 package views.register.trust_details
 
-import java.time.LocalDate
-
 import forms.WhenTrustSetupFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.trust_details.WhenTrustSetupView
+
+import java.time.LocalDate
 
 class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
 
@@ -34,10 +34,10 @@ class WhenTrustSetupViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     val view = viewFor[WhenTrustSetupView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, fakeDraftId)(using fakeRequest, messages)
 
-    val applyViewF = (form: Form[_]) => applyView(form)
+    val applyViewF = (form: Form[?]) => applyView(form)
 
     behave like normalPage(applyView(form), messageKeyPrefix, s"hint")
 

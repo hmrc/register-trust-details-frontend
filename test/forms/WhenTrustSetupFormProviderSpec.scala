@@ -16,10 +16,11 @@
 
 package forms
 
-import java.time.{LocalDate, ZoneOffset}
 import base.FakeTrustsApp
 import forms.behaviours.DateBehaviours
 import play.api.data.{Form, FormError}
+
+import java.time.{LocalDate, ZoneOffset}
 
 class WhenTrustSetupFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 

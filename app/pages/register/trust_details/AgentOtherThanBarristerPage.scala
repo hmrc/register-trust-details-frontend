@@ -22,7 +22,7 @@ import sections.TrustDetails
 
 case object AgentOtherThanBarristerPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ TrustDetails \ toString
+  override def path: JsPath = JsPath \ TrustDetails.toString \ toString
 
   override def toString: String = "agentOtherThanBarrister"
 }

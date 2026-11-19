@@ -18,7 +18,7 @@ package controllers
 
 import connectors.SubmissionDraftConnector
 import controllers.actions.register.RegistrationIdentifierAction
-import models.TaskStatus._
+import models.TaskStatus.*
 import models.UserAnswers
 import models.registration.Matched.Success
 import models.requests.IdentifierRequest
@@ -39,7 +39,7 @@ class IndexController @Inject() (
   identify: RegistrationIdentifierAction,
   trustsStoreService: TrustsStoreService,
   submissionDraftConnector: SubmissionDraftConnector
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async {

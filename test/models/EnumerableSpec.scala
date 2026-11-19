@@ -19,7 +19,7 @@ package models
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{EitherValues, OptionValues}
-import play.api.libs.json._
+import play.api.libs.json.*
 
 object EnumerableSpec {
 
@@ -30,8 +30,8 @@ object EnumerableSpec {
   object Foo {
     val values: Set[Foo] = Set(Bar, Baz)
 
-    implicit val fooEnumerable: Enumerable[Foo] =
-      Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+    given fooEnumerable: Enumerable[Foo] =
+      Enumerable(values.toSeq.map(v => v.toString -> v)*)
 
   }
 
@@ -39,7 +39,7 @@ object EnumerableSpec {
 
 class EnumerableSpec extends AnyWordSpec with Matchers with EitherValues with OptionValues with Enumerable.Implicits {
 
-  import EnumerableSpec._
+  import EnumerableSpec.*
 
   ".withName mapping" must {
     "return Some for known values and None for unknown" in {

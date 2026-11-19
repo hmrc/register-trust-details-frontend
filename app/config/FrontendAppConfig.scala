@@ -83,7 +83,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
     "cymraeg" -> Lang(WELSH)
   )
 
-  def helplineUrl(implicit messages: Messages): String = {
+  def helplineUrl(using messages: Messages): String = {
     val path = messages.lang.code match {
       case WELSH => "urls.welshHelpline"
       case _     => "urls.trustsHelpline"

@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.trust_details.TrustResidentOffshorePage
 import play.api.data.Form
@@ -28,6 +27,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.trust_details.TrustResidentOffshoreView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustResidentOffshoreController @Inject() (
@@ -38,7 +38,7 @@ class TrustResidentOffshoreController @Inject() (
   standardActions: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: TrustResidentOffshoreView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
@@ -58,7 +58,7 @@ class TrustResidentOffshoreController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustResidentOffshorePage, value))

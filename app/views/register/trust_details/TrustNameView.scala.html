@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.register.trust_details.routes._
+@import controllers.register.trust_details.routes.*
 @import views.html.components.{InputTextCharacterCount, ErrorSummary, SubmitButton}
 
 @this(
@@ -25,7 +25,7 @@
         submitButton: SubmitButton
 )
 
-@(form: Form[_], draftId: String, hintTextShown: Boolean)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[?], draftId: String, hintTextShown: Boolean)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)}${messages("trustName.title")}",

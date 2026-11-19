@@ -22,5 +22,5 @@ import play.api.libs.json.{Format, Json}
 case class Task(trustDetails: TaskStatus)
 
 object Task {
-  implicit val formats: Format[Task] = Json.format[Task]
+  given formats: Format[Task] = Json.format[Task]
 }

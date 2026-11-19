@@ -15,7 +15,7 @@
  *@
 
 @import viewmodels.AnswerSection
-@import controllers.register.trust_details.routes._
+@import controllers.register.trust_details.routes.*
 @import views.html.components.{Heading, SubmitButton}
 @import utils.SectionFormatter.formatSections
 
@@ -28,7 +28,7 @@
 )
 
 
-@(answerSection: Seq[AnswerSection], draftId: String)(implicit request: RequestHeader, messages: Messages)
+@(answerSection: Seq[AnswerSection], draftId: String)(using request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("trustDetailsAnswerPage.title"),

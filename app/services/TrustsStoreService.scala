@@ -25,19 +25,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TrustsStoreService @Inject() (trustsStoreConnector: TrustsStoreConnector) {
 
-  def updateTaskStatus(draftId: String, taskStatus: TaskStatus)(implicit
+  def updateTaskStatus(draftId: String, taskStatus: TaskStatus)(using
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
     trustsStoreConnector.updateTaskStatus(draftId, taskStatus)
 
-  def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)(implicit
+  def updateTaxLiabilityTaskStatus(draftId: String, taskStatus: TaskStatus)(using
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[HttpResponse] =
     trustsStoreConnector.updateTaxLiabilityTaskStatus(draftId, taskStatus)
 
-  def getTaskStatus(draftId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TaskStatus] =
+  def getTaskStatus(draftId: String)(using hc: HeaderCarrier, ec: ExecutionContext): Future[TaskStatus] =
     trustsStoreConnector.getTaskStatus(draftId).map(_.trustDetails)
 
 }

@@ -28,9 +28,9 @@ import java.time.LocalDate
 
 class AnswerRowConverter @Inject() (checkAnswersFormatters: CheckAnswersFormatters) {
 
-  def bind(userAnswers: ReadableUserAnswers)(implicit messages: Messages): Bound = new Bound(userAnswers)
+  def bind(userAnswers: ReadableUserAnswers)(using messages: Messages): Bound = new Bound(userAnswers)
 
-  class Bound(userAnswers: ReadableUserAnswers)(implicit messages: Messages) {
+  class Bound(userAnswers: ReadableUserAnswers)(using messages: Messages) {
 
     def stringQuestion(query: Gettable[String], labelKey: String, changeUrl: String): Option[AnswerRow] = {
       val format = (x: String) => HtmlFormat.escape(x)
@@ -52,14 +52,14 @@ class AnswerRowConverter @Inject() (checkAnswersFormatters: CheckAnswersFormatte
       question(query, labelKey, format, changeUrl)
     }
 
-    def enumQuestion[T](query: Gettable[T], labelKey: String, changeUrl: String)(implicit
+    def enumQuestion[T](query: Gettable[T], labelKey: String, changeUrl: String)(using
       rds: Reads[T]
     ): Option[AnswerRow] = {
       val format = (x: T) => checkAnswersFormatters.formatEnum(labelKey, x)
       question(query, labelKey, format, changeUrl)
     }
 
-    private def question[T](query: Gettable[T], labelKey: String, format: T => Html, changeUrl: String)(implicit
+    private def question[T](query: Gettable[T], labelKey: String, format: T => Html, changeUrl: String)(using
       rds: Reads[T]
     ): Option[AnswerRow] =
       userAnswers.get(query) map { x =>

@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import models.Enumerable
 import navigation.Navigator
 import pages.register.trust_details.SettlorsBasedInTheUKPage
@@ -29,6 +28,7 @@ import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.trust_details.SettlorsBasedInTheUKView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SettlorsBasedInTheUKController @Inject() (
@@ -39,7 +39,7 @@ class SettlorsBasedInTheUKController @Inject() (
   standardActions: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: SettlorsBasedInTheUKView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form = formProvider.withPrefix("settlorsBasedInTheUKYesNo")
@@ -59,7 +59,7 @@ class SettlorsBasedInTheUKController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
+        (formWithErrors: Form[?]) => Future.successful(BadRequest(view(formWithErrors, draftId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SettlorsBasedInTheUKPage, value))

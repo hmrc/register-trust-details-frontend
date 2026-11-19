@@ -36,8 +36,8 @@ class CountryAdministeringTrustViewSpec extends SelectCountryViewBehaviours {
 
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, fakeDraftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, countryOptions, fakeDraftId)(using fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

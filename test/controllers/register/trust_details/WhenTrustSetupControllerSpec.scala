@@ -16,7 +16,6 @@
 
 package controllers.register.trust_details
 
-import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import forms.WhenTrustSetupFormProvider
 import models.ReadOnlyUserAnswers
@@ -26,9 +25,10 @@ import pages.register.trust_details.WhenTrustSetupPage
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.trust_details.WhenTrustSetupView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class WhenTrustSetupControllerSpec extends SpecBase {
@@ -55,7 +55,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId)(request, messages).toString
+        view(form, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -75,7 +75,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId)(request, messages).toString
+        view(form.fill(validAnswer), fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -119,7 +119,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -139,7 +139,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
         )
       )
 
-      when(registrationsRepository.getMainAnswers(any())(any()))
+      when(registrationsRepository.getMainAnswers(any())(using any()))
         .thenReturn(Future.successful(Some(readOnlyAnswers)))
 
       val form = formProvider.withConfig((dateOfDeath, "beforeDateOfDeath"))
@@ -169,7 +169,7 @@ class WhenTrustSetupControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }

@@ -19,13 +19,13 @@ package controllers.register.trust_details
 import base.SpecBase
 import models.TaskStatus.Completed
 import models.UserAnswers
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.TrustsStoreService
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.TrustDetailsPrintHelper
@@ -45,13 +45,13 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(registrationsRepository)
     reset(mockTrustsStoreService)
 
-    when(registrationsRepository.set(any())(any(), any()))
+    when(registrationsRepository.set(any())(using any(), any()))
       .thenReturn(Future.successful(true))
 
-    when(mockTrustsStoreService.updateTaskStatus(any(), any())(any(), any()))
+    when(mockTrustsStoreService.updateTaskStatus(any(), any())(using any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-    when(registrationsRepository.modifyTaxLiabilityState(any())(any()))
+    when(registrationsRepository.modifyTaxLiabilityState(any())(using any()))
       .thenReturn(Future.successful(()))
   }
 
@@ -74,7 +74,7 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(Seq(answerSection), fakeDraftId)(request, messages).toString
+        view(Seq(answerSection), fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -95,8 +95,10 @@ class CheckDetailsControllerSpec extends SpecBase with BeforeAndAfterEach {
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       val inOrder = Mockito.inOrder(mockTrustsStoreService, registrationsRepository)
-      inOrder.verify(mockTrustsStoreService).updateTaskStatus(eqTo(userAnswers.draftId), eqTo(Completed))(any(), any())
-      inOrder.verify(registrationsRepository).set(eqTo(userAnswers))(any(), any())
+      inOrder
+        .verify(mockTrustsStoreService)
+        .updateTaskStatus(eqTo(userAnswers.draftId), eqTo(Completed))(using any(), any())
+      inOrder.verify(registrationsRepository).set(eqTo(userAnswers))(using any(), any())
 
       application.stop()
     }

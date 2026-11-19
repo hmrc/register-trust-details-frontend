@@ -21,7 +21,7 @@ import connectors.SubmissionDraftConnector
 import models.{ReadOnlyUserAnswers, ReadableUserAnswers, TaskStatus, UserAnswers}
 import pages.register.trust_details.WhenTrustSetupPage
 import play.api.i18n.Messages
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.{Logging, http}
 import services.TrustsStoreService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,13 +35,13 @@ class DefaultRegistrationsRepository @Inject() (
   config: FrontendAppConfig,
   submissionSetFactory: SubmissionSetFactory,
   trustStoreService: TrustsStoreService
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends RegistrationsRepository with Logging {
 
   private val userAnswersSection = config.repositoryKey
   private val mainAnswersSection = "main"
 
-  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean] =
+  override def set(userAnswers: UserAnswers)(using hc: HeaderCarrier, messages: Messages): Future[Boolean] =
     for {
       dataSet  <- submissionSetFactory.createFrom(userAnswers)
       response <- submissionDraftConnector.setDraftSectionSet(
@@ -51,7 +51,7 @@ class DefaultRegistrationsRepository @Inject() (
                   )
     } yield response.status == http.Status.OK
 
-  override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
+  override def get(draftId: String)(using hc: HeaderCarrier): Future[Option[UserAnswers]] =
     submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map { response =>
       response.data.validate[UserAnswers] match {
         case JsSuccess(userAnswers, _) => Some(userAnswers)
@@ -59,7 +59,7 @@ class DefaultRegistrationsRepository @Inject() (
       }
     }
 
-  override def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]] =
+  override def getMainAnswers(draftId: String)(using hc: HeaderCarrier): Future[Option[ReadableUserAnswers]] =
     submissionDraftConnector.getDraftSection(draftId, mainAnswersSection).map { response =>
       response.data.validate[ReadOnlyUserAnswers] match {
         case JsSuccess(userAnswers, _) => Some(userAnswers)
@@ -67,7 +67,7 @@ class DefaultRegistrationsRepository @Inject() (
       }
     }
 
-  override def modifyTaxLiabilityState(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Unit] =
+  override def modifyTaxLiabilityState(userAnswers: UserAnswers)(using hc: HeaderCarrier): Future[Unit] =
 
     userAnswers.get(WhenTrustSetupPage) match {
       case Some(trustStartDate) =>
@@ -90,7 +90,7 @@ class DefaultRegistrationsRepository @Inject() (
         Future.successful(())
     }
 
-  private def resetTaxLiability(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Unit] = {
+  private def resetTaxLiability(userAnswers: UserAnswers)(using hc: HeaderCarrier): Future[Unit] = {
     val updateStatus = trustStoreService.updateTaxLiabilityTaskStatus(userAnswers.draftId, TaskStatus.InProgress)
     val reset        = submissionDraftConnector.resetTaxLiability(userAnswers.draftId)
     for {
@@ -106,11 +106,11 @@ class DefaultRegistrationsRepository @Inject() (
 
 trait RegistrationsRepository {
 
-  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean]
+  def set(userAnswers: UserAnswers)(using hc: HeaderCarrier, messages: Messages): Future[Boolean]
 
-  def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
+  def get(draftId: String)(using hc: HeaderCarrier): Future[Option[UserAnswers]]
 
-  def getMainAnswers(draftId: String)(implicit hc: HeaderCarrier): Future[Option[ReadableUserAnswers]]
+  def getMainAnswers(draftId: String)(using hc: HeaderCarrier): Future[Option[ReadableUserAnswers]]
 
-  def modifyTaxLiabilityState(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Unit]
+  def modifyTaxLiabilityState(userAnswers: UserAnswers)(using hc: HeaderCarrier): Future[Unit]
 }

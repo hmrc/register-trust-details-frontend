@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.CountryAdministeringTrustFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.trust_details.CountryAdministeringTrustPage
 import play.api.data.Form
@@ -29,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.register.trust_details.CountryAdministeringTrustView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CountryAdministeringTrustController @Inject() (
@@ -40,7 +40,7 @@ class CountryAdministeringTrustController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CountryAdministeringTrustView,
   val countryOptions: CountryOptionsNonUK
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
@@ -60,7 +60,7 @@ class CountryAdministeringTrustController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), draftId))),
         value =>
           for {

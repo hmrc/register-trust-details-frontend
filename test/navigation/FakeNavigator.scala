@@ -17,7 +17,7 @@
 package navigation
 
 import models.ReadableUserAnswers
-import pages._
+import pages.*
 import play.api.mvc.Call
 
 class FakeNavigator(val desiredRoute: Call = Call("GET", "/foo")) extends Navigator {

@@ -18,19 +18,20 @@ package utils.countryOptions
 
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.Environment
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import utils.InputOption
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
 class CountryOptions @Inject() (environment: Environment, config: FrontendAppConfig) {
 
-  def options()(implicit messages: Messages): Seq[InputOption] =
+  def options()(using messages: Messages): Seq[InputOption] =
     CountryOptions.getCountries(environment, getFileName())
 
-  def getFileName()(implicit messages: Messages): String = {
+  def getFileName()(using messages: Messages): String = {
     val isWelsh = messages.lang.code == config.WELSH
     if (isWelsh) config.locationCanonicalListCY else config.locationCanonicalList
   }

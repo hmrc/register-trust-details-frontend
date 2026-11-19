@@ -22,7 +22,7 @@ import models.TrusteesBasedInTheUK
 import pages.register.trust_details.TrusteesBasedInTheUKPage
 import play.api.data.Form
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.trust_details.TrusteesBasedInTheUKView
 
 class TrusteesBasedInTheUKControllerSpec extends SpecBase {
@@ -47,7 +47,7 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId)(request, messages).toString
+        view(form, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -67,7 +67,7 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(TrusteesBasedInTheUK.values.head), fakeDraftId)(request, messages).toString
+        view(form.fill(TrusteesBasedInTheUK.values.head), fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -107,7 +107,7 @@ class TrusteesBasedInTheUKControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }

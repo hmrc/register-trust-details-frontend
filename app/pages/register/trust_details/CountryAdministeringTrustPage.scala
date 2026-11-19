@@ -22,7 +22,7 @@ import sections.TrustDetails
 
 case object CountryAdministeringTrustPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ TrustDetails \ toString
+  override def path: JsPath = JsPath \ TrustDetails.toString \ toString
 
   override def toString: String = "countryAdministeringTrust"
 }

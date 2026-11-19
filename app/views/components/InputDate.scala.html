@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import utils.DateErrorFormatter._
+@import utils.DateErrorFormatter.*
 
 @this(
     govukDateInput: GovukDateInput
@@ -26,7 +26,7 @@
     legendClass: String = "govuk-fieldset__legend--l",
     hint: Option[String] = None,
     legendAsHeading: Boolean = false
- )(implicit messages: Messages)
+ )(using messages: Messages)
 
 @govukDateInput(DateInput(
     fieldset = Some(Fieldset(
@@ -63,5 +63,5 @@
         )
     ),
     hint = hint.map(hint => Hint(content = Text(messages(hint)))),
-    errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, formatArgs(err.args): _*))))
+    errorMessage = field.error.map(err => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(err.message, formatArgs(err.args)*))))
 ))

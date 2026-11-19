@@ -18,7 +18,6 @@ package controllers.register.trust_details
 
 import controllers.actions.StandardActionSets
 import forms.TrustNameFormProvider
-import javax.inject.Inject
 import navigation.Navigator
 import pages.register.TrustHaveAUTRPage
 import pages.register.trust_details.TrustNamePage
@@ -30,6 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.trust_details.TrustNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustNameController @Inject() (
@@ -40,7 +40,7 @@ class TrustNameController @Inject() (
   standardActions: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: TrustNameView
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = standardActions.identifiedUserWithData(draftId)
@@ -63,7 +63,7 @@ class TrustNameController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           showHintText(draftId) map { hintTextShown =>
             BadRequest(view(formWithErrors, draftId, hintTextShown))
           },
@@ -75,7 +75,7 @@ class TrustNameController @Inject() (
       )
   }
 
-  private def showHintText(draftId: String)(implicit hc: HeaderCarrier): Future[Boolean] =
+  private def showHintText(draftId: String)(using hc: HeaderCarrier): Future[Boolean] =
     registrationsRepository.getMainAnswers(draftId) map {
       _.exists {
         _.get(TrustHaveAUTRPage).contains(true)

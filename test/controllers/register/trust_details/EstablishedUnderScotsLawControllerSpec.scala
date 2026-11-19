@@ -21,7 +21,7 @@ import forms.YesNoFormProvider
 import pages.register.trust_details.EstablishedUnderScotsLawPage
 import play.api.data.Form
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.trust_details.EstablishedUnderScotsLawView
 
 class EstablishedUnderScotsLawControllerSpec extends SpecBase {
@@ -45,7 +45,7 @@ class EstablishedUnderScotsLawControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId)(request, messages).toString
+        view(form, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -65,7 +65,7 @@ class EstablishedUnderScotsLawControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), fakeDraftId)(request, messages).toString
+        view(form.fill(true), fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -105,7 +105,7 @@ class EstablishedUnderScotsLawControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId)(request, messages).toString
+        view(boundForm, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }

@@ -16,7 +16,7 @@
 
 package pages.register.trust_details
 
-import models.TrusteesBasedInTheUK._
+import models.TrusteesBasedInTheUK.*
 import models.{TrusteesBasedInTheUK, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -26,7 +26,7 @@ import scala.util.Try
 
 case object TrusteesBasedInTheUKPage extends QuestionPage[TrusteesBasedInTheUK] {
 
-  override def path: JsPath = JsPath \ TrustDetails \ toString
+  override def path: JsPath = JsPath \ TrustDetails.toString \ toString
 
   override def toString: String = "trusteesBasedInTheUK"
 

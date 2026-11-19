@@ -17,9 +17,9 @@
 package mapping
 
 import base.SpecBase
-import models.TrusteesBasedInTheUK._
-import models.{NonUKType, ResidentialStatusType, TrustDetailsType, UkType, UserAnswers}
-import pages.register.trust_details._
+import models.TrusteesBasedInTheUK.*
+import models.*
+import pages.register.trust_details.*
 import utils.Constants.GB
 
 import java.time.LocalDate

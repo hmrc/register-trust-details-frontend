@@ -34,8 +34,8 @@ class CountryOptionsNonUKSpec extends SpecBase {
         )
         .build()
 
-      val messagesApi                     = app.injector.instanceOf[MessagesApi]
-      implicit val messages: MessagesImpl = MessagesImpl(lang = Lang(ENGLISH), messagesApi = messagesApi)
+      val messagesApi              = app.injector.instanceOf[MessagesApi]
+      given messages: MessagesImpl = MessagesImpl(lang = Lang(ENGLISH), messagesApi = messagesApi)
 
       val countryOption = application.injector.instanceOf[CountryOptionsNonUK].options()
       countryOption mustEqual Seq(InputOption("BE", "Belgium"), InputOption("IE", "Ireland"))
@@ -53,8 +53,8 @@ class CountryOptionsNonUKSpec extends SpecBase {
         )
         .build()
 
-      val messagesApi                     = app.injector.instanceOf[MessagesApi]
-      implicit val messages: MessagesImpl = MessagesImpl(lang = Lang(WELSH), messagesApi = messagesApi)
+      val messagesApi              = app.injector.instanceOf[MessagesApi]
+      given messages: MessagesImpl = MessagesImpl(lang = Lang(WELSH), messagesApi = messagesApi)
 
       val countryOption = application.injector.instanceOf[CountryOptionsNonUK].options()
       countryOption mustEqual Seq(InputOption("BE", "Gwlad Belg"), InputOption("IE", "Iwerddon"))

@@ -35,8 +35,8 @@ class TrustNameViewSpec extends StringViewBehaviours {
 
       val view = viewFor[TrustNameView](Some(emptyUserAnswers))
 
-      def applyView(form: Form[_]): HtmlFormat.Appendable =
-        view.apply(form, fakeDraftId, hintTextShown = true)(fakeRequest, messages)
+      def applyView(form: Form[?]): HtmlFormat.Appendable =
+        view.apply(form, fakeDraftId, hintTextShown = true)(using fakeRequest, messages)
 
       behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -51,8 +51,8 @@ class TrustNameViewSpec extends StringViewBehaviours {
 
       val view = viewFor[TrustNameView](Some(emptyUserAnswers))
 
-      def applyView(form: Form[_]): HtmlFormat.Appendable =
-        view.apply(form, fakeDraftId, hintTextShown = false)(fakeRequest, messages)
+      def applyView(form: Form[?]): HtmlFormat.Appendable =
+        view.apply(form, fakeDraftId, hintTextShown = false)(using fakeRequest, messages)
 
       behave like normalPage(applyView(form), messageKeyPrefix)
 

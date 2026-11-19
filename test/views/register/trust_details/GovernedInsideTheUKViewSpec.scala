@@ -32,8 +32,8 @@ class GovernedInsideTheUKViewSpec extends YesNoViewBehaviours {
 
     val view = viewFor[GovernedInsideTheUKView](Some(emptyUserAnswers))
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId)(fakeRequest, messages)
+    def applyView(form: Form[?]): HtmlFormat.Appendable =
+      view.apply(form, fakeDraftId)(using fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

@@ -30,7 +30,7 @@ class SubmissionSetFactorySpec extends SpecBase with ScalaCheckPropertyChecks wi
 
   val factory: SubmissionSetFactory = injector.instanceOf[SubmissionSetFactory]
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  given hc: HeaderCarrier = HeaderCarrier()
 
   "Submission set factory" must {
 

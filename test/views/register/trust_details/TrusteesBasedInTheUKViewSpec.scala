@@ -31,8 +31,8 @@ class TrusteesBasedInTheUKViewSpec extends ViewBehaviours {
 
   val view: TrusteesBasedInTheUKView = viewFor[TrusteesBasedInTheUKView](Some(emptyUserAnswers))
 
-  def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, fakeDraftId)(fakeRequest, messages)
+  def applyView(form: Form[?]): HtmlFormat.Appendable =
+    view.apply(form, fakeDraftId)(using fakeRequest, messages)
 
   "TrusteesBasedInTheUKView" must {
 

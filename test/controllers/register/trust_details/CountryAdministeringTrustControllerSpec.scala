@@ -21,7 +21,7 @@ import forms.CountryAdministeringTrustFormProvider
 import pages.register.trust_details.CountryAdministeringTrustPage
 import play.api.data.Form
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.register.trust_details.CountryAdministeringTrustView
@@ -51,7 +51,7 @@ class CountryAdministeringTrustControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, fakeDraftId)(request, messages).toString
+        view(form, countryOptions, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -73,7 +73,7 @@ class CountryAdministeringTrustControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("Spain"), countryOptions, fakeDraftId)(request, messages).toString
+        view(form.fill("Spain"), countryOptions, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }
@@ -114,7 +114,7 @@ class CountryAdministeringTrustControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, fakeDraftId)(request, messages).toString
+        view(boundForm, countryOptions, fakeDraftId)(using request, messages).toString
 
       application.stop()
     }

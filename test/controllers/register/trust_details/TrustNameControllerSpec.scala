@@ -28,7 +28,7 @@ import pages.register.trust_details.TrustNamePage
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.register.trust_details.TrustNameView
 
 import scala.concurrent.Future
@@ -52,7 +52,7 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
 
       "return OK and the correct view for a GET" in
         forAll(arbitrary[UserAnswers]) { userAnswers =>
-          when(registrationsRepository.getMainAnswers(any())(any()))
+          when(registrationsRepository.getMainAnswers(any())(using any()))
             .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -66,12 +66,12 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, hintTextShown = true)(request, messages).toString
+            view(form, fakeDraftId, hintTextShown = true)(using request, messages).toString
         }
 
       "populate the view correctly on a GET when the question has previously been answered" in
         forAll(arbitrary[UserAnswers]) { userAnswers =>
-          when(registrationsRepository.getMainAnswers(any())(any()))
+          when(registrationsRepository.getMainAnswers(any())(using any()))
             .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
 
           val answers = userAnswers
@@ -90,14 +90,14 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form.fill("This Name"), fakeDraftId, hintTextShown = true)(request, messages).toString
+            view(form.fill("This Name"), fakeDraftId, hintTextShown = true)(using request, messages).toString
 
           application.stop()
         }
 
       "return a Bad Request and errors when invalid data is submitted" in
         forAll(arbitrary[UserAnswers]) { userAnswers =>
-          when(registrationsRepository.getMainAnswers(any())(any()))
+          when(registrationsRepository.getMainAnswers(any())(using any()))
             .thenReturn(Future.successful(Some(readOnlyAnswers(true))))
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -115,7 +115,7 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
           status(result) mustEqual BAD_REQUEST
 
           contentAsString(result) mustEqual
-            view(boundForm, fakeDraftId, hintTextShown = true)(request, messages).toString
+            view(boundForm, fakeDraftId, hintTextShown = true)(using request, messages).toString
 
           application.stop()
         }
@@ -126,7 +126,7 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
 
       "return OK and the correct view for a GET" in
         forAll(arbitrary[UserAnswers]) { userAnswers =>
-          when(registrationsRepository.getMainAnswers(any())(any()))
+          when(registrationsRepository.getMainAnswers(any())(using any()))
             .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -140,14 +140,14 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, hintTextShown = false)(request, messages).toString
+            view(form, fakeDraftId, hintTextShown = false)(using request, messages).toString
 
           application.stop()
         }
 
       "populate the view correctly on a GET when the question has previously been answered" in
         forAll(arbitrary[UserAnswers]) { userAnswers =>
-          when(registrationsRepository.getMainAnswers(any())(any()))
+          when(registrationsRepository.getMainAnswers(any())(using any()))
             .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
 
           val answers = userAnswers
@@ -165,14 +165,14 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form.fill("This Name"), fakeDraftId, hintTextShown = false)(request, messages).toString
+            view(form.fill("This Name"), fakeDraftId, hintTextShown = false)(using request, messages).toString
 
           application.stop()
         }
 
       "return a Bad Request and errors when invalid data is submitted" in
         forAll(arbitrary[UserAnswers]) { userAnswers =>
-          when(registrationsRepository.getMainAnswers(any())(any()))
+          when(registrationsRepository.getMainAnswers(any())(using any()))
             .thenReturn(Future.successful(Some(readOnlyAnswers(false))))
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -190,7 +190,7 @@ class TrustNameControllerSpec extends SpecBase with Generators with ScalaCheckPr
           status(result) mustEqual BAD_REQUEST
 
           contentAsString(result) mustEqual
-            view(boundForm, fakeDraftId, hintTextShown = false)(request, messages).toString
+            view(boundForm, fakeDraftId, hintTextShown = false)(using request, messages).toString
 
           application.stop()
         }
