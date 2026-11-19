@@ -16,14 +16,13 @@
 
 package pages
 
-import scala.Conversion
 import scala.language.implicitConversions
 
 trait Page
 
 object Page {
 
-  given pageToString: Conversion[Page, String] =
-    _.toString
+  implicit def toString(page: Page): String =
+    page.toString
 
 }
